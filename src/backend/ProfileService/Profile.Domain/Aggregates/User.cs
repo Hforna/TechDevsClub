@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Profile.Domain.Entities;
 using Profile.Domain.Enums;
 using Profile.Domain.Exceptions;
 using Profile.Domain.ValueObjects;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 namespace Profile.Domain.Aggregates
 {
     [Table("users")]
-    public class User : IdentityUser<long>
+    public class User : IdentityUser<long>, IEntity
     {
         public bool Active { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

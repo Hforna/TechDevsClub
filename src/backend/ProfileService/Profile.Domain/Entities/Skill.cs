@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Profile.Domain.Entities
 {
     [Table("skills")]
-    public class Skill
+    public class Skill : IEntity
     {
         public long Id { get; set; }
         public string Name { get; set; }

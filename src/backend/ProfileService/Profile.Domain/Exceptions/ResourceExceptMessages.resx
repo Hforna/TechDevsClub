@@ -120,4 +120,10 @@
   <data name="USER_HAS_SKILL" xml:space="preserve">
     <value>User already has this skill</value>
   </data>
+  <data name="EMAIL_FORMAT" xml:space="preserve">
+    <value>Wrong e-mail format</value>
+  </data>
+  <data name="PASSWORD_LENGTH" xml:space="preserve">
+    <value>Password length must be greather or equal 8</value>
+  </data>
 </root>

@@ -61,6 +61,24 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Wrong e-mail format.
+        /// </summary>
+        public static string EMAIL_FORMAT {
+            get {
+                return ResourceManager.GetString("EMAIL_FORMAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Password length must be greather or equal 8.
+        /// </summary>
+        public static string PASSWORD_LENGTH {
+            get {
+                return ResourceManager.GetString("PASSWORD_LENGTH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User already has this skill.
         /// </summary>
         public static string USER_HAS_SKILL {
