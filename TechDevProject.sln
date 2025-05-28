@@ -9,20 +9,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProfileService", "ProfileSe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{B314DD63-676E-4EBC-AE86-9B20999404DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile.Api", "src\backend\ProfileService\Profile.Api\Profile.Api.csproj", "{80512440-F4CA-46B8-AFA3-38F97FF3D85B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Profile.Api", "src\backend\ProfileService\Profile.Api\Profile.Api.csproj", "{80512440-F4CA-46B8-AFA3-38F97FF3D85B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9BBC5875-ED54-4D4E-A194-0DCF1CFB2BF3} = {9BBC5875-ED54-4D4E-A194-0DCF1CFB2BF3}
 		{AADAC14A-80C1-4899-B3BD-9F0061DF000D} = {AADAC14A-80C1-4899-B3BD-9F0061DF000D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile.Application", "src\backend\ProfileService\Profile.Application\Profile.Application.csproj", "{AADAC14A-80C1-4899-B3BD-9F0061DF000D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Profile.Application", "src\backend\ProfileService\Profile.Application\Profile.Application.csproj", "{AADAC14A-80C1-4899-B3BD-9F0061DF000D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9BBC5875-ED54-4D4E-A194-0DCF1CFB2BF3} = {9BBC5875-ED54-4D4E-A194-0DCF1CFB2BF3}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile.Domain", "src\backend\ProfileService\Profile.Domain\Profile.Domain.csproj", "{9BBC5875-ED54-4D4E-A194-0DCF1CFB2BF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Profile.Domain", "src\backend\ProfileService\Profile.Domain\Profile.Domain.csproj", "{9BBC5875-ED54-4D4E-A194-0DCF1CFB2BF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile.Infrastructure", "src\backend\ProfileService\Profile.Infrastructure\Profile.Infrastructure.csproj", "{5FD4F6EE-30CB-479B-8F66-00A584AF2B9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Profile.Infrastructure", "src\backend\ProfileService\Profile.Infrastructure\Profile.Infrastructure.csproj", "{5FD4F6EE-30CB-479B-8F66-00A584AF2B9E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{80512440-F4CA-46B8-AFA3-38F97FF3D85B} = {80512440-F4CA-46B8-AFA3-38F97FF3D85B}
 		{9BBC5875-ED54-4D4E-A194-0DCF1CFB2BF3} = {9BBC5875-ED54-4D4E-A194-0DCF1CFB2BF3}
@@ -30,9 +30,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile.Infrastructure", "s
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D86BFA7A-B6E9-4CBA-BFC7-D66B46A5766C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile.UnitTests", "src\backend\ProfileService\tests\Profile.UnitTests\Profile.UnitTests.csproj", "{7B8130D8-DE72-409C-8173-081994C9A1C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Profile.UnitTests", "src\backend\ProfileService\tests\Profile.UnitTests\Profile.UnitTests.csproj", "{7B8130D8-DE72-409C-8173-081994C9A1C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile.WebTests", "src\backend\ProfileService\tests\Profile.WebTests\Profile.WebTests.csproj", "{C7DFAF73-038D-42F8-8C7A-F635279D2B99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Profile.WebTests", "src\backend\ProfileService\tests\Profile.WebTests\Profile.WebTests.csproj", "{C7DFAF73-038D-42F8-8C7A-F635279D2B99}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{DF09A899-0865-4507-BF0A-2AFDB279BE8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{C7DFAF73-038D-42F8-8C7A-F635279D2B99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7DFAF73-038D-42F8-8C7A-F635279D2B99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7DFAF73-038D-42F8-8C7A-F635279D2B99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF09A899-0865-4507-BF0A-2AFDB279BE8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF09A899-0865-4507-BF0A-2AFDB279BE8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF09A899-0865-4507-BF0A-2AFDB279BE8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF09A899-0865-4507-BF0A-2AFDB279BE8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
