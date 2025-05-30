@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Profile.Domain.Security
 {
-    internal interface IPasswordEncrypt
+    public interface IPasswordEncrypt
     {
+        public string Encrypt(string password);
+
+        public bool IsValidPassword(string password, string hash);
     }
 }

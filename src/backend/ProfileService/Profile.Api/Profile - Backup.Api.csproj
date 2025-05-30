@@ -17,7 +17,10 @@
 
   <ItemGroup>
   	<ProjectReference Include="..\Profile.Infrastructure\Profile.Infrastructure.csproj" />
-  	<ProjectReference Include="..\Profile.Application\Profile.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NovaPasta\" />
   </ItemGroup>
 
 </Project>

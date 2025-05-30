@@ -61,6 +61,15 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This e-mail already exists.
+        /// </summary>
+        public static string EMAIL_EXISTS {
+            get {
+                return ResourceManager.GetString("EMAIL_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Wrong e-mail format.
         /// </summary>
         public static string EMAIL_FORMAT {

@@ -126,4 +126,7 @@
   <data name="PASSWORD_LENGTH" xml:space="preserve">
     <value>Password length must be greather or equal 8</value>
   </data>
+  <data name="EMAIL_EXISTS" xml:space="preserve">
+    <value>This e-mail already exists</value>
+  </data>
 </root>
