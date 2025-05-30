@@ -22,6 +22,9 @@ namespace Profile.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Role>().HasData(new Role() { Name = "normal", NormalizedName = "NORMAL", Id = 1 });
+            builder.Entity<Role>().HasData(new Role() {  Name = "admin", NormalizedName = "ADMIN", Id = 2 });
             
             builder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
             builder.ApplyConfiguration(new UserSkills.Mapping());

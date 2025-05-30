@@ -1,10 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Profile.Domain.Aggregates;
 using Profile.Domain.Entities;
 using Profile.Domain.Repositories;
 using Profile.Domain.Security;
+using Profile.Domain.Services;
 using Profile.Infrastructure.Data;
 using Profile.Infrastructure.Repositories;
 using Profile.Infrastructure.Services;
@@ -23,6 +26,7 @@ namespace Profile.Infrastructure
             AddData(services, configuration);
             AddRepositories(services);
             AddSecurity(services);
+            AddServices(services);
         }
 
         static void AddData(IServiceCollection services, IConfiguration configuration)
@@ -30,17 +34,28 @@ namespace Profile.Infrastructure
             var connectionString = configuration.GetConnectionString("sqlserver");
             services.AddDbContext<DataContext>(cfg => cfg.UseSqlServer(connectionString));
 
-            services.AddIdentityCore<User>(d =>
+            services.AddDataProtection();
+
+            services.AddIdentityCore<User>(options =>
             {
-                d.Password.RequiredLength = 8;
-                d.User.RequireUniqueEmail = true;
-                d.SignIn.RequireConfirmedEmail = true;
-            }).AddEntityFrameworkStores<DataContext>();
+                options.Password.RequiredLength = 8;
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
+            })
+            .AddRoles<Role>()
+            .AddEntityFrameworkStores<DataContext>()
+            .AddDefaultTokenProviders()
+            .AddUserManager<UserManager<User>>();
         }
 
         static void AddSecurity(IServiceCollection services)
         {
             services.AddScoped<IPasswordEncrypt, BCryptService>();
+        }
+
+        static void AddServices(IServiceCollection services)
+        {
+            services.AddSingleton<IEmailService, EmailService>();
         }
 
         static void AddRepositories(IServiceCollection services)
