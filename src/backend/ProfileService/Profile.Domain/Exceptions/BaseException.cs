@@ -9,8 +9,8 @@ namespace Profile.Domain.Exceptions
 {
     public abstract class BaseException : SystemException
     {
-        public abstract List<string> Errors { get; set; }
-        public abstract HttpStatusCode StatusCode { get; set; }
+        public List<string> Errors { get; set; } = [];
+        public HttpStatusCode StatusCode { get; set; }
 
         public BaseException(string error, HttpStatusCode statusCode) : base(error)
         {

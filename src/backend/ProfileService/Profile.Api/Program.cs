@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Profile.Api.Endpoints;
+using Profile.Api.Filters;
 using Profile.Api.Middlewares;
 using Profile.Application;
 using Profile.Infrastructure;
@@ -13,6 +14,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMvc(d => d.Filters.Add(typeof(ExceptionFilter)));
 
 builder.Services.Configure<SmptSettings>(builder.Configuration.GetSection("SmtpSettings"));
 

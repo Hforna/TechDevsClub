@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.X509.Qualified;
+using Profile.Api.Filters;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
 
@@ -11,7 +13,7 @@ namespace Profile.Api.Endpoints
 
         public static IEndpointRouteBuilder MapUserEndpoints(this IEndpointRouteBuilder builder)
         {
-            var app = builder.MapGroup(UserGroup);
+            var app = builder.MapGroup(UserGroup); ;
 
             app.MapPost("create", CreateUser)
                 .WithName("CreateUser")

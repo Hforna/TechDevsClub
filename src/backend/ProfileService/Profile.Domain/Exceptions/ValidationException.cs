@@ -9,8 +9,8 @@ namespace Profile.Domain.Exceptions
 {
     public class ValidationException : BaseException
     {
-        public override List<string> Errors { get; set; }
-        public override HttpStatusCode StatusCode { get; set; }
+        public List<string> Errors { get; set; } = [];
+        public HttpStatusCode StatusCode { get; set; }
 
         public ValidationException(string error, HttpStatusCode statusCode) : base(error, statusCode)
         {
