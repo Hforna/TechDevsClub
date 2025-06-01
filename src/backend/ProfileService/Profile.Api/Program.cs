@@ -1,6 +1,5 @@
 using Microsoft.Data.SqlClient;
 using Profile.Api.Endpoints;
-using Profile.Api.Filters;
 using Profile.Api.Middlewares;
 using Profile.Application;
 using Profile.Infrastructure;
@@ -15,7 +14,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMvc(d => d.Filters.Add(typeof(ExceptionFilter)));
 
 builder.Services.Configure<SmptSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
@@ -23,6 +21,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
 builder.Services.AddTransient<CultureInfoMiddleware>();
+
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var app = builder.Build();
 
@@ -38,6 +38,8 @@ app.UseHttpsRedirection();
 app.UseMiddleware<CultureInfoMiddleware>();
 
 app.UseAuthorization();
+
+app.UseExceptionHandler(d => { });
 
 app.MapUserEndpoints();
 

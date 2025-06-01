@@ -7,24 +7,12 @@ using System.Threading.Tasks;
 
 namespace Profile.Domain.Exceptions
 {
-    public class JsonErrorResponse : BaseException
+    public class JsonErrorResponse : SystemException
     {
-        public List<string> Errors { get; set; } = [];
-        public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
+        public IList<string> Errors { get; set; } = new List<string>();
 
-        public JsonErrorResponse(List<string> errors, HttpStatusCode statusCode) : base(string.Empty, statusCode)
-        {
-            Errors = errors;
-            StatusCode = (HttpStatusCode)statusCode;
-        }
+        public JsonErrorResponse(IList<string> errors) => Errors = errors;
 
-        public JsonErrorResponse(string error, HttpStatusCode statusCode) : base(error, statusCode)
-        {
-            Errors.Add(error);
-            statusCode = (HttpStatusCode)statusCode;
-        }
-
-        public override HttpStatusCode GetStatusCode() => StatusCode;
-        public override List<string> GetMessage() => [Message];
+        public JsonErrorResponse(string message) => Errors.Add(message);
     }
 }

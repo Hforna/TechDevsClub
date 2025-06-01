@@ -24,7 +24,7 @@ namespace Profile.Domain.Exceptions
             StatusCode = statusCode;
         }
 
-        public override List<string> GetMessage() => [Message];
+        public override List<string> GetMessage() => Errors;
 
         public override HttpStatusCode GetStatusCode() => StatusCode;
     }
