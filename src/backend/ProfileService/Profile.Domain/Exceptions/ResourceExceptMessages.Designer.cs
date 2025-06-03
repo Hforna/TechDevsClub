@@ -79,6 +79,24 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User with this e-mail doesn&apos;t exists.
+        /// </summary>
+        public static string EMAIL_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("EMAIL_NOT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The email confirmation token is invalid.
+        /// </summary>
+        public static string INVALID_EMAIL_TOKEN {
+            get {
+                return ResourceManager.GetString("INVALID_EMAIL_TOKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Password length must be greather or equal 8.
         /// </summary>
         public static string PASSWORD_LENGTH {

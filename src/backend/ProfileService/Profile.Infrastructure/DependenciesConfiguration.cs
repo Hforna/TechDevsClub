@@ -61,6 +61,7 @@ namespace Profile.Infrastructure
         static void AddRepositories(IServiceCollection services)
         {
             services.AddScoped<IGenericRepository, GenericRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

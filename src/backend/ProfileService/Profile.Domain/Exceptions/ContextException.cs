@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace Profile.Domain.Exceptions
 {
-    public class DomainException : BaseException
+    public class ContextException : BaseException
     {
         public List<string> Errors { get; set; } = [];
         public HttpStatusCode StatusCode { get; set; }
 
-        public DomainException(string error, HttpStatusCode statusCode) : base(error, statusCode)
+        public ContextException(string error, HttpStatusCode statusCode) : base(error, statusCode)
         {
             Errors.Add(error);
             StatusCode = statusCode;
         }
 
-        public DomainException(List<string> error, HttpStatusCode statusCode) : base(string.Empty, statusCode)
+        public ContextException(List<string> error, HttpStatusCode statusCode) : base(string.Empty, statusCode)
         {
             Errors = error;
             StatusCode = statusCode;

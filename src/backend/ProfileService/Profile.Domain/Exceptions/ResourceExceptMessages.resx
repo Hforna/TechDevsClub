@@ -129,4 +129,10 @@
   <data name="EMAIL_EXISTS" xml:space="preserve">
     <value>This e-mail already exists</value>
   </data>
+  <data name="EMAIL_NOT_EXISTS" xml:space="preserve">
+    <value>User with this e-mail doesn't exists</value>
+  </data>
+  <data name="INVALID_EMAIL_TOKEN" xml:space="preserve">
+    <value>The email confirmation token is invalid</value>
+  </data>
 </root>

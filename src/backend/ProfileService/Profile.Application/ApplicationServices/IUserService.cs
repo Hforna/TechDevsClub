@@ -11,5 +11,6 @@ namespace Profile.Application.ApplicationServices
     public interface IUserService
     {
         public Task<UserResponse> CreateUser(CreateUserRequest request);
+        public Task ConfirmEmail(string email, string token);
     }
 }

@@ -51,7 +51,7 @@ namespace Profile.Infrastructure.Services
 
                 await client.ConnectAsync(_smptSettings.Server, _smptSettings.Port, true);
 
-                await client.AuthenticateAsync(_smptSettings.Username, _smptSettings.Password);
+                await client.AuthenticateAsync(_smptSettings.SenderEmail, _smptSettings.Password);
 
                 await client.SendAsync(message);
                 await client.DisconnectAsync(true);

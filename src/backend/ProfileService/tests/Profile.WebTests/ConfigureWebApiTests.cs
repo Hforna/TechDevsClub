@@ -15,6 +15,9 @@ namespace Profile.WebTests
 {
     public class ConfigureWebApiTests : WebApplicationFactory<Program>
     {
+        public DataContext DbContext;
+
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(cfg =>

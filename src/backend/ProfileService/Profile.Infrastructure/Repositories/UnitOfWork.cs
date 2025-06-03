@@ -8,15 +8,17 @@ using System.Threading.Tasks;
 
 namespace Profile.Infrastructure.Repositories
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     {
         private readonly DataContext _context;
         public IGenericRepository GenericRepository { get; set; }
+        public IUserRepository UserRepository { get; set; }
 
-        public UnitOfWork(DataContext context, IGenericRepository genericRepository)
+        public UnitOfWork(DataContext context, IGenericRepository genericRepository, IUserRepository userRepository)
         {
             _context = context;
             GenericRepository = genericRepository;
+            UserRepository = userRepository;
         }
 
         public async Task Commit(CancellationToken cancellationToken = default)
@@ -24,9 +26,9 @@ namespace Profile.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            _context.Dispose();
+            await _context.DisposeAsync();
         }
     }
 }

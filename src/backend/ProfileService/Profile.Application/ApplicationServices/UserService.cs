@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Commons;
 using Profile.Application.Requests;
@@ -14,6 +15,7 @@ using Profile.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,13 +28,15 @@ namespace Profile.Application.Services
         private readonly UserManager<User> _userManager;
         private readonly IPasswordEncrypt _passwordEncrypt;
         private readonly IEmailService _emailService;
+        private readonly ILogger<UserService> _logger;
 
         public UserService(IUnitOfWork uof, IMapper mapper, 
             UserManager<User> userManager, IPasswordEncrypt passwordEncrypt, 
-            IEmailService emailService)
+            IEmailService emailService, ILogger<UserService> logger)
         {
             _uof = uof;
             _mapper = mapper;
+            _logger = logger;
             _userManager = userManager;
             _passwordEncrypt = passwordEncrypt;
             _emailService = emailService;
@@ -45,7 +49,11 @@ namespace Profile.Application.Services
             var userEmail = await _userManager.FindByEmailAsync(request.Email);
 
             if (userEmail is not null)
-                throw new ValidationException(ResourceExceptMessages.EMAIL_EXISTS, System.Net.HttpStatusCode.BadRequest);
+            {
+                var exception = new ValidationException(ResourceExceptMessages.EMAIL_EXISTS, System.Net.HttpStatusCode.BadRequest);
+                _logger.LogError(message: $"An user with this e-mail already exists: {request.Email}", exception: exception);
+                throw exception;
+            }
 
             var user = _mapper.Map<User>(request);
             user.PasswordHash = _passwordEncrypt.Encrypt(request.Password);
@@ -60,11 +68,34 @@ namespace Profile.Application.Services
 
             await _emailService.SendEmail(user.Email, user.UserName,
                 $"Hello {user.UserName} confirm your email clicking on this link"
-                , _emailService.EmailConfirmation($"{AppConfigs.AppUrl}/api/user/confirm-email?email={user.Email}&token={confirmationToken}"));
+                , _emailService.EmailConfirmation($"{AppConfigs.AppUrl}api/users/confirm-email?email={user.Email}&token={confirmationToken}"));
+            _logger.LogDebug($"Message sent to e-mail {user.Email}");
 
             var response = _mapper.Map<UserResponse>(user);
 
             return response;
+        }
+
+        public async Task ConfirmEmail(string email, string token)
+        {
+            var userByEmail = await _uof.UserRepository.UserByEmail(email);
+
+            if (userByEmail is null)
+                throw new ContextException(ResourceExceptMessages.EMAIL_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            var tokenIsValid = await _userManager.ConfirmEmailAsync(userByEmail, token);
+
+            if (!tokenIsValid.Succeeded)
+            {
+                var exception = new AuthorizationException(ResourceExceptMessages.INVALID_EMAIL_TOKEN, System.Net.HttpStatusCode.BadRequest);
+                _logger.LogError(message: $"Token {token} is not valid to email {email}", exception: exception);
+                throw exception;
+            }
+
+            userByEmail.EmailConfirmed = true;
+            userByEmail.Active = true;
+
+            await _userManager.UpdateAsync(userByEmail);
         }
     }
 }
