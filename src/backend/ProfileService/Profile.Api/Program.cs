@@ -42,6 +42,7 @@ app.UseAuthorization();
 app.UseExceptionHandler(d => { });
 
 app.MapUserEndpoints();
+app.MapLoginEndpoints();
 
 app.Run();
 

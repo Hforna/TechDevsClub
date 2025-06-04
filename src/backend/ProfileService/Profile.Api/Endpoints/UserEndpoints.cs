@@ -10,7 +10,7 @@ namespace Profile.Api.Endpoints
 {
     public static class UserEndpoints
     {
-        private const string UserGroup = "/api/users";
+        const string UserGroup = $"{BaseEndpointConsts.rootEndpoint}users";
 
         public static IEndpointRouteBuilder MapUserEndpoints(this IEndpointRouteBuilder builder)
         {

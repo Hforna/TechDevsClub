@@ -10,8 +10,9 @@ using Profile.Domain.Aggregates;
 using Profile.Domain.Consts;
 using Profile.Domain.Exceptions;
 using Profile.Domain.Repositories;
-using Profile.Domain.Security;
 using Profile.Domain.Services;
+using Profile.Domain.Services.Security;
+using Profile.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,7 +84,7 @@ namespace Profile.Application.Services
             if (userByEmail is null)
                 throw new ContextException(ResourceExceptMessages.EMAIL_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var tokenIsValid = await _userManager.ConfirmEmailAsync(userByEmail, token);
+            var tokenIsValid = await _userManager.ConfirmEmailAsync(userByEmail, token.Replace(" ", "+"));
 
             if (!tokenIsValid.Succeeded)
             {
@@ -96,6 +97,11 @@ namespace Profile.Application.Services
             userByEmail.Active = true;
 
             await _userManager.UpdateAsync(userByEmail);
+        }
+
+        public Task<Address> CreateUserAddress(CreateAddressRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }

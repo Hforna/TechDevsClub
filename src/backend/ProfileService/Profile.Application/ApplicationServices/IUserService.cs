@@ -1,5 +1,6 @@
 ﻿using Profile.Application.Requests;
 using Profile.Application.Responses;
+using Profile.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace Profile.Application.ApplicationServices
     {
         public Task<UserResponse> CreateUser(CreateUserRequest request);
         public Task ConfirmEmail(string email, string token);
+        public Task<Address> CreateUserAddress(CreateAddressRequest request);
     }
 }
