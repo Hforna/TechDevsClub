@@ -6,11 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Profile.Domain.Aggregates;
 using Profile.Domain.Entities;
 using Profile.Domain.Repositories;
-using Profile.Domain.Security;
 using Profile.Domain.Services;
+using Profile.Domain.Services.Security;
 using Profile.Infrastructure.Data;
 using Profile.Infrastructure.Repositories;
 using Profile.Infrastructure.Services;
+using Profile.Infrastructure.Services.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace Profile.Infrastructure
         {
             AddData(services, configuration);
             AddRepositories(services);
-            AddSecurity(services);
+            AddSecurity(services, configuration);
             AddServices(services);
         }
 
@@ -48,9 +49,13 @@ namespace Profile.Infrastructure
             .AddUserManager<UserManager<User>>();
         }
 
-        static void AddSecurity(IServiceCollection services)
+        static void AddSecurity(IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IPasswordEncrypt, BCryptService>();
+
+            services.AddScoped<ITokenService, TokenService>(d => new TokenService(
+                int.Parse(configuration.GetSection("services:security:jwt:expiresOn").Value), 
+                configuration.GetSection("services:security:jwt:signKey").Value));
         }
 
         static void AddServices(IServiceCollection services)

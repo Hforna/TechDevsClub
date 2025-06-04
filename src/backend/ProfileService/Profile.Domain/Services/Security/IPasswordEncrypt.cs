@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Profile.Domain.Security
+namespace Profile.Domain.Services.Security
 {
     public interface IPasswordEncrypt
     {

@@ -1,4 +1,4 @@
-﻿using Profile.Domain.Security;
+﻿using Profile.Domain.Services.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
