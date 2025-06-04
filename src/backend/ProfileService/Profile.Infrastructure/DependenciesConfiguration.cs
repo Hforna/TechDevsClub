@@ -54,8 +54,9 @@ namespace Profile.Infrastructure
             services.AddScoped<IPasswordEncrypt, BCryptService>();
 
             services.AddScoped<ITokenService, TokenService>(d => new TokenService(
-                int.Parse(configuration.GetSection("services:security:jwt:expiresOn").Value), 
-                configuration.GetSection("services:security:jwt:signKey").Value));
+                int.Parse(configuration.GetSection("services:security:jwt:expiresOn").Value!), 
+                configuration.GetSection("services:security:jwt:signKey").Value!, 
+                int.Parse(configuration.GetSection("services:security:jwt:refreshTokenExpiration").Value!)));
         }
 
         static void AddServices(IServiceCollection services)

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Profile.Infrastructure.Services
+namespace Profile.Infrastructure.Services.Security
 {
     public class BCryptService : IPasswordEncrypt
     {

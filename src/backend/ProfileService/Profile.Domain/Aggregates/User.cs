@@ -21,7 +21,7 @@ namespace Profile.Domain.Aggregates
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<UserSkills> Skills { get; set; } = [];
         public Address? Address { get; set; }
-        public string RefreshToken { get; set; }
+        public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiration { get; set; }
         public Guid UserIdentifier { get; set; } = Guid.NewGuid();
 
