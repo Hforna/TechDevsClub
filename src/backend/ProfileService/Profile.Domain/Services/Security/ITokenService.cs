@@ -10,6 +10,7 @@ namespace Profile.Domain.Services.Security
     public interface ITokenService
     {
         public string GenerateToken(List<Claim> claims, Guid userIdentifier);
+        public Guid GetUserIdentifierByToken(string token);
         public DateTime GetRefreshTokenExpiration();
         public string GenerateRefreshToken();
     }

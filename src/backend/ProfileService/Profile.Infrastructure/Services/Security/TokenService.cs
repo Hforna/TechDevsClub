@@ -53,6 +53,15 @@ namespace Profile.Infrastructure.Services.Security
             return DateTime.UtcNow.AddHours(_refreshHoursExpiration);
         }
 
+        public Guid GetUserIdentifierByToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var read = handler.ReadJwtToken(token);
+            var uid = Guid.Parse(read.Claims.FirstOrDefault(d => d.Type == ClaimTypes.Sid).Value);
+
+            return uid;
+        }
+
         SymmetricSecurityKey GetSecurityKey() => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_signKey));
     }
 }

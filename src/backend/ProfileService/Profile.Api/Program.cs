@@ -1,7 +1,9 @@
 using Microsoft.Data.SqlClient;
 using Profile.Api.Endpoints;
+using Profile.Api.Filters;
 using Profile.Api.Middlewares;
 using Profile.Application;
+using Profile.Domain.Services.Security;
 using Profile.Infrastructure;
 using Profile.Infrastructure.Services;
 
@@ -19,6 +21,10 @@ builder.Services.Configure<SmptSettings>(builder.Configuration.GetSection("SmtpS
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
+
+builder.Services.AddScoped<IRequestToken, RequestToken>();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient<CultureInfoMiddleware>();
 

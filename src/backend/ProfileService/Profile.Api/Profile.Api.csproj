@@ -20,8 +20,4 @@
   	<ProjectReference Include="..\Profile.Application\Profile.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Filters\" />
-  </ItemGroup>
-
 </Project>

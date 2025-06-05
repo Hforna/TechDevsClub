@@ -43,5 +43,12 @@ namespace Profile.Api.Endpoints
 
             return Results.Ok();
         }
+
+        static async Task<IResult> UpdateUserAddress([FromServices]IUserService service, [FromBody]CreateAddressRequest request)
+        {
+            var result = await service.CreateUserAddress(request);
+
+            return Results.Ok(result);
+        }
     }
 }
