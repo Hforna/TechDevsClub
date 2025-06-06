@@ -10,5 +10,6 @@ namespace Profile.Domain.Repositories
     public interface IUserRepository
     {
         public Task<User?> UserByEmail(string email);
+        public Task<User?> UserByIdentifier(Guid uid);
     }
 }

@@ -30,10 +30,12 @@ namespace Profile.Application.Services
         private readonly IPasswordEncrypt _passwordEncrypt;
         private readonly IEmailService _emailService;
         private readonly ILogger<UserService> _logger;
+        private readonly ITokenService _tokenService;
+        private readonly IRequestToken _requestToken;
 
         public UserService(IUnitOfWork uof, IMapper mapper, 
-            UserManager<User> userManager, IPasswordEncrypt passwordEncrypt, 
-            IEmailService emailService, ILogger<UserService> logger)
+            UserManager<User> userManager, IPasswordEncrypt passwordEncrypt,
+            IEmailService emailService, ILogger<UserService> logger, ITokenService tokenService, IRequestToken requestToken)
         {
             _uof = uof;
             _mapper = mapper;
@@ -41,6 +43,8 @@ namespace Profile.Application.Services
             _userManager = userManager;
             _passwordEncrypt = passwordEncrypt;
             _emailService = emailService;
+            _tokenService = tokenService;
+            _requestToken = requestToken;
         }
 
         public async Task<UserResponse> CreateUser(CreateUserRequest request)
@@ -99,9 +103,22 @@ namespace Profile.Application.Services
             await _userManager.UpdateAsync(userByEmail);
         }
 
-        public Task<Address> CreateUserAddress(CreateAddressRequest request)
+        public async Task<Address> CreateUserAddress(UpdateAddressRequest request)
         {
-            throw new NotImplementedException();
+            var userId = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
+
+            var user = await _uof.UserRepository.UserByIdentifier(userId);
+
+            if (user is null)
+                throw new ContextException(ResourceExceptMessages.USER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            var address = _mapper.Map<Address>(request);
+            user.Address = address;
+
+            await _uof.GenericRepository.Add<User>(user);
+            await _uof.Commit();
+
+            return user.Address;
         }
     }
 }

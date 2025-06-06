@@ -24,6 +24,10 @@ namespace Profile.Api.Endpoints
                 .WithName("ConfirmUserEmail")
                 .WithSummary("Verify an user e-mail after them create an account");
 
+            app.MapPost("update-address", UpdateUserAddress)
+                .WithName("UpdateUserAddress")
+                .WithSummary("Update the address of an user");
+
             return app;
         }
 
@@ -44,7 +48,7 @@ namespace Profile.Api.Endpoints
             return Results.Ok();
         }
 
-        static async Task<IResult> UpdateUserAddress([FromServices]IUserService service, [FromBody]CreateAddressRequest request)
+        static async Task<IResult> UpdateUserAddress([FromServices]IUserService service, [FromBody]UpdateAddressRequest request)
         {
             var result = await service.CreateUserAddress(request);
 

@@ -1,6 +1,7 @@
 ﻿using Profile.Application.Requests;
 using Profile.Application.Responses;
 using Profile.Domain.Aggregates;
+using Profile.Domain.ValueObjects;
 using Sqids;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace Profile.Application.Services
 
             CreateMap<User, UserResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => sqids.Encode(d.Id)));
+
+            CreateMap<UpdateAddressRequest, Address>();
         }
     }
 }

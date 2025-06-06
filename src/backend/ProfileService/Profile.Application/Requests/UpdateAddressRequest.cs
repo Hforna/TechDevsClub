@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Profile.Application.Requests
 {
-    public sealed record CreateAddressRequest
+    public sealed record UpdateAddressRequest
     {
         public string Country { get; set; }
         public string Street { get; set; }

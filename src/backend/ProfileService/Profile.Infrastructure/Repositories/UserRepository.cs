@@ -20,5 +20,10 @@ namespace Profile.Infrastructure.Repositories
         {
             return await _context.Users.SingleOrDefaultAsync(d => d.Email == email);
         }
+
+        public async Task<User?> UserByIdentifier(Guid uid)
+        {
+            return await _context.Users.SingleOrDefaultAsync(d => d.UserIdentifier == uid && d.Active);
+        }
     }
 }
