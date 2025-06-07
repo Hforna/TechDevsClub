@@ -10,27 +10,92 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Profile.Infrastructure.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Profile.Domain.Aggregates;
+using Microsoft.AspNetCore.Identity;
+using Profile.Domain.Entities;
+using Profile.Domain.Repositories;
+using CommonUtilities.Fakers.Entities;
+using Profile.Domain.Services.Security;
 
 namespace Profile.WebTests
 {
-    public class ConfigureWebApiTests : WebApplicationFactory<Program>
+    public class ConfigureWebApiTests : WebApplicationFactory<Program>, IAsyncLifetime
     {
         public DataContext DbContext;
+        public string UserEmail;
 
+        public async Task InitializeAsync()
+        {
+            var scope = this.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+            DbContext = db;
+
+            await SeedData();
+        }
+
+        async Task SeedData()
+        {
+            var scope = this.Services.CreateScope();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+
+            await roleManager.CreateAsync(new Role("normal"));
+            await roleManager.CreateAsync(new Role("admin"));
+        }
+
+        public async Task<User> GetConfirmedUser()
+        {
+            var user = UserFaker.Build(true, true);
+
+            var scope = this.Services.CreateScope();
+            var passEncrypt = scope.ServiceProvider.GetRequiredService<IPasswordEncrypt>();
+            var uof = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+            user.PasswordHash = passEncrypt.Encrypt(user.PasswordHash);
+
+            await uof.GenericRepository.Add<User>(user);
+            await uof.Commit();
+
+            return user;
+        }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.ConfigureServices(cfg =>
+            builder.ConfigureServices(services =>
             {
-                cfg.RemoveAll(typeof(DataContext));
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType == typeof(DbContextOptions<DataContext>));
 
-                cfg.AddDbContext<DataContext>(opts =>
+                if (descriptor != null)
                 {
-                    opts.UseInMemoryDatabase("TestDatabase");
+                    services.Remove(descriptor);
+                }
+
+                var serviceProvider = services.AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
+
+                services.AddDbContext<DataContext>(options =>
+                {
+                    options.UseInMemoryDatabase("TestDatabase");
+                    options.UseInternalServiceProvider(serviceProvider);
                 });
             });
 
             base.ConfigureWebHost(builder);
+        }
+
+        async Task IAsyncLifetime.DisposeAsync()
+        {
+            await DbContext.DisposeAsync();
+        }
+
+        public async Task DeleteTables()
+        {
+            //var entites = DbContext.Model.GetEntityTypes();
+            //foreach(var entity in entites)
+            //{
+            //    await DbContext.Database.ExecuteSqlRawAsync($"DELETE FROM {entity.GetTableName()}");
+            //}
+            await DbContext.Database.EnsureDeletedAsync();
+            await DbContext.Database.EnsureCreatedAsync();
         }
     }
 }

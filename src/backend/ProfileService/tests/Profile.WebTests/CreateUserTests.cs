@@ -1,4 +1,5 @@
-﻿using CommonUtilities.Fakers.Requests;
+﻿using CommonUtilities.Fakers.Entities;
+using CommonUtilities.Fakers.Requests;
 using Microsoft.Extensions.DependencyInjection;
 using Profile.Domain.Exceptions;
 using Profile.Domain.Repositories;
@@ -13,15 +14,16 @@ using System.Threading.Tasks;
 
 namespace Profile.WebTests
 {
-    public class CreateUserTests : IClassFixture<ConfigureWebApiTests>, IDisposable
+    [Collection(nameof(CollectionTest))]
+    public class CreateUserTests : IAsyncDisposable
     {
         private readonly ConfigureWebApiTests _app;
 
         public CreateUserTests(ConfigureWebApiTests app) => _app = app;
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            _app.Dispose();
+            await _app.DeleteTables();
         }
 
         [Fact]
@@ -40,6 +42,23 @@ namespace Profile.WebTests
             //Assert
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
             Assert.Contains(ResourceExceptMessages.EMAIL_FORMAT, content);
+        }
+
+        [Fact]
+        public async Task EmailExists()
+        {
+            var user = await _app.GetConfirmedUser();
+
+            var request = CreateUserRequestFaker.Build();
+            request.Email = user.Email;
+
+            var client = _app.CreateClient();
+            var response = await client.PostAsJsonAsync("api/users/create", request);
+            var content = await response.Content.ReadAsStringAsync();
+
+            //Assert
+            Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Contains(ResourceExceptMessages.EMAIL_EXISTS, content);
         }
 
         [Fact]

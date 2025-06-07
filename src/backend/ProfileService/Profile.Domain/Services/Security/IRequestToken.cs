@@ -8,6 +8,6 @@ namespace Profile.Domain.Services.Security
 {
     public interface IRequestToken
     {
-        public string GetToken()
+        public string GetToken();
     }
 }

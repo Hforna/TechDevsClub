@@ -18,7 +18,7 @@ namespace Profile.Infrastructure.Repositories
 
         public async Task<User?> UserByEmail(string email)
         {
-            return await _context.Users.SingleOrDefaultAsync(d => d.Email == email);
+            return await _context.Users.SingleOrDefaultAsync(d => d.Email == email && d.EmailConfirmed);
         }
 
         public async Task<User?> UserByIdentifier(Guid uid)

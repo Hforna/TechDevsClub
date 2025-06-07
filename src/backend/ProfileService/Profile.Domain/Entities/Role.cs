@@ -9,5 +9,7 @@ namespace Profile.Domain.Entities
 {
     public class Role : IdentityRole<long>, IEntity
     {
+        public Role(string role) : base(role) { }
+        public Role() : base() { }
     }
 }

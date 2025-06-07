@@ -51,7 +51,7 @@ namespace Profile.Application.Services
         {
             RequestValidatorCommons.Validate<CreateUserRequest, CreateUserValidator>(request);
 
-            var userEmail = await _userManager.FindByEmailAsync(request.Email);
+            var userEmail = await _uof.UserRepository.UserByEmail(request.Email);
 
             if (userEmail is not null)
             {

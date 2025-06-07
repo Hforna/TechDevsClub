@@ -48,6 +48,7 @@ namespace Profile.Api.Endpoints
             return Results.Ok();
         }
 
+        [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
         static async Task<IResult> UpdateUserAddress([FromServices]IUserService service, [FromBody]UpdateAddressRequest request)
         {
             var result = await service.CreateUserAddress(request);
