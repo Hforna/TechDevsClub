@@ -16,6 +16,7 @@ using Profile.Domain.Entities;
 using Profile.Domain.Repositories;
 using CommonUtilities.Fakers.Entities;
 using Profile.Domain.Services.Security;
+using System.Security.Claims;
 
 namespace Profile.WebTests
 {
@@ -49,13 +50,36 @@ namespace Profile.WebTests
             var scope = this.Services.CreateScope();
             var passEncrypt = scope.ServiceProvider.GetRequiredService<IPasswordEncrypt>();
             var uof = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            var userMng = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
             user.PasswordHash = passEncrypt.Encrypt(user.PasswordHash);
+            user.SecurityStamp = Guid.NewGuid().ToString();
 
             await uof.GenericRepository.Add<User>(user);
             await uof.Commit();
 
+            await userMng.AddToRoleAsync(user, "normal");
+
             return user;
+        }
+
+        public async Task<HttpClient> GenerateClientWithToken()
+        {
+            var user = await GetConfirmedUser();
+
+            using var scope = this.Services.CreateScope();
+            var tokenService = scope.ServiceProvider.GetRequiredService<ITokenService>();
+            var userMng = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            var roles = await userMng.GetRolesAsync(user);
+            var claims = roles.Select(d => { return new Claim(ClaimTypes.Role, d); }).ToList();
+
+            var token = tokenService.GenerateToken(claims, user.UserIdentifier);
+            var client = this.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+                "Bearer", 
+                token);
+
+            return client;
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)

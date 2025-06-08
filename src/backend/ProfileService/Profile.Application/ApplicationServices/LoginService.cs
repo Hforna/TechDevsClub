@@ -49,6 +49,7 @@ namespace Profile.Application.ApplicationServices
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
+            claims.Add(new Claim(ClaimTypes.Email, user.Email));
 
             user.RefreshTokenExpiration = _tokenService.GetRefreshTokenExpiration();
             user.RefreshToken = _tokenService.GenerateRefreshToken();

@@ -13,6 +13,6 @@ namespace Profile.Application.ApplicationServices
     {
         public Task<UserResponse> CreateUser(CreateUserRequest request);
         public Task ConfirmEmail(string email, string token);
-        public Task<Address> CreateUserAddress(UpdateAddressRequest request);
+        public Task<Address> UpdateUserAddress(UpdateAddressRequest request);
     }
 }

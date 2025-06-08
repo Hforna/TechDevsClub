@@ -103,7 +103,7 @@ namespace Profile.Application.Services
             await _userManager.UpdateAsync(userByEmail);
         }
 
-        public async Task<Address> CreateUserAddress(UpdateAddressRequest request)
+        public async Task<Address> UpdateUserAddress(UpdateAddressRequest request)
         {
             var userId = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
 
@@ -115,7 +115,7 @@ namespace Profile.Application.Services
             var address = _mapper.Map<Address>(request);
             user.Address = address;
 
-            await _uof.GenericRepository.Add<User>(user);
+            _uof.GenericRepository.Update<User>(user);
             await _uof.Commit();
 
             return user.Address;

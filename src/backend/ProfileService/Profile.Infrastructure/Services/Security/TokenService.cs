@@ -62,6 +62,23 @@ namespace Profile.Infrastructure.Services.Security
             return uid;
         }
 
+        public Guid ValidateToken(string token)
+        {
+            var @params = new TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = GetSecurityKey(),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+
+            var handler = new JwtSecurityTokenHandler();
+            var result = handler.ValidateToken(token, @params, out SecurityToken validated);
+            var uid = Guid.Parse(result.Claims.FirstOrDefault(d => d.Type == ClaimTypes.Sid)!.Value);
+
+            return uid;
+        }
+
         SymmetricSecurityKey GetSecurityKey() => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_signKey));
     }
 }

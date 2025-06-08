@@ -14,5 +14,6 @@ namespace Profile.Domain.Repositories
         public Task Add<T>(T entity) where T : class;
         public Task AddRange<T>(ICollection<T> entities) where T : class; 
         public void DeleteRange<T>(ICollection<T> entities) where T : class;
+        public void Update<T>(T entity) where T : class, IEntity;
     }
 }

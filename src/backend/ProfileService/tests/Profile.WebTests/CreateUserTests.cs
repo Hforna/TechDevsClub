@@ -27,7 +27,7 @@ namespace Profile.WebTests
         }
 
         [Fact]
-        public async Task RequestValidatorError()
+        public async Task RequestValidator_Error()
         {
             //Arrange
             var request = CreateUserRequestFaker.Build();
@@ -47,11 +47,13 @@ namespace Profile.WebTests
         [Fact]
         public async Task EmailExists()
         {
+            //Arrange
             var user = await _app.GetConfirmedUser();
 
             var request = CreateUserRequestFaker.Build();
             request.Email = user.Email;
 
+            //Act
             var client = _app.CreateClient();
             var response = await client.PostAsJsonAsync("api/users/create", request);
             var content = await response.Content.ReadAsStringAsync();

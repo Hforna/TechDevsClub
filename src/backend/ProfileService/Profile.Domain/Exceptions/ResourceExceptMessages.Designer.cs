@@ -132,5 +132,14 @@ namespace Profile.Domain.Exceptions {
                 return ResourceManager.GetString("USER_HAS_SKILL", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User must be authenticated to access this.
+        /// </summary>
+        public static string USER_NOT_AUTHENTICATED {
+            get {
+                return ResourceManager.GetString("USER_NOT_AUTHENTICATED", resourceCulture);
+            }
+        }
     }
 }

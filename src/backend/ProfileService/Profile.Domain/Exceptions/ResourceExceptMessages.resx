@@ -142,4 +142,7 @@
   <data name="USER_DOESNT_EXISTS" xml:space="preserve">
     <value>This user does not exists</value>
   </data>
+  <data name="USER_NOT_AUTHENTICATED" xml:space="preserve">
+    <value>User must be authenticated to access this</value>
+  </data>
 </root>

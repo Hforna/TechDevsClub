@@ -10,7 +10,7 @@ namespace Profile.Api.Endpoints
 {
     public static class UserEndpoints
     {
-        const string UserGroup = $"{BaseEndpointConsts.rootEndpoint}users";
+        const string UserGroup = $"{BaseEndpointConsts.rootEndpoint}user";
 
         public static IEndpointRouteBuilder MapUserEndpoints(this IEndpointRouteBuilder builder)
         {
@@ -52,7 +52,7 @@ namespace Profile.Api.Endpoints
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
         static async Task<IResult> UpdateUserAddress([FromServices]IUserService service, [FromBody]UpdateAddressRequest request)
         {
-            var result = await service.CreateUserAddress(request);
+            var result = await service.UpdateUserAddress(request);
 
             return Results.Ok(result);
         }

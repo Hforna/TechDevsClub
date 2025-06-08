@@ -43,5 +43,10 @@ namespace Profile.Infrastructure.Repositories
         {
             return await _dbContext.Set<T>().SingleOrDefaultAsync(d => d.Id == id);
         }
+
+        public void Update<T>(T entity) where T : class, IEntity
+        {
+            _dbContext.Set<T>().Update(entity);
+        }
     }
 }
