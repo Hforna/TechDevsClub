@@ -26,6 +26,8 @@ builder.Services.AddScoped<IRequestToken, RequestToken>();
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddAuthentication();
+
 builder.Services.AddTransient<CultureInfoMiddleware>();
 
 builder.Services.AddExceptionHandler<ExceptionHandler>();

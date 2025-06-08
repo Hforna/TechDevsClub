@@ -13,6 +13,7 @@ namespace Profile.Api.Endpoints
         {
             var app = builder.MapGroup(LoginGroup);
 
+            
             app.MapPost("application", LoginByApplication)
                 .WithName("LoginByApplication")
                 .WithSummary("User login on their account by email and password")

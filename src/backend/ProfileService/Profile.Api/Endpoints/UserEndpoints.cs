@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Asn1.X509.Qualified;
+using Profile.Api.Filters;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
 using Profile.Domain.Exceptions;
@@ -26,7 +26,8 @@ namespace Profile.Api.Endpoints
 
             app.MapPost("update-address", UpdateUserAddress)
                 .WithName("UpdateUserAddress")
-                .WithSummary("Update the address of an user");
+                .WithSummary("Update the address of an user")
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
             return app;
         }
