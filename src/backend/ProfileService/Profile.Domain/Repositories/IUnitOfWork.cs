@@ -10,6 +10,7 @@ namespace Profile.Domain.Repositories
     {
         public IGenericRepository GenericRepository { get; set; }
         public IUserRepository UserRepository { get; set; }
+        public IProfileRepository ProfileRepository { get; set; }
         public Task Commit(CancellationToken cancellationToken = default);
     }
 }

@@ -23,6 +23,31 @@ namespace Profile.Application.Services
                 .ForMember(d => d.Id, f => f.MapFrom(d => sqids.Encode(d.Id)));
 
             CreateMap<UpdateAddressRequest, Address>();
+
+            CreateMap<ProfileEntity, ProfileResponse>()
+                .ForMember(d => d.UserId, f => f.MapFrom(d => sqids.Encode(d.UserId)))
+                .ForMember(d => d.Id, f => f.MapFrom(d => sqids.Encode(d.Id)))
+                .ForMember(d => d.SocialLinks, f => f.MapFrom(d => d.SocialLinks));
+
+            CreateMap<SocialLink, SocialLinksResponse>();
+
+            CreateMap<SocialLinkRequest, SocialLink>();
+
+            CreateMap<UpdateProfileRequest, ProfileEntity>()
+                .ForMember(dest => dest.SocialLinks, opt => opt.Ignore())
+                .AfterMap((src, dest) =>
+                {
+                    foreach (var linkRequest in src.SocialLinks)
+                    {
+                        dest.SocialLinks = new List<SocialLink>();
+
+                        dest.SocialLinks.Add(new SocialLink
+                        {
+                            Name = linkRequest.Name,
+                            Link = linkRequest.Link
+                        });
+                    }
+                });
         }
     }
 }

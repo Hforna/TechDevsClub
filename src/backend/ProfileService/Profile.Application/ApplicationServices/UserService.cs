@@ -22,6 +22,13 @@ using System.Threading.Tasks;
 
 namespace Profile.Application.Services
 {
+    public interface IUserService
+    {
+        public Task<UserResponse> CreateUser(CreateUserRequest request);
+        public Task ConfirmEmail(string email, string token);
+        public Task<Address> UpdateUserAddress(UpdateAddressRequest request);
+    }
+
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _uof;

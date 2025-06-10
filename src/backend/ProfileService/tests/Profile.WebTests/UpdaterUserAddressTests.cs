@@ -29,7 +29,7 @@ namespace Profile.WebTests
 
             //Act
             var client = _app.CreateClient();
-            var response = await client.PostAsJsonAsync(Endpoint, request);
+            var response = await client.PutAsJsonAsync(Endpoint, request);
             var content = await response.Content.ReadAsStringAsync();
             
             //Assert
@@ -45,7 +45,7 @@ namespace Profile.WebTests
 
             //Act
             var client = await _app.GenerateClientWithToken();
-            var response = await client.PostAsJsonAsync(Endpoint, request);
+            var response = await client.PutAsJsonAsync(Endpoint, request);
             var content = await response.Content.ReadAsStreamAsync();
             var toJson = JsonDocument.Parse(content);
 

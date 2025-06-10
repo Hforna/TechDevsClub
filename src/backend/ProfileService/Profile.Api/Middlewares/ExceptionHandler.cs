@@ -18,7 +18,7 @@ namespace Profile.Api.Middlewares
             {
                 Message = exception is BaseException d
                 ? d.GetMessage()
-                : new List<string>() { "An unexpected error ocurred" }
+                : new List<string>() { exception.Message }
             });
 
             return true;

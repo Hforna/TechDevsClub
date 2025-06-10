@@ -36,6 +36,7 @@ namespace Profile.Application
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IProfileService, ProfileService>();
         }
 
         static void AddSqids(IServiceCollection services, IConfiguration configuration)

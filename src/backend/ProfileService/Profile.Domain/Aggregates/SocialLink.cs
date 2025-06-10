@@ -16,24 +16,31 @@ namespace Profile.Domain.Aggregates
         public long ProfileId { get; set; }
         public ProfileEntity Profile { get; set; }
         public string Name { get; set; }
-        public string Link {
-            get { return this.Link; }
-            set {
-                var isValid = Regex.Match(value, 
-                    "/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/gi");
 
-                if (!isValid.Success)
-                    throw new DomainException(ResourceExceptMessages.INVALID_URL_FORMAT, System.Net.HttpStatusCode.BadRequest);
+        private string _link;
+        public string Link
+        {
+            get => _link;
+            set
+            {
+                var isValid = Regex.IsMatch(value,
+                    @"^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?$");
 
-                Link = value;
-            } 
+                if (!isValid)
+                    throw new DomainException(ResourceExceptMessages.INVALID_URL_FORMAT,
+                        System.Net.HttpStatusCode.BadRequest);
+
+                _link = value;
+            }
         }
 
         public class Mapping : IEntityTypeConfiguration<SocialLink>
         {
             public void Configure(EntityTypeBuilder<SocialLink> builder)
             {
-                builder.HasOne(d => d.Profile).WithMany(d => d.SocialLinks);
+                builder.HasOne(d => d.Profile)
+                       .WithMany(d => d.SocialLinks)
+                       .HasForeignKey(d => d.ProfileId);
             }
         }
     }

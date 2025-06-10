@@ -148,4 +148,10 @@
   <data name="INVALID_URL_FORMAT" xml:space="preserve">
     <value>Invalid url format</value>
   </data>
+  <data name="INVALID_GITHUB_PROFILE" xml:space="preserve">
+    <value>Github profile doesn't exist</value>
+  </data>
+  <data name="REQUEST_GITHUB_ERROR" xml:space="preserve">
+    <value>Can't connect on github server</value>
+  </data>
 </root>

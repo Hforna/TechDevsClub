@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Data.SqlClient;
 using Profile.Api.Endpoints;
 using Profile.Api.Filters;
@@ -26,6 +27,10 @@ builder.Services.AddScoped<IRequestToken, RequestToken>();
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+builder.Services.AddHttpClient();
+
 builder.Services.AddAuthentication();
 
 builder.Services.AddTransient<CultureInfoMiddleware>();
@@ -50,6 +55,7 @@ app.UseAuthorization();
 app.UseExceptionHandler(d => { });
 
 app.MapUserEndpoints();
+app.MapProfileEndpoint();
 app.MapLoginEndpoints();
 
 app.Run();

@@ -3,14 +3,17 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Org.BouncyCastle.Crypto.Engines;
 using Profile.Domain.Aggregates;
 using Profile.Domain.Entities;
 using Profile.Domain.Repositories;
 using Profile.Domain.Services;
+using Profile.Domain.Services.External;
 using Profile.Domain.Services.Security;
 using Profile.Infrastructure.Data;
 using Profile.Infrastructure.Repositories;
 using Profile.Infrastructure.Services;
+using Profile.Infrastructure.Services.External;
 using Profile.Infrastructure.Services.Security;
 using System;
 using System.Collections.Generic;
@@ -62,12 +65,15 @@ namespace Profile.Infrastructure
         static void AddServices(IServiceCollection services)
         {
             services.AddSingleton<IEmailService, EmailService>();
+
+            services.AddScoped<IGitHubService, GitHubService>();
         }
 
         static void AddRepositories(IServiceCollection services)
         {
             services.AddScoped<IGenericRepository, GenericRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IProfileRepository, ProfileRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Profile.Api.Filters;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
+using Profile.Application.Services;
 using Profile.Domain.Exceptions;
 using System.Security.Authentication;
 
@@ -10,7 +11,7 @@ namespace Profile.Api.Endpoints
 {
     public static class UserEndpoints
     {
-        const string UserGroup = $"{BaseEndpointConsts.rootEndpoint}user";
+        const string UserGroup = $"{BaseEndpointConsts.rootEndpoint}users";
 
         public static IEndpointRouteBuilder MapUserEndpoints(this IEndpointRouteBuilder builder)
         {
@@ -24,7 +25,7 @@ namespace Profile.Api.Endpoints
                 .WithName("ConfirmUserEmail")
                 .WithSummary("Verify an user e-mail after them create an account");
 
-            app.MapPost("update-address", UpdateUserAddress)
+            app.MapPut("update-address", UpdateUserAddress)
                 .WithName("UpdateUserAddress")
                 .WithSummary("Update the address of an user")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();

@@ -14,6 +14,11 @@ using System.Threading.Tasks;
 
 namespace Profile.Application.ApplicationServices
 {
+    public interface ILoginService
+    {
+        public Task<LoginResponse> LoginByApplication(LoginRequest request);
+    }
+
     public class LoginService : ILoginService
     {
         private readonly ITokenService _tokenService;

@@ -11,15 +11,20 @@ namespace Profile.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     {
         private readonly DataContext _context;
-        public IGenericRepository GenericRepository { get; set; }
-        public IUserRepository UserRepository { get; set; }
 
-        public UnitOfWork(DataContext context, IGenericRepository genericRepository, IUserRepository userRepository)
+        public UnitOfWork(DataContext context, IGenericRepository genericRepository, 
+            IUserRepository userRepository, IProfileRepository profileRepository)
         {
             _context = context;
             GenericRepository = genericRepository;
             UserRepository = userRepository;
+            ProfileRepository = profileRepository;
         }
+
+        public IGenericRepository GenericRepository { get; set; }
+        public IUserRepository UserRepository { get; set; }
+        public IProfileRepository ProfileRepository { get; set; }
+       
 
         public async Task Commit(CancellationToken cancellationToken = default)
         {
