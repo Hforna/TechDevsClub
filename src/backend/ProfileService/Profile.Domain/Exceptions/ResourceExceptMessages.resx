@@ -145,4 +145,7 @@
   <data name="USER_NOT_AUTHENTICATED" xml:space="preserve">
     <value>User must be authenticated to access this</value>
   </data>
+  <data name="INVALID_URL_FORMAT" xml:space="preserve">
+    <value>Invalid url format</value>
+  </data>
 </root>

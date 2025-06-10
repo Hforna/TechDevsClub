@@ -22,21 +22,21 @@ namespace Profile.Domain.Exceptions {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ResourceExceptMessages {
+    internal class ResourceExceptMessages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public ResourceExceptMessages() {
+        internal ResourceExceptMessages() {
         }
         
         /// <summary>
         ///   Retorna a instância de ResourceManager armazenada em cache usada por essa classe.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Profile.Domain.Exceptions.ResourceExceptMessages", typeof(ResourceExceptMessages).Assembly);
@@ -51,7 +51,7 @@ namespace Profile.Domain.Exceptions {
         ///   pesquisas de recursos que usam essa classe de recurso de tipo de alta segurança.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Profile.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a This e-mail already exists.
         /// </summary>
-        public static string EMAIL_EXISTS {
+        internal static string EMAIL_EXISTS {
             get {
                 return ResourceManager.GetString("EMAIL_EXISTS", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Profile.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Wrong e-mail format.
         /// </summary>
-        public static string EMAIL_FORMAT {
+        internal static string EMAIL_FORMAT {
             get {
                 return ResourceManager.GetString("EMAIL_FORMAT", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Profile.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User with this e-mail doesn&apos;t exists.
         /// </summary>
-        public static string EMAIL_NOT_EXISTS {
+        internal static string EMAIL_NOT_EXISTS {
             get {
                 return ResourceManager.GetString("EMAIL_NOT_EXISTS", resourceCulture);
             }
@@ -91,7 +91,7 @@ namespace Profile.Domain.Exceptions {
         ///   Consulta uma cadeia de caracteres localizada semelhante a E-mail or password invalid
         ///.
         /// </summary>
-        public static string EMAIL_OR_PASSWORD_INVALID {
+        internal static string EMAIL_OR_PASSWORD_INVALID {
             get {
                 return ResourceManager.GetString("EMAIL_OR_PASSWORD_INVALID", resourceCulture);
             }
@@ -100,16 +100,25 @@ namespace Profile.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a The email confirmation token is invalid.
         /// </summary>
-        public static string INVALID_EMAIL_TOKEN {
+        internal static string INVALID_EMAIL_TOKEN {
             get {
                 return ResourceManager.GetString("INVALID_EMAIL_TOKEN", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid url format.
+        /// </summary>
+        internal static string INVALID_URL_FORMAT {
+            get {
+                return ResourceManager.GetString("INVALID_URL_FORMAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Password length must be greather or equal 8.
         /// </summary>
-        public static string PASSWORD_LENGTH {
+        internal static string PASSWORD_LENGTH {
             get {
                 return ResourceManager.GetString("PASSWORD_LENGTH", resourceCulture);
             }
@@ -118,7 +127,7 @@ namespace Profile.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a This user does not exists.
         /// </summary>
-        public static string USER_DOESNT_EXISTS {
+        internal static string USER_DOESNT_EXISTS {
             get {
                 return ResourceManager.GetString("USER_DOESNT_EXISTS", resourceCulture);
             }
@@ -127,7 +136,7 @@ namespace Profile.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User already has this skill.
         /// </summary>
-        public static string USER_HAS_SKILL {
+        internal static string USER_HAS_SKILL {
             get {
                 return ResourceManager.GetString("USER_HAS_SKILL", resourceCulture);
             }
@@ -136,7 +145,7 @@ namespace Profile.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User must be authenticated to access this.
         /// </summary>
-        public static string USER_NOT_AUTHENTICATED {
+        internal static string USER_NOT_AUTHENTICATED {
             get {
                 return ResourceManager.GetString("USER_NOT_AUTHENTICATED", resourceCulture);
             }
