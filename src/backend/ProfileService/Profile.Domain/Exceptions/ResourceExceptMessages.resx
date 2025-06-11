@@ -154,4 +154,16 @@
   <data name="REQUEST_GITHUB_ERROR" xml:space="preserve">
     <value>Can't connect on github server</value>
   </data>
+  <data name="PROFILE_NOT_EXISTS" xml:space="preserve">
+    <value>Profile does not exist</value>
+  </data>
+  <data name="PROFILE_PRIVATE" xml:space="preserve">
+    <value>This profile is private</value>
+  </data>
+  <data name="SKILL_NOT_EXISTS" xml:space="preserve">
+    <value>This skill does not exist</value>
+  </data>
+  <data name="SKILLS_NOT_EXISTS" xml:space="preserve">
+    <value>The following skills doesn't exist</value>
+  </data>
 </root>

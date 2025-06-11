@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Data.SqlClient;
 using Profile.Api.Endpoints;
 using Profile.Api.Filters;
@@ -7,6 +8,7 @@ using Profile.Application;
 using Profile.Domain.Services.Security;
 using Profile.Infrastructure;
 using Profile.Infrastructure.Services;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,17 @@ builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddScoped<IRequestToken, RequestToken>();
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("PerfilPolicy", opt =>
+    {
+        opt.PermitLimit = 10;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 2; 
+    });
+});
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
@@ -49,6 +62,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseMiddleware<CultureInfoMiddleware>();
+
+app.UseRateLimiter();
 
 app.UseAuthorization();
 

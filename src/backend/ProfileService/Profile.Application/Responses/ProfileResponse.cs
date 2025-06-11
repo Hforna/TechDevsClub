@@ -14,6 +14,7 @@ namespace Profile.Application.Responses
         public EmploymentStatusEnum EmploymentStatus { get; set; }
         public List<SocialLinksResponse> SocialLinks { get; set; }
         public GithubMetadataResponse GithubMetadata { get; set; }
+        public List<UserSkillsResponse> UserSkills { get; set; }
         public bool IsPrivate { get; set; }
         public string ProfilePicture { get; set; }
     }

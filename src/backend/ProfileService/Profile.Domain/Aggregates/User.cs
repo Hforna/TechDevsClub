@@ -39,6 +39,7 @@ namespace Profile.Domain.Aggregates
     {
         public long UserId { get; set; }
         public long SkillId { get; set; }
+        public Skill Skill { get; set; }
         public LevelsEnum Level { get; set; }
 
         public UserSkills(long userId, long skillId, LevelsEnum level)

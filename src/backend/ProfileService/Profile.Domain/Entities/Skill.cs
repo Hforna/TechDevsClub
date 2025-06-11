@@ -13,5 +13,10 @@ namespace Profile.Domain.Entities
     {
         public long Id { get; set; }
         public string Name { get; set; }
+
+        public static Skill Create(string name)
+        {
+            return new Skill() { Name = name };
+        }
     }
 }

@@ -5,7 +5,6 @@ using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
 using Profile.Application.Services;
 using Profile.Domain.Exceptions;
-using System.Security.Authentication;
 
 namespace Profile.Api.Endpoints
 {
@@ -29,6 +28,8 @@ namespace Profile.Api.Endpoints
                 .WithName("UpdateUserAddress")
                 .WithSummary("Update the address of an user")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();
+
+            app.MapPost("set-skills", SetUserSkills);
 
             return app;
         }
@@ -54,6 +55,14 @@ namespace Profile.Api.Endpoints
         static async Task<IResult> UpdateUserAddress([FromServices]IUserService service, [FromBody]UpdateAddressRequest request)
         {
             var result = await service.UpdateUserAddress(request);
+
+            return Results.Ok(result);
+        }
+
+        [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
+        static async Task<IResult> SetUserSkills([FromBody]SetUserSkillsRequest request, [FromServices]IUserService service)
+        {
+            var result = await service.SetUserSkills(request);
 
             return Results.Ok(result);
         }

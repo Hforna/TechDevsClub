@@ -28,7 +28,7 @@ namespace Profile.Infrastructure.Repositories
 
         public async Task<User?> UserByIdentifier(Guid uid)
         {
-            return await _context.Users.Include(d => d.Skills).SingleOrDefaultAsync(d => d.UserIdentifier == uid && d.Active);
+            return await _context.Users.Include(d => d.Skills).ThenInclude(d => d.Skill).SingleOrDefaultAsync(d => d.UserIdentifier == uid && d.Active);
         }
     }
 }

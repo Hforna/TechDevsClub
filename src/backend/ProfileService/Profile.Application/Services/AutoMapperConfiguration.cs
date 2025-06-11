@@ -27,11 +27,16 @@ namespace Profile.Application.Services
             CreateMap<ProfileEntity, ProfileResponse>()
                 .ForMember(d => d.UserId, f => f.MapFrom(d => sqids.Encode(d.UserId)))
                 .ForMember(d => d.Id, f => f.MapFrom(d => sqids.Encode(d.Id)))
+                .ForMember(d => d.GithubMetadata, f => f.MapFrom(d => d.GithubMeta))
                 .ForMember(d => d.SocialLinks, f => f.MapFrom(d => d.SocialLinks));
 
             CreateMap<SocialLink, SocialLinksResponse>();
 
             CreateMap<SocialLinkRequest, SocialLink>();
+
+            CreateMap<UserSkills, SkillUserResponse>().ForMember(d => d.Name, f => f.MapFrom(d => d.Skill.Name));
+
+            CreateMap<GithubMetadata, GithubMetadataResponse>();
 
             CreateMap<UpdateProfileRequest, ProfileEntity>()
                 .ForMember(dest => dest.SocialLinks, opt => opt.Ignore())

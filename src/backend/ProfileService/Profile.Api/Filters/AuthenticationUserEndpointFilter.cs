@@ -23,7 +23,7 @@ namespace Profile.Api.Filters
         {
             var token = context.HttpContext.Request.Headers.Authorization.ToString();
 
-            var exception = new AuthorizationException(ResourceExceptMessages.USER_NOT_AUTHENTICATED, System.Net.HttpStatusCode.Unauthorized);
+            var exception = new AuthenticationException(ResourceExceptMessages.USER_NOT_AUTHENTICATED, System.Net.HttpStatusCode.Unauthorized);
 
             if (string.IsNullOrEmpty(token))
                 throw exception;

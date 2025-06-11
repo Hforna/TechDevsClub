@@ -134,11 +134,47 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Profile does not exist.
+        /// </summary>
+        public static string PROFILE_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("PROFILE_NOT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This profile is private.
+        /// </summary>
+        public static string PROFILE_PRIVATE {
+            get {
+                return ResourceManager.GetString("PROFILE_PRIVATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Can&apos;t connect on github server.
         /// </summary>
         public static string REQUEST_GITHUB_ERROR {
             get {
                 return ResourceManager.GetString("REQUEST_GITHUB_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a This skill does not exist.
+        /// </summary>
+        public static string SKILL_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("SKILL_NOT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a The following skills doesn&apos;t exist.
+        /// </summary>
+        public static string SKILLS_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("SKILLS_NOT_EXISTS", resourceCulture);
             }
         }
         

@@ -10,6 +10,8 @@
 *.sln.docstates
 *.userprefs
 
+
+
 docker-compose.dcproj
 docker-compose.yml
 docker-compose.override.yml
@@ -170,6 +172,9 @@ ClientBin/
 node_modules/
 .DS_Store
 *.bak
+
+**/appsettings.Development.json
+**/appsettings.Production.json
 
 # RIA/Silverlight projects
 Generated_Code/

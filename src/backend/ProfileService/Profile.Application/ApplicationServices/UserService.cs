@@ -145,20 +145,33 @@ namespace Profile.Application.Services
 
         public async Task<UserSkillsResponse> SetUserSkills(SetUserSkillsRequest request)
         {
+            var skillsRequest = request.Skills;
+
             var uid = _tokenService.GetUserIdentifierByToken(_token);
             var user = await _uof.UserRepository.UserByIdentifier(uid);
 
-            var skill = await _uof.SkillRepository.GetSkillByName(request.Name);
+            var skillNames = skillsRequest.Select(d => d.Name).Distinct().ToArray();
+            var skills = await _uof.SkillRepository.GetSkillsByNames(skillNames);
 
-            if (skill is null)
-                throw new ContextException(ResourceExceptMessages.SKILL_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
+            if (skills.Count != skillsRequest.Count)
+            {
+                var missingSkills = skillNames.Except(skills.Select(s => s.Name));
+                throw new ContextException($"{ResourceExceptMessages.SKILLS_NOT_EXISTS}: {missingSkills}", System.Net.HttpStatusCode.NotFound);
+            }
 
-            user.AddSkill(skill.Id, request.Level);
+            var skillsDict = skills.ToDictionary(d => d.Name, f => f.Id);
+            foreach(var skill in skillsRequest)
+            {
+                user.AddSkill(skillsDict[skill.Name], skill.Level);
+            }
 
             _uof.GenericRepository.Update<User>(user);
             await _uof.Commit();
 
-            return _mapper.Map<UserSkillsResponse>(user.Skills);
+            var response = new UserSkillsResponse();
+            response.Skills = _mapper.Map<List<SkillUserResponse>>(user.Skills);
+
+            return response;
         }
     }
 }

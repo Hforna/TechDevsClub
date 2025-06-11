@@ -11,5 +11,6 @@ namespace Profile.Domain.Repositories
     {
         public Task<User?> UserByEmail(string email);
         public Task<User?> UserByIdentifier(Guid uid);
+        public Task<User?> UserByEmailNotConfirmed(string email);
     }
 }
