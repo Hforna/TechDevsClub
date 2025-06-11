@@ -10,7 +10,9 @@
 *.sln.docstates
 *.userprefs
 
-
+appsettings*.json
+**/appsettings.Development.json
+**/appsettings.json
 
 docker-compose.dcproj
 docker-compose.yml
