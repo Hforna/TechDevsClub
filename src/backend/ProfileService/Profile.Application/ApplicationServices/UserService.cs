@@ -16,6 +16,7 @@ using Profile.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace Profile.Application.Services
         public Task<UserResponse> CreateUser(CreateUserRequest request);
         public Task ConfirmEmail(string email, string token);
         public Task<Address> UpdateUserAddress(UpdateAddressRequest request);
+        public Task<UserSkillsResponse> SetUserSkills(SetUserSkillsRequest request);
     }
 
     public class UserService : IUserService
@@ -39,6 +41,7 @@ namespace Profile.Application.Services
         private readonly ILogger<UserService> _logger;
         private readonly ITokenService _tokenService;
         private readonly IRequestToken _requestToken;
+        private readonly string _token;
 
         public UserService(IUnitOfWork uof, IMapper mapper, 
             UserManager<User> userManager, IPasswordEncrypt passwordEncrypt,
@@ -52,6 +55,7 @@ namespace Profile.Application.Services
             _emailService = emailService;
             _tokenService = tokenService;
             _requestToken = requestToken;
+            _token = _requestToken.GetToken();
         }
 
         public async Task<UserResponse> CreateUser(CreateUserRequest request)
@@ -77,10 +81,10 @@ namespace Profile.Application.Services
             await _userManager.AddToRoleAsync(user, "normal");
 
             var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
+            var encodedToken = WebUtility.UrlEncode(confirmationToken);
             await _emailService.SendEmail(user.Email, user.UserName,
                 $"Hello {user.UserName} confirm your email clicking on this link"
-                , _emailService.EmailConfirmation($"{AppConfigs.AppUrl}api/users/confirm-email?email={user.Email}&token={confirmationToken}"));
+                , _emailService.EmailConfirmation($"{AppConfigs.AppUrl}api/users/confirm-email?email={user.Email}&token={encodedToken}"));
             _logger.LogDebug($"Message sent to e-mail {user.Email}");
 
             var response = _mapper.Map<UserResponse>(user);
@@ -90,16 +94,18 @@ namespace Profile.Application.Services
 
         public async Task ConfirmEmail(string email, string token)
         {
-            var userByEmail = await _uof.UserRepository.UserByEmail(email);
+            var userByEmail = await _uof.UserRepository.UserByEmailNotConfirmed(email);
 
             if (userByEmail is null)
                 throw new ContextException(ResourceExceptMessages.EMAIL_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var tokenIsValid = await _userManager.ConfirmEmailAsync(userByEmail, token.Replace(" ", "+"));
+            var decodedToken = WebUtility.UrlDecode(token);
+
+            var tokenIsValid = await _userManager.ConfirmEmailAsync(userByEmail, decodedToken.Replace(" ", "+"));
 
             if (!tokenIsValid.Succeeded)
             {
-                var exception = new AuthorizationException(ResourceExceptMessages.INVALID_EMAIL_TOKEN, System.Net.HttpStatusCode.BadRequest);
+                var exception = new AuthenticationException(ResourceExceptMessages.INVALID_EMAIL_TOKEN, System.Net.HttpStatusCode.BadRequest);
                 _logger.LogError(message: $"Token {token} is not valid to email {email}", exception: exception);
                 throw exception;
             }
@@ -107,7 +113,16 @@ namespace Profile.Application.Services
             userByEmail.EmailConfirmed = true;
             userByEmail.Active = true;
 
-            await _userManager.UpdateAsync(userByEmail);
+            var profile = new ProfileEntity()
+            {
+                UserId = userByEmail.Id,
+                User = userByEmail,
+                Description = ""
+            };
+
+            await _uof.GenericRepository.Add<ProfileEntity>(profile);
+            _uof.GenericRepository.Update<User>(userByEmail);
+            await _uof.Commit();
         }
 
         public async Task<Address> UpdateUserAddress(UpdateAddressRequest request)
@@ -126,6 +141,24 @@ namespace Profile.Application.Services
             await _uof.Commit();
 
             return user.Address;
+        }
+
+        public async Task<UserSkillsResponse> SetUserSkills(SetUserSkillsRequest request)
+        {
+            var uid = _tokenService.GetUserIdentifierByToken(_token);
+            var user = await _uof.UserRepository.UserByIdentifier(uid);
+
+            var skill = await _uof.SkillRepository.GetSkillByName(request.Name);
+
+            if (skill is null)
+                throw new ContextException(ResourceExceptMessages.SKILL_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            user.AddSkill(skill.Id, request.Level);
+
+            _uof.GenericRepository.Update<User>(user);
+            await _uof.Commit();
+
+            return _mapper.Map<UserSkillsResponse>(user.Skills);
         }
     }
 }
