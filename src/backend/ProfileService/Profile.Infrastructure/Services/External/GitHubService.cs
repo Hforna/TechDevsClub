@@ -32,8 +32,10 @@ namespace Profile.Infrastructure.Services.External
         {
             var client = _httpClient.CreateClient();
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _signKey);
+            client.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
+            client.DefaultRequestHeaders.Add("User-Agent", "techdev");
 
-            var response = await client.GetAsync($"https://api.github.com/user/{userName}");
+            var response = await client.GetAsync($"https://api.github.com/users/{userName}");
             var content = await response.Content.ReadAsStringAsync();
 
             if(response.IsSuccessStatusCode)

@@ -13,9 +13,10 @@ namespace Profile.Infrastructure.Repositories
         private readonly DataContext _context;
 
         public UnitOfWork(DataContext context, IGenericRepository genericRepository, 
-            IUserRepository userRepository, IProfileRepository profileRepository)
+            IUserRepository userRepository, IProfileRepository profileRepository, ISkillRespository skillRespository)
         {
             _context = context;
+            SkillRepository = skillRespository;
             GenericRepository = genericRepository;
             UserRepository = userRepository;
             ProfileRepository = profileRepository;
@@ -24,7 +25,7 @@ namespace Profile.Infrastructure.Repositories
         public IGenericRepository GenericRepository { get; set; }
         public IUserRepository UserRepository { get; set; }
         public IProfileRepository ProfileRepository { get; set; }
-       
+        public ISkillRespository SkillRepository { get; set; }
 
         public async Task Commit(CancellationToken cancellationToken = default)
         {

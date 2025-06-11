@@ -1,4 +1,6 @@
-﻿using Profile.Domain.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Profile.Domain.Aggregates;
+using Profile.Domain.Repositories;
 using Profile.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,25 @@ namespace Profile.Infrastructure.Repositories
         public ProfileRepository(DataContext context)
         {
             _context = context;
+        }
+
+        public async Task<ProfileEntity?> ProfileById(long id)
+        {
+            var profile = await _context.Profiles
+                .Include(d => d.User)
+                .SingleOrDefaultAsync(d => d.Id == id && d.User.Active);
+
+            return profile;
+        }
+
+        public async Task<ProfileEntity?> ProfileByUser(User user)
+        {
+            return await _context.Profiles.SingleOrDefaultAsync(d => d.User == user);
+        }
+
+        public async Task<ProfileEntity?> ProfileByUsername(string name)
+        {
+            return await _context.Profiles.SingleOrDefaultAsync(d => d.User.UserName == name);
         }
     }
 }

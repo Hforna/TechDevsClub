@@ -74,6 +74,7 @@ namespace Profile.Infrastructure
             services.AddScoped<IGenericRepository, GenericRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProfileRepository, ProfileRepository>();
+            services.AddScoped<ISkillRespository, SkillRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

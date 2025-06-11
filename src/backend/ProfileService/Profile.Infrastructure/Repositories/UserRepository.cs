@@ -21,9 +21,14 @@ namespace Profile.Infrastructure.Repositories
             return await _context.Users.SingleOrDefaultAsync(d => d.Email == email && d.EmailConfirmed);
         }
 
+        public async Task<User?> UserByEmailNotConfirmed(string email)
+        {
+            return await _context.Users.SingleOrDefaultAsync(d => d.Email == email);
+        }
+
         public async Task<User?> UserByIdentifier(Guid uid)
         {
-            return await _context.Users.SingleOrDefaultAsync(d => d.UserIdentifier == uid && d.Active);
+            return await _context.Users.Include(d => d.Skills).SingleOrDefaultAsync(d => d.UserIdentifier == uid && d.Active);
         }
     }
 }
