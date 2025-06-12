@@ -61,6 +61,24 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User already is connected to profile.
+        /// </summary>
+        public static string ALREADY_CONNECTED {
+            get {
+                return ResourceManager.GetString("ALREADY_CONNECTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User can&apos;t connect with themself.
+        /// </summary>
+        public static string CONNECT_WITH_YOURSELF {
+            get {
+                return ResourceManager.GetString("CONNECT_WITH_YOURSELF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a This e-mail already exists.
         /// </summary>
         public static string EMAIL_EXISTS {
@@ -121,6 +139,15 @@ namespace Profile.Domain.Exceptions {
         public static string INVALID_URL_FORMAT {
             get {
                 return ResourceManager.GetString("INVALID_URL_FORMAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Only can accept pending connections.
+        /// </summary>
+        public static string ONLY_ACCEPT_PENDING_CONNECTION {
+            get {
+                return ResourceManager.GetString("ONLY_ACCEPT_PENDING_CONNECTION", resourceCulture);
             }
         }
         

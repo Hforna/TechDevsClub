@@ -12,6 +12,7 @@ namespace Profile.Domain.Repositories
         public IUserRepository UserRepository { get; set; }
         public IProfileRepository ProfileRepository { get; set; }
         public ISkillRespository SkillRepository { get; set; }
+        public IConnectionRepository ConnectionRepository { get; set; }
         public Task Commit(CancellationToken cancellationToken = default);
     }
 }

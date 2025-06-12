@@ -13,17 +13,20 @@ namespace Profile.Infrastructure.Repositories
         private readonly DataContext _context;
 
         public UnitOfWork(DataContext context, IGenericRepository genericRepository, 
-            IUserRepository userRepository, IProfileRepository profileRepository, ISkillRespository skillRespository)
+            IUserRepository userRepository, IConnectionRepository connectionRepository, 
+            IProfileRepository profileRepository, ISkillRespository skillRepository)
         {
             _context = context;
-            SkillRepository = skillRespository;
             GenericRepository = genericRepository;
             UserRepository = userRepository;
+            ConnectionRepository = connectionRepository;
             ProfileRepository = profileRepository;
+            SkillRepository = skillRepository;
         }
 
         public IGenericRepository GenericRepository { get; set; }
         public IUserRepository UserRepository { get; set; }
+        public IConnectionRepository ConnectionRepository { get; set; }
         public IProfileRepository ProfileRepository { get; set; }
         public ISkillRespository SkillRepository { get; set; }
 

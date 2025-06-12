@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Profile.Domain.Aggregates;
+using Profile.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,15 +15,23 @@ namespace Profile.Domain.Entities
     {
         public long Id { get; set; }
         [ForeignKey("ConnectorId")]
-        public User Connector { get; set; }
+        public ProfileEntity Connector { get; set; }
         public long ConnectorId { get; set; }
         [ForeignKey("ConnectedId")]
-        public User Connected { get; set; }
+        public ProfileEntity Connected { get; set; }
         public long ConnectedId { get; set; }
+        public bool AreConnected { get; set; }
         public ConnectionStatus Status { get; set; } = ConnectionStatus.Pending;
         public DateTime ConnectedAt { get; private set; } = DateTime.UtcNow;
 
-        public void Accept() => Status = ConnectionStatus.Approved;
+        public void Accept()
+        {
+            if (Status != ConnectionStatus.Pending)
+                throw new DomainException(ResourceExceptMessages.ONLY_ACCEPT_PENDING_CONNECTION, System.Net.HttpStatusCode.Unauthorized);
+
+            Status = ConnectionStatus.Approved;
+        }
+
         public void Reject() => Status = ConnectionStatus.Rejected;
 
         public class Mapping : IEntityTypeConfiguration<Connection>

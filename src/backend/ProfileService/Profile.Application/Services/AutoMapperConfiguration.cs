@@ -1,6 +1,7 @@
 ﻿using Profile.Application.Requests;
 using Profile.Application.Responses;
 using Profile.Domain.Aggregates;
+using Profile.Domain.Entities;
 using Profile.Domain.ValueObjects;
 using Sqids;
 using System;
@@ -35,6 +36,11 @@ namespace Profile.Application.Services
             CreateMap<SocialLinkRequest, SocialLink>();
 
             CreateMap<UserSkills, SkillUserResponse>().ForMember(d => d.Name, f => f.MapFrom(d => d.Skill.Name));
+
+            CreateMap<Connection, ConnectionResponse>()
+                .ForMember(d => d.ConnectorId, f => f.MapFrom(d => d.ConnectorId))
+                .ForMember(d => d.ConnectedId, f => f.MapFrom(d => d.ConnectedId))
+                .ForMember(d => d.Id, f => f.MapFrom(d => d.Id));
 
             CreateMap<GithubMetadata, GithubMetadataResponse>();
 

@@ -1,4 +1,10 @@
-﻿namespace Profile.Api.Endpoints
+﻿using Microsoft.AspNetCore.Mvc;
+using Profile.Api.Binders;
+using Profile.Api.Filters;
+using Profile.Application.ApplicationServices;
+using Profile.Domain.Exceptions;
+
+namespace Profile.Api.Endpoints
 {
     public static class ConnectionEndpoints
     {
@@ -8,9 +14,25 @@
         {
             var app = builder.MapGroup(MapGroup);
 
+            app.MapGet("create-connection/{profileId}", CreateConnectionWithProfile)
+                .WithName("CreateConnectionWithProfile")
+                .WithDescription("User create a connection with a profile by it id")
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
+            app.MapGet("{id}/accept", );
 
             return app;
         }
+
+        [ProducesResponseType(typeof(ContextException), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
+        static async Task<IResult> CreateConnectionWithProfile([FromRoute][ModelBinder(typeof(BinderId))]long profileId, [FromServices]IConnectionService service)
+        {
+            var result = await service.CreateConnection(profileId);
+
+            return Results.Ok(result);
+        }
+
+        //static async Task<IResult> AcceptConnection([FromRoute][ModelBinder(typeof(BinderId))]long id)
     }
 }

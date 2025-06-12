@@ -166,4 +166,13 @@
   <data name="SKILLS_NOT_EXISTS" xml:space="preserve">
     <value>The following skills doesn't exist</value>
   </data>
+  <data name="ONLY_ACCEPT_PENDING_CONNECTION" xml:space="preserve">
+    <value>Only can accept pending connections</value>
+  </data>
+  <data name="ALREADY_CONNECTED" xml:space="preserve">
+    <value>User already is connected to profile</value>
+  </data>
+  <data name="CONNECT_WITH_YOURSELF" xml:space="preserve">
+    <value>User can't connect with themself</value>
+  </data>
 </root>
