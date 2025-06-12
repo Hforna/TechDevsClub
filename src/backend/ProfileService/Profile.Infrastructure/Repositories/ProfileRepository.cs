@@ -19,6 +19,13 @@ namespace Profile.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<List<ProfileEntity>?> GetProfilesWithGithub()
+        {
+            return await _context.Profiles
+                .Where(d => string.IsNullOrEmpty(d.GithubMeta.Username) == false)
+                .ToListAsync();
+        }
+
         public async Task<ProfileEntity?> ProfileById(long id)
         {
             var profile = await _context.Profiles

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Profile.Infrastructure.Repositories
 {
-    public class UnitOfWork : IUnitOfWork, IAsyncDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly DataContext _context;
 
@@ -32,9 +32,9 @@ namespace Profile.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async ValueTask DisposeAsync()
+        public void Dispose()
         {
-            await _context.DisposeAsync();
+            _context.Dispose();
         }
     }
 }

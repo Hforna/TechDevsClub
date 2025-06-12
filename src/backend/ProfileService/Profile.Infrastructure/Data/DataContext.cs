@@ -19,6 +19,7 @@ namespace Profile.Infrastructure.Data
         public DbSet<UserSkills> UserSkills { get; set; }
         public DbSet<ProfileEntity> Profiles { get; set; }
         public DbSet<SocialLink> SocialLinks { get; set; }
+        public DbSet<Connection> Connections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,6 +31,7 @@ namespace Profile.Infrastructure.Data
             builder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
             builder.ApplyConfiguration(new UserSkills.Mapping());
             builder.ApplyConfiguration(new SocialLink.Mapping());
+            builder.ApplyConfiguration(new Connection.Mapping());
             builder.ApplyConfiguration(new ProfileEntity.Mapping());
 
             builder.Entity<Skill>().HasData(PrimarySkills);

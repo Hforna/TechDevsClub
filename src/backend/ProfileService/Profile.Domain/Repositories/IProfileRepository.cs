@@ -11,6 +11,7 @@ namespace Profile.Domain.Repositories
     {
         public Task<ProfileEntity?> ProfileById(long id);
         public Task<ProfileEntity?> ProfileByUser(User user);
+        public Task<List<ProfileEntity>?> GetProfilesWithGithub();
         public Task<ProfileEntity?> ProfileByUsername(string name);
     }
 }

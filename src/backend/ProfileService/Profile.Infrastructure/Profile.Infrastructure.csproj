@@ -30,6 +30,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Services\Rabbitmq\Consumers\" />
+    <Folder Include="Services\Rabbitmq\Producers\" />
   </ItemGroup>
 
 </Project>
