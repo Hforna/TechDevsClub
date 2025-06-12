@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Data.SqlClient;
+using Profile.Api.BackgroundJobs;
 using Profile.Api.Endpoints;
 using Profile.Api.Filters;
 using Profile.Api.Middlewares;
@@ -19,6 +20,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHostedService<CountGithubCommitsBackground>();
 
 builder.Services.Configure<SmptSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
