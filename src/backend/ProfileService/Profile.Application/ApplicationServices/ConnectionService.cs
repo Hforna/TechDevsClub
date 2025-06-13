@@ -9,6 +9,7 @@ using Sqids;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ namespace Profile.Application.ApplicationServices
     public interface IConnectionService
     {
         public Task<ConnectionResponse> CreateConnection(long profileId);
+        public Task<ConnectionResponse> AcceptConnection(long connectionId);
     }
 
     public class ConnectionService : IConnectionService
@@ -24,23 +26,50 @@ namespace Profile.Application.ApplicationServices
         private readonly IRequestToken _requestToken;
         private readonly ITokenService _tokenService;
         private readonly IUnitOfWork _uof;
-        private readonly SqidsEncoder<long> _sqids;
         private readonly IMapper _mapper;
+        private readonly Guid _userUid;
 
         public ConnectionService(IRequestToken requestToken, ITokenService tokenService, 
-            IUnitOfWork uof, SqidsEncoder<long> sqids, IMapper mapper)
+            IUnitOfWork uof, IMapper mapper)
         {
             _requestToken = requestToken;
             _tokenService = tokenService;
             _uof = uof;
-            _sqids = sqids;
             _mapper = mapper;
+
+            _userUid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
+        }
+
+        public async Task<ConnectionResponse> AcceptConnection(long connectionId)
+        {
+            var user = await _uof.UserRepository.UserByIdentifier(_userUid);
+            var profile = await _uof.ProfileRepository.ProfileByUser(user);
+
+            var connection = await _uof.GenericRepository.GetById<Connection>(connectionId);
+
+            if (connection is null)
+                throw new ContextException(ResourceExceptMessages.CONNECTION_BY_ID_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            var reverseConnetion = await _uof.ConnectionRepository.ConnectionByConnectedAndConnector(connection.ConnectedId, connection.ConnectorId);
+
+            if(reverseConnetion is not null)
+            {
+                connection.AreConnected = true;
+                reverseConnetion.AreConnected = true;
+                _uof.GenericRepository.Update<Connection>(reverseConnetion);
+            }
+
+            connection.Accept();
+
+            _uof.GenericRepository.Update<Connection>(connection);
+            await _uof.Commit();
+
+            return _mapper.Map<ConnectionResponse>(connection);
         }
 
         public async Task<ConnectionResponse> CreateConnection(long profileId)
         {
-            var uid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
-            var user = await _uof.UserRepository.UserByIdentifier(uid);
+            var user = await _uof.UserRepository.UserByIdentifier(_userUid);
             var profile = await _uof.ProfileRepository.ProfileByUser(user!);
 
             if (profile.Id == profileId) throw new ContextException(ResourceExceptMessages.CONNECT_WITH_YOURSELF, System.Net.HttpStatusCode.Unauthorized);

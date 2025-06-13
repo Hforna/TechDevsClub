@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Update;
 using Microsoft.Identity.Client;
+using MimeKit.Tnef;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
 using Profile.Domain.Exceptions;
@@ -41,6 +42,13 @@ namespace Profile.Api.Endpoints
             var result = await service.GetProfile(name);
 
             return Results.Ok(result);
+        }
+
+        static async Task<IResult> GetProfilesRecommendedByUserSkills([FromQuery]int page, [FromQuery]int perPage, [FromServices]IProfileService service)
+        {
+            if (perPage > 100) throw new ValidationException(ResourceExceptMessages.OUT_OF_RANGE_PER_PAGE_MAX_100, System.Net.HttpStatusCode.BadRequest);
+
+            var result = service.
         }
     }
 }

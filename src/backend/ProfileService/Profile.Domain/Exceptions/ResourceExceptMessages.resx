@@ -175,4 +175,10 @@
   <data name="CONNECT_WITH_YOURSELF" xml:space="preserve">
     <value>User can't connect with themself</value>
   </data>
+  <data name="CONNECTION_BY_ID_NOT_EXISTS" xml:space="preserve">
+    <value>Invalid connection id, connection does not exist</value>
+  </data>
+  <data name="OUT_OF_RANGE_PER_PAGE_MAX_100" xml:space="preserve">
+    <value>Items per page is out of range, the limit is 100</value>
+  </data>
 </root>
