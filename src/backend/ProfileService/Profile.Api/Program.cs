@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Data.SqlClient;
 using Profile.Api.BackgroundJobs;
+using Profile.Api.Binders;
 using Profile.Api.Endpoints;
 using Profile.Api.Filters;
 using Profile.Api.Middlewares;
@@ -51,6 +52,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddSingleton<BinderId>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 

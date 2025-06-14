@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Update;
 using Microsoft.Identity.Client;
 using MimeKit.Tnef;
@@ -34,8 +35,10 @@ namespace Profile.Api.Endpoints
             return app;
         }
 
-        static async Task<IResult> UpdateProfile([FromBody]UpdateProfileRequest request, [FromServices]IProfileService service)
+        static async Task<IResult> UpdateProfile([FromBody]UpdateProfileRequest request, [FromServices]IProfileService service, HttpContext context)
         {
+            
+
             var result = await service.UpdateProfile(request);
 
             return Results.Ok(result);
@@ -43,14 +46,17 @@ namespace Profile.Api.Endpoints
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(AuthenticationException), StatusCodes.Status401Unauthorized)]
-        static async Task<IResult> GetProfile([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IProfileService service)
+        static async Task<IResult> GetProfile([FromServices]IProfileService service, HttpContext context)
         {
+            var id = await BinderIdValidatorExtension.Validate(context, "id");
+
             var result = await service.GetProfile(id);
 
             return Results.Ok(result);
         }
 
-        static async Task<IResult> GetProfilesRecommendedByUserProfileVisits([FromQuery]int page, [FromQuery]int perPage, [FromServices]IProfileService service)
+        static async Task<IResult> GetProfilesRecommendedByUserProfileVisits([FromQuery]int page, [FromQuery]int perPage, 
+            [FromServices]IProfileService service)
         {
             if (perPage > 100) throw new ValidationException(ResourceExceptMessages.OUT_OF_RANGE_PER_PAGE_MAX_100, System.Net.HttpStatusCode.BadRequest);
 

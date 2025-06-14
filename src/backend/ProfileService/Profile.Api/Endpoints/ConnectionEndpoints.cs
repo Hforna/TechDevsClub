@@ -30,8 +30,10 @@ namespace Profile.Api.Endpoints
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(DomainException), StatusCodes.Status401Unauthorized)]
-        static async Task<IResult> CreateConnectionWithProfile([FromRoute][ModelBinder(typeof(BinderId))]long profileId, [FromServices]IConnectionService service)
+        static async Task<IResult> CreateConnectionWithProfile([FromServices]IConnectionService service, HttpContext context)
         {
+            var profileId = await BinderIdValidatorExtension.Validate(context, "profileId");
+
             var result = await service.CreateConnection(profileId);
 
             return Results.Ok(result);
@@ -39,8 +41,10 @@ namespace Profile.Api.Endpoints
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(DomainException), StatusCodes.Status401Unauthorized)]
-        static async Task<IResult> AcceptConnection([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IConnectionService service)
+        static async Task<IResult> AcceptConnection([FromServices]IConnectionService service, HttpContext context)
         {
+            var id = await BinderIdValidatorExtension.Validate(context, "id");
+
             var result = await service.AcceptConnection(id);
 
             return Results.Accepted(string.Empty, result);

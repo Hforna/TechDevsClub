@@ -143,6 +143,15 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid id format.
+        /// </summary>
+        public static string INVALID_ID_FORMAT {
+            get {
+                return ResourceManager.GetString("INVALID_ID_FORMAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid url format.
         /// </summary>
         public static string INVALID_URL_FORMAT {
