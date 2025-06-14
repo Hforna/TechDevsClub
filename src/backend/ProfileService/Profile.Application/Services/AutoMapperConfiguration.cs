@@ -28,6 +28,7 @@ namespace Profile.Application.Services
             CreateMap<ProfileEntity, ProfileResponse>()
                 .ForMember(d => d.UserId, f => f.MapFrom(d => sqids.Encode(d.UserId)))
                 .ForMember(d => d.Id, f => f.MapFrom(d => sqids.Encode(d.Id)))
+                .ForMember(d => d.UserSkills, f => f.Ignore())
                 .ForMember(d => d.GithubMetadata, f => f.MapFrom(d => d.GithubMeta))
                 .ForMember(d => d.SocialLinks, f => f.MapFrom(d => d.SocialLinks));
 
@@ -35,7 +36,9 @@ namespace Profile.Application.Services
 
             CreateMap<SocialLinkRequest, SocialLink>();
 
-            CreateMap<UserSkills, SkillUserResponse>().ForMember(d => d.Name, f => f.MapFrom(d => d.Skill.Name));
+            CreateMap<UserSkills, SkillUserResponse>()
+                .ForMember(d => d.Name, f => f.MapFrom(d => d.Skill.Name))
+                .ForMember(d => d.Level, f => f.MapFrom(d => d.Level));
 
             CreateMap<Connection, ConnectionResponse>()
                 .ForMember(d => d.ConnectorId, f => f.MapFrom(d => d.ConnectorId))

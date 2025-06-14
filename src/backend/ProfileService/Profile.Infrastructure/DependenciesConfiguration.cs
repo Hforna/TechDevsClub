@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Org.BouncyCastle.Crypto.Engines;
@@ -10,8 +11,10 @@ using Profile.Domain.Repositories;
 using Profile.Domain.Services;
 using Profile.Domain.Services.External;
 using Profile.Domain.Services.Security;
+using Profile.Domain.ValueObjects;
 using Profile.Infrastructure.Data;
 using Profile.Infrastructure.Repositories;
+using Profile.Infrastructure.Repositories.Relational;
 using Profile.Infrastructure.Services;
 using Profile.Infrastructure.Services.External;
 using Profile.Infrastructure.Services.Security;
@@ -31,6 +34,7 @@ namespace Profile.Infrastructure
             AddRepositories(services);
             AddSecurity(services, configuration);
             AddServices(services);
+            ConfigureRedis(services, configuration);
         }
 
         static void AddData(IServiceCollection services, IConfiguration configuration)
@@ -50,6 +54,17 @@ namespace Profile.Infrastructure
             .AddEntityFrameworkStores<DataContext>()
             .AddDefaultTokenProviders()
             .AddUserManager<UserManager<User>>();
+        }
+
+        public static void ConfigureRedis(IServiceCollection services, IConfiguration configuration)
+        {
+            var connection = configuration.GetConnectionString("redis");
+
+            services.AddStackExchangeRedisCache(d => d.Configuration = connection);
+
+            services.AddScoped<ICacheRepository, RedisRepository>();
+
+            services.AddScoped<ISessionService, SessionService>();
         }
 
         static void AddSecurity(IServiceCollection services, IConfiguration configuration)

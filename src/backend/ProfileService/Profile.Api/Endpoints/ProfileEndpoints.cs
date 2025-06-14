@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Update;
 using Microsoft.Identity.Client;
 using MimeKit.Tnef;
+using Profile.Api.Binders;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
 using Profile.Domain.Exceptions;
@@ -20,9 +21,14 @@ namespace Profile.Api.Endpoints
                 .WithName("UpdateProfile")
                 .WithSummary("Update an user profile and consult their github profile to get github infos for profile");
 
-            app.MapGet("{name}", GetProfile)
+            app.MapGet("{id}", GetProfile)
                 .WithName("GetProfileById")
                 .WithSummary("Get a profile by id if it is not private")
+                .RequireRateLimiting("PerfilPolicy");
+
+            app.MapGet("profiles-reccomended", GetProfilesRecommendedByUserProfileVisits)
+                .WithName("ProfileRecommendedBasedOnUserVisits")
+                .WithSummary("Get profiles paginated based on user recent profile visit skills")
                 .RequireRateLimiting("PerfilPolicy");
 
             return app;
@@ -37,18 +43,22 @@ namespace Profile.Api.Endpoints
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(AuthenticationException), StatusCodes.Status401Unauthorized)]
-        static async Task<IResult> GetProfile([FromRoute]string name, [FromServices]IProfileService service)
+        static async Task<IResult> GetProfile([FromRoute][ModelBinder(typeof(BinderId))]long id, [FromServices]IProfileService service)
         {
-            var result = await service.GetProfile(name);
+            var result = await service.GetProfile(id);
 
             return Results.Ok(result);
         }
 
-        static async Task<IResult> GetProfilesRecommendedByUserSkills([FromQuery]int page, [FromQuery]int perPage, [FromServices]IProfileService service)
+        static async Task<IResult> GetProfilesRecommendedByUserProfileVisits([FromQuery]int page, [FromQuery]int perPage, [FromServices]IProfileService service)
         {
             if (perPage > 100) throw new ValidationException(ResourceExceptMessages.OUT_OF_RANGE_PER_PAGE_MAX_100, System.Net.HttpStatusCode.BadRequest);
 
-            var result = service.
+            var result = await service.GetProfileRecommendedByProfileVisits(page, perPage);
+
+            if (result is null) return Results.NoContent();
+
+            return Results.Ok(result);
         }
     }
 }

@@ -21,7 +21,8 @@ namespace Profile.Application.ApplicationServices
     public interface IProfileService
     {
         public Task<ProfileResponse> UpdateProfile(UpdateProfileRequest request);
-        public Task<ProfileResponse> GetProfile(string name);
+        public Task<ProfileResponse> GetProfile(long id);
+        public Task<PaginationProfilesResponse?> GetProfileRecommendedByProfileVisits(int page, int perPage);
     }
 
     public class ProfileService : IProfileService
@@ -33,9 +34,13 @@ namespace Profile.Application.ApplicationServices
         private readonly SqidsEncoder<long> _sqids;
         private readonly IGitHubService _gitHubService;
         private readonly ILogger<ProfileService> _logger;
+        private readonly Guid _userUid;
+        private readonly ISessionService _sessionService;
 
         public ProfileService(ITokenService tokenService, IRequestToken requestToken, 
-            IUnitOfWork uof, IMapper mapper, IGitHubService gitHubService, SqidsEncoder<long> sqids, ILogger<ProfileService> logger)
+            IUnitOfWork uof, IMapper mapper,
+            IGitHubService gitHubService, SqidsEncoder<long> sqids,
+            ILogger<ProfileService> logger, ISessionService sessionService)
         {
             _tokenService = tokenService;
             _requestToken = requestToken;
@@ -44,11 +49,14 @@ namespace Profile.Application.ApplicationServices
             _mapper = mapper;
             _sqids = sqids;
             _gitHubService = gitHubService;
+            _sessionService = sessionService;
+
+            _userUid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
         }
 
-        public async Task<ProfileResponse> GetProfile(string name)
+        public async Task<ProfileResponse> GetProfile(long id)
         {
-            var profile = await _uof.ProfileRepository.ProfileByUsername(name);
+            var profile = await _uof.ProfileRepository.ProfileById(id, true);
 
             if (profile is null)
             {
@@ -70,7 +78,42 @@ namespace Profile.Application.ApplicationServices
 
             var response = _mapper.Map<ProfileResponse>(profile);
             if(user is not null && user.Skills is not null)
-                response.UserSkills = _mapper.Map<List<UserSkillsResponse>>(user.Skills); 
+                response.UserSkills = new UserSkillsResponse() { Skills = _mapper.Map<List<SkillUserResponse>>(user.Skills.ToList()) };
+
+            return response;
+        }
+
+        public async Task<PaginationProfilesResponse?> GetProfileRecommendedByProfileVisits(int page, int perPage)
+        {
+            var profilesVisited = _sessionService.GetProfilesVisitedByUser();
+
+            if (profilesVisited is null)
+                return null;
+
+            var skillsList = profilesVisited
+                .Select(d => d.Value)
+                .SelectMany(d => d)
+                .ToList();
+            var skillsCount = skillsList
+                .GroupBy(d => d)
+                .ToDictionary(d => d, f => f.Count())
+                .OrderByDescending(d => d.Value)
+                .Select(d => d.Key)
+                .Select(d => d.Key)
+                .ToList();
+
+            var profiles = await _uof.ProfileRepository.ProfilesBySkills(skillsCount, page, perPage);
+
+            var response = new PaginationProfilesResponse()
+            {
+                HasPreviousPage = profiles.HasPreviousPage,
+                HasNextPage = profiles.HasNextPage,
+                Count = profiles.Count,
+                IsFirstPage = profiles.IsFirstPage,
+                IsLastPage = profiles.IsLastPage,
+                PageNumber = profiles.PageNumber
+            };
+            response.Profiles = profiles.Select(profile => _mapper.Map<ShortProfileResponse>(profile)).ToList();
 
             return response;
         }
@@ -99,8 +142,10 @@ namespace Profile.Application.ApplicationServices
             _uof.GenericRepository.Update<ProfileEntity>(profile);
             await _uof.Commit();
 
+            var skillsList = user.Skills.ToList();
+
             var response = _mapper.Map<ProfileResponse>(profile);
-            response.UserSkills = _mapper.Map<List<UserSkillsResponse>>(user.Skills);
+            response.UserSkills = new UserSkillsResponse() { Skills = _mapper.Map<List<SkillUserResponse>>(skillsList) };
 
             return response;
         }
