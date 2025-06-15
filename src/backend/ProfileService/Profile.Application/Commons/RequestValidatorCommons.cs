@@ -13,7 +13,7 @@ namespace Profile.Application.Commons
     {
         public static void Validate<Request, Validator>(Request request) where Validator : AbstractValidator<Request>
         {
-            var validator = (Validator)Activator.CreateInstance(typeof(Validator))!;
+            var validator = Activator.CreateInstance<Validator>();
             var validate = validator.Validate(request);
 
             if(!validate.IsValid)

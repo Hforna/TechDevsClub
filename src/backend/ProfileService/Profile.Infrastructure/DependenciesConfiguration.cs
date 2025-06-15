@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Crypto.Engines;
 using Profile.Domain.Aggregates;
 using Profile.Domain.Entities;
@@ -35,6 +37,7 @@ namespace Profile.Infrastructure
             AddSecurity(services, configuration);
             AddServices(services);
             ConfigureRedis(services, configuration);
+            ConfigureLocationService(services, configuration);
         }
 
         static void AddData(IServiceCollection services, IConfiguration configuration)
@@ -54,6 +57,22 @@ namespace Profile.Infrastructure
             .AddEntityFrameworkStores<DataContext>()
             .AddDefaultTokenProviders()
             .AddUserManager<UserManager<User>>();
+        }
+
+        static void ConfigureLocationService(IServiceCollection service, IConfiguration configuration)
+        {
+            service.Configure<GeoIPSettings>(configuration.GetSection("services:geoLocation"));
+
+            using var scope = service.BuildServiceProvider().CreateScope();
+
+            var geoIpSettings = scope
+                .ServiceProvider
+                .GetRequiredService<IOptions<GeoIPSettings>>();
+            var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+
+            var path = Path.Combine(env.ContentRootPath, geoIpSettings.Value.DatabasePath);
+
+            service.AddSingleton<IGeoLocationService>(d => new MaxMindGeoIpAdapter(path));
         }
 
         public static void ConfigureRedis(IServiceCollection services, IConfiguration configuration)
@@ -82,6 +101,8 @@ namespace Profile.Infrastructure
             services.AddSingleton<IEmailService, EmailService>();
 
             services.AddScoped<IGitHubService, GitHubService>();
+
+            services.AddScoped<IRequestService, RequestService>();
         }
 
         static void AddRepositories(IServiceCollection services)

@@ -27,7 +27,7 @@ namespace Profile.Api.Endpoints
                 .WithSummary("Get a profile by id if it is not private")
                 .RequireRateLimiting("PerfilPolicy");
 
-            app.MapGet("profiles-reccomended", GetProfilesRecommendedByUserProfileVisits)
+            app.MapGet("profiles-recommended", GetProfilesRecommendedByUserProfileVisits)
                 .WithName("ProfileRecommendedBasedOnUserVisits")
                 .WithSummary("Get profiles paginated based on user recent profile visit skills")
                 .RequireRateLimiting("PerfilPolicy");
@@ -37,8 +37,6 @@ namespace Profile.Api.Endpoints
 
         static async Task<IResult> UpdateProfile([FromBody]UpdateProfileRequest request, [FromServices]IProfileService service, HttpContext context)
         {
-            
-
             var result = await service.UpdateProfile(request);
 
             return Results.Ok(result);

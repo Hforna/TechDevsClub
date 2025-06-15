@@ -80,6 +80,11 @@ namespace Profile.Application.ApplicationServices
             if(user is not null && user.Skills is not null)
                 response.UserSkills = new UserSkillsResponse() { Skills = _mapper.Map<List<SkillUserResponse>>(user.Skills.ToList()) };
 
+            var userGot = await _uof.UserRepository.UserByIdentifier(profile.User.UserIdentifier);
+
+            if(userGot.Skills.Any())
+                _sessionService.SetProfileVisitedByUser(profile.Id, userGot.Skills.Select(d => d.Skill).ToList());
+
             return response;
         }
 

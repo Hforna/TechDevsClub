@@ -37,7 +37,7 @@ namespace Profile.Application.ApplicationServices
             _uof = uof;
             _mapper = mapper;
 
-            _userUid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
+            _userUid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken())!;
         }
 
         public async Task<ConnectionResponse> AcceptConnection(long connectionId)

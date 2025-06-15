@@ -29,6 +29,8 @@ namespace Profile.Api.Endpoints
                 .WithSummary("Update the address of an user")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
+            app.MapPut("update-password", UpdatePassword);
+
             app.MapPost("set-skills", SetUserSkills);
 
             return app;
@@ -65,6 +67,13 @@ namespace Profile.Api.Endpoints
             var result = await service.SetUserSkills(request);
 
             return Results.Ok(result);
+        }
+
+        static async Task<IResult> UpdatePassword([FromBody]UpdatePasswordRequest request, [FromServices]IUserService service)
+        {
+            await service.UpdatePassword(request);
+
+            return Results.NoContent();
         }
     }
 }

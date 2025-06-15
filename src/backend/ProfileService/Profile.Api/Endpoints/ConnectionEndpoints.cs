@@ -10,7 +10,7 @@ namespace Profile.Api.Endpoints
     {
         public const string MapGroup = $"{BaseEndpointConsts.rootEndpoint}connections";
 
-        public static IEndpointRouteBuilder AddConnectionEndpoints(this IEndpointRouteBuilder builder)
+        public static IEndpointRouteBuilder MapConnectionEndpoints(this IEndpointRouteBuilder builder)
         {
             var app = builder.MapGroup(MapGroup);
 

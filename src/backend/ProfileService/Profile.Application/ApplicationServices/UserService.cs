@@ -11,6 +11,7 @@ using Profile.Domain.Consts;
 using Profile.Domain.Exceptions;
 using Profile.Domain.Repositories;
 using Profile.Domain.Services;
+using Profile.Domain.Services.External;
 using Profile.Domain.Services.Security;
 using Profile.Domain.ValueObjects;
 using System;
@@ -29,6 +30,7 @@ namespace Profile.Application.Services
         public Task ConfirmEmail(string email, string token);
         public Task<Address> UpdateUserAddress(UpdateAddressRequest request);
         public Task<UserSkillsResponse> SetUserSkills(SetUserSkillsRequest request);
+        public Task UpdatePassword(UpdatePasswordRequest request);
     }
 
     public class UserService : IUserService
@@ -41,15 +43,21 @@ namespace Profile.Application.Services
         private readonly ILogger<UserService> _logger;
         private readonly ITokenService _tokenService;
         private readonly IRequestToken _requestToken;
+        private readonly IGeoLocationService _geoLocation;
+        private readonly IRequestService _requestService;
         private readonly string _token;
 
         public UserService(IUnitOfWork uof, IMapper mapper, 
             UserManager<User> userManager, IPasswordEncrypt passwordEncrypt,
-            IEmailService emailService, ILogger<UserService> logger, ITokenService tokenService, IRequestToken requestToken)
+            IEmailService emailService, ILogger<UserService> logger, 
+            ITokenService tokenService, IRequestToken requestToken, 
+            IGeoLocationService geoLocation, IRequestService requestService)
         {
             _uof = uof;
             _mapper = mapper;
+            _requestService = requestService;
             _logger = logger;
+            _geoLocation = geoLocation;
             _userManager = userManager;
             _passwordEncrypt = passwordEncrypt;
             _emailService = emailService;
@@ -129,7 +137,7 @@ namespace Profile.Application.Services
         {
             var userId = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
 
-            var user = await _uof.UserRepository.UserByIdentifier(userId);
+            var user = await _uof.UserRepository.UserByIdentifier(userId!);
 
             if (user is null)
                 throw new ContextException(ResourceExceptMessages.USER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
@@ -148,7 +156,7 @@ namespace Profile.Application.Services
             var skillsRequest = request.Skills;
 
             var uid = _tokenService.GetUserIdentifierByToken(_token);
-            var user = await _uof.UserRepository.UserByIdentifier(uid);
+            var user = await _uof.UserRepository.UserByIdentifier(uid!);
 
             var skillNames = skillsRequest.Select(d => d.Name).Distinct().ToArray();
             var skills = await _uof.SkillRepository.GetSkillsByNames(skillNames);
@@ -172,6 +180,34 @@ namespace Profile.Application.Services
             response.Skills = _mapper.Map<List<SkillUserResponse>>(user.Skills);
 
             return response;
+        }
+
+        public async Task UpdatePassword(UpdatePasswordRequest request)
+        {
+            RequestValidatorCommons.Validate<UpdatePasswordRequest, UpdatePasswordValidator>(request);
+
+            var user = await _uof.UserRepository.UserByIdentifier(_tokenService.GetUserIdentifierByToken(_token));
+
+            if (_passwordEncrypt.IsValidPassword(request.Password, user.PasswordHash) == false)
+                throw new ValidationException(ResourceExceptMessages.PASSWORD_INVALID, HttpStatusCode.BadRequest);
+
+            if (request.NewPassword == request.Password)
+                throw new ValidationException(ResourceExceptMessages.UPDATE_WITH_THE_SAME_PASSWORD, HttpStatusCode.BadRequest);
+
+            user.PasswordHash = _passwordEncrypt.Encrypt(request.NewPassword);
+
+            _uof.GenericRepository.Update<User>(user);
+            await _uof.Commit();
+
+            var requestIp = _requestService.GetRequestIp();
+
+            if(!string.IsNullOrEmpty(requestIp))
+            {
+                var locationInfos = _geoLocation.GetLocationInfosByIp(requestIp);
+
+                await _emailService.SendEmail(user.Email, user.UserName, "You updated your password", @$"Your password was updated, 
+                location infos: Country: {locationInfos.Country.Name}, City: {locationInfos.City}");
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Profile.Domain.Entities;
 using Profile.Domain.Repositories;
 using System;
@@ -13,18 +14,20 @@ namespace Profile.Infrastructure.Services
 {
     public class SessionService : ISessionService
     {
-        private readonly ISession _session;
         private readonly IHttpContextAccessor _httpContext;
+        private readonly ILogger<SessionService> _logger;
 
-        public SessionService(IHttpContextAccessor httpContext)
+        public SessionService(IHttpContextAccessor httpContext, ILogger<SessionService> logger)
         {
             _httpContext = httpContext;
-            _session = _httpContext.HttpContext.Session;
+            _logger = logger;
         }
 
         public Dictionary<long, List<string>>? GetProfilesVisitedByUser()
         {
-            if(_session.TryGetValue("profiles_visited", out var value))
+            var session = _httpContext.HttpContext.Session;
+
+            if (session.TryGetValue("profiles_visited", out var value))
             {
                 var deserialize = JsonSerializer.Deserialize<Dictionary<long, List<string>>>(value);
 
@@ -37,17 +40,24 @@ namespace Profile.Infrastructure.Services
         {
             var profiles = new Dictionary<long, List<string>>();
 
-            if(_session.TryGetValue($"profiles_visited", out var value))
+            var session = _httpContext.HttpContext!.Session;
+            _logger.LogInformation($"Session got: {session.Id}");
+
+            if (session.TryGetValue("profiles_visited", out var value))
             {
                 var deserialize = JsonSerializer.Deserialize<Dictionary<long, List<string>>>(value);
 
                 profiles = deserialize;
             }
-            profiles.Add(profileId, skills.Select(d => d.Name).ToList());
+            profiles![profileId] = profiles.ContainsKey(profileId) == false 
+                ?  skills.Select(d => d.Name).ToList() 
+                : profiles[profileId];
 
             var serializeList = JsonSerializer.Serialize(profiles);
+
+            _logger.LogInformation($"New list after add profile visited: {serializeList}");
             
-            _session.SetString($"profiles_visited", serializeList);
+            session.SetString("profiles_visited", serializeList);
         }
     }
 }

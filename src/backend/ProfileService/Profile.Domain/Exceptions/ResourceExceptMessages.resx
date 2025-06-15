@@ -184,4 +184,13 @@
   <data name="INVALID_ID_FORMAT" xml:space="preserve">
     <value>Invalid id format</value>
   </data>
+  <data name="PASSWORD_INVALID" xml:space="preserve">
+    <value>Current password is wrong</value>
+  </data>
+  <data name="ERROR_ON_LOCATION" xml:space="preserve">
+    <value>An error occured while trying to get request location</value>
+  </data>
+  <data name="UPDATE_WITH_THE_SAME_PASSWORD" xml:space="preserve">
+    <value>The new password cannot be equal the old password</value>
+  </data>
 </root>

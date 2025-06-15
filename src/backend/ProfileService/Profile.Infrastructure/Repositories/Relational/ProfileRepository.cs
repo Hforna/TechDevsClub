@@ -58,16 +58,27 @@ namespace Profile.Infrastructure.Repositories.Relational
             var userSkillsTableName = _context.Model.FindEntityType(typeof(UserSkills))!.GetTableName();
             var skillsTableName = _context.Model.FindEntityType(typeof(Skill))!.GetTableName();
 
-            var parameters = string.Join(",", skills.Select((_, i) => $"@p{i}"));
-            var paramValues = skills.Select((s, i) => new SqlParameter($"@p{i}", s)).ToArray();
+            var query = $@"
+            SELECT DISTINCT P.* FROM {profileTableName} AS P 
+            JOIN {userTableName} AS U ON U.Id = P.UserId
+            JOIN {userSkillsTableName} AS US ON U.Id = US.UserId
+            JOIN {skillsTableName} AS S ON US.SkillId = S.Id";
 
-            var profiles = await _context.Profiles.FromSqlRaw(@$"
-                SELECT DISTINCT P.* FROM {profileTableName} AS P 
-                JOIN {userTableName} AS U ON U.Id = P.UserId
-                JOIN {userSkillsTableName} AS US ON U.Id = US.UserId
-                JOIN {skillsTableName} AS S ON US.SkillId = S.Id
-                WHERE S.Name IN ({paramValues})").ToListAsync();
-
+            var parameters = new List<SqlParameter>();
+            var paramNames = new List<string>();
+            
+            for (int i = 0; i < skills.Count; i++)
+            {
+                paramNames.Add($"@p{i}");
+                parameters.Add(new SqlParameter($"@p{i}", skills[i]));
+            }
+            
+            query += $" WHERE S.Name IN ({string.Join(", ", paramNames)})";
+            
+            var profiles = await _context.Profiles
+                .FromSqlRaw(query, parameters.ToArray())
+                .ToListAsync();
+            
             return profiles.ToPagedList(page, perPage);
         }
     }

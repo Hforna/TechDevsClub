@@ -56,6 +56,7 @@ namespace Profile.Infrastructure.Services.Security
         public Guid GetUserIdentifierByToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
+            ValidateToken(token);
             var read = handler.ReadJwtToken(token);
             var uid = Guid.Parse(read.Claims.FirstOrDefault(d => d.Type == ClaimTypes.Sid).Value);
 

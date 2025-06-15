@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Data.SqlClient;
@@ -79,7 +80,30 @@ app.UseSession();
 
 app.UseMiddleware<CultureInfoMiddleware>();
 
+//app.Use(async (context, next) =>
+//{
+//    Console.WriteLine($"Session available: {context.Session?.IsAvailable ?? false}");
+//    await next();
+//});
+//
+app.Use(async (context, next) =>
+{
+    await context.Session.LoadAsync();
+    if (string.IsNullOrEmpty(context.Session.Id))
+    {
+        context.Session.SetString("__init__", "1");
+        await context.Session.CommitAsync();
+    }
+    await next();
+});
+
 app.UseRateLimiter();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+    ForwardedHeaders.XForwardedProto
+});
 
 app.UseAuthorization();
 
@@ -88,6 +112,7 @@ app.UseExceptionHandler(d => { });
 app.MapUserEndpoints();
 app.MapProfileEndpoint();
 app.MapLoginEndpoints();
+app.MapConnectionEndpoints();
 
 app.Run();
 
