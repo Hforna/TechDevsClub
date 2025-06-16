@@ -19,7 +19,7 @@ namespace Profile.Infrastructure.Services
             var ipAddress = _httpContext.HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
 
             if(string.IsNullOrEmpty(ipAddress))
-                return _httpContext.HttpContext.Connection.RemoteIpAddress!
+                return _httpContext.HttpContext.Connection.LocalIpAddress!
                     .MapToIPv4()
                     .ToString();
 

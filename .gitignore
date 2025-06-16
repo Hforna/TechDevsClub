@@ -10,6 +10,8 @@
 *.sln.docstates
 *.userprefs
 
+**/data
+
 appsettings*.json
 **/appsettings.Development.json
 **/appsettings.json

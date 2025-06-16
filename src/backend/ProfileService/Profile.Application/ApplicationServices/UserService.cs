@@ -197,7 +197,6 @@ namespace Profile.Application.Services
             user.PasswordHash = _passwordEncrypt.Encrypt(request.NewPassword);
 
             _uof.GenericRepository.Update<User>(user);
-            await _uof.Commit();
 
             var requestIp = _requestService.GetRequestIp();
 
@@ -208,6 +207,8 @@ namespace Profile.Application.Services
                 await _emailService.SendEmail(user.Email, user.UserName, "You updated your password", @$"Your password was updated, 
                 location infos: Country: {locationInfos.Country.Name}, City: {locationInfos.City}");
             }
+
+            await _uof.Commit();
         }
     }
 }

@@ -11,6 +11,7 @@ using Profile.Application;
 using Profile.Domain.Services.Security;
 using Profile.Infrastructure;
 using Profile.Infrastructure.Services;
+using System.Net;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -101,8 +102,8 @@ app.UseRateLimiter();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-    ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    KnownProxies = { IPAddress.Parse("172.25.0.1") }
 });
 
 app.UseAuthorization();
