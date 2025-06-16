@@ -20,6 +20,7 @@ namespace Profile.Infrastructure.Data
         public DbSet<ProfileEntity> Profiles { get; set; }
         public DbSet<SocialLink> SocialLinks { get; set; }
         public DbSet<Connection> Connections { get; set; }
+        public DbSet<Device> Devices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

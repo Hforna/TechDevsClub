@@ -8,21 +8,19 @@ using System.Threading.Tasks;
 namespace Profile.Domain.ValueObjects
 {
     [Owned]
-    public sealed record Address
+    public sealed record DeviceLocation
     {
-        public Address(string country, string street, string city, string state, string zipCode)
+        public DeviceLocation(string country, string city, decimal latitude, decimal longitude)
         {
             Country = country;
-            Street = street;
             City = city;
-            State = state;
-            ZipCode = zipCode;
+            Latitude = latitude;
+            Longitude = longitude;
         }
 
         public string Country { get; set; }
-        public string Street { get; set; }
         public string City { get; set; }
-        public string State { get; set; }
-        public string ZipCode { get; set; }
+        public decimal Latitude { get; set; }
+        public decimal Longitude { get; set; }
     }
 }
