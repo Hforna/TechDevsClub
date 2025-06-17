@@ -2,6 +2,8 @@
 using Profile.Application.Responses;
 using Profile.Domain.Aggregates;
 using Profile.Domain.Entities;
+using Profile.Domain.Services;
+using Profile.Domain.Services.External;
 using Profile.Domain.ValueObjects;
 using Sqids;
 using System;
@@ -38,6 +40,12 @@ namespace Profile.Application.Services
 
             CreateMap<ProfileEntity, ShortProfileResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => sqids.Encode(d.Id)));
+
+            CreateMap<LocationInfoDto, DeviceLocation>()
+                .ForMember(d => d.Country, f => f.MapFrom(d => d.Country.Name))
+                .ForMember(d => d.City, f => f.MapFrom(d => d.City));
+
+            CreateMap<DeviceDto, Device>();
 
             CreateMap<UserSkills, SkillUserResponse>()
                 .ForMember(d => d.Name, f => f.MapFrom(d => d.Skill.Name))

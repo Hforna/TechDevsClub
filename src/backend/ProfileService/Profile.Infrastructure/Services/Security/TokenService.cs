@@ -48,6 +48,16 @@ namespace Profile.Infrastructure.Services.Security
             return handler.WriteToken(create);
         }
 
+        public long GetDeviceId(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            ValidateToken(token);
+            var read = handler.ReadJwtToken(token);
+            var id = read.Claims.FirstOrDefault(d => d.Type == "device-id")!.Value;
+
+            return long.Parse(id);
+        }
+
         public DateTime GetRefreshTokenExpiration()
         {
             return DateTime.UtcNow.AddHours(_refreshHoursExpiration);

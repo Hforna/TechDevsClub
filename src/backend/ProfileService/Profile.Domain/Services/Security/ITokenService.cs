@@ -11,6 +11,7 @@ namespace Profile.Domain.Services.Security
     {
         public string GenerateToken(List<Claim> claims, Guid userIdentifier);
         public Guid GetUserIdentifierByToken(string token);
+        public long GetDeviceId(string token);
         public Guid ValidateToken(string token);
         public DateTime GetRefreshTokenExpiration();
         public string GenerateRefreshToken();

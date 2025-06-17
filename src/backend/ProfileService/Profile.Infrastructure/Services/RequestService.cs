@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UAParser;
 
 namespace Profile.Infrastructure.Services
 {
@@ -14,7 +15,7 @@ namespace Profile.Infrastructure.Services
 
         public RequestService(IHttpContextAccessor httpContext) => _httpContext = httpContext;
 
-        public string? GetRequestIp()
+        public string GetRequestIp()
         {
             var ipAddress = _httpContext.HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
 
@@ -24,6 +25,20 @@ namespace Profile.Infrastructure.Services
                     .ToString();
 
             return ipAddress.Split(",")[0].Trim();
+        }
+
+        public DeviceDto? GetDeviceInfos()
+        {
+            var userAgent = _httpContext.HttpContext.Request.Headers.UserAgent.ToString();
+
+            if (string.IsNullOrEmpty(userAgent))
+                return null;
+
+            var parser = Parser.GetDefault(); 
+
+            var parse = parser.Parse(userAgent);
+
+            return new DeviceDto(parse.Device.Brand, parse.Device.Model, parse.OS.Family, parse.Device.Family);
         }
     }
 }
