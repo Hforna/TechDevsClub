@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Profile.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Profile.Infrastructure.Data;
 namespace Profile.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250617034956_AddNotationONdevice")]
+    partial class AddNotationONdevice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,10 +139,6 @@ namespace Profile.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Ip")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("LastAccess")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
@@ -197,34 +196,6 @@ namespace Profile.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("profiles");
-                });
-
-            modelBuilder.Entity("Profile.Domain.Aggregates.RefreshToken", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("DeviceId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("RefreshTokenExpiration")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Profile.Domain.Aggregates.SocialLink", b =>
@@ -303,6 +274,12 @@ namespace Profile.Infrastructure.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiration")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -755,15 +732,6 @@ namespace Profile.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Profile.Domain.Aggregates.RefreshToken", b =>
-                {
-                    b.HasOne("Profile.Domain.Aggregates.User", null)
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Profile.Domain.Aggregates.SocialLink", b =>
                 {
                     b.HasOne("Profile.Domain.Aggregates.ProfileEntity", "Profile")
@@ -856,8 +824,6 @@ namespace Profile.Infrastructure.Migrations
 
             modelBuilder.Entity("Profile.Domain.Aggregates.User", b =>
                 {
-                    b.Navigation("RefreshTokens");
-
                     b.Navigation("Skills");
                 });
 #pragma warning restore 612, 618

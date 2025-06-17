@@ -1,6 +1,7 @@
 ﻿using Profile.Application.Requests;
 using Profile.Application.Responses;
 using Profile.Domain.Aggregates;
+using Profile.Domain.Dtos;
 using Profile.Domain.Entities;
 using Profile.Domain.Services;
 using Profile.Domain.Services.External;
@@ -45,7 +46,8 @@ namespace Profile.Application.Services
                 .ForMember(d => d.Country, f => f.MapFrom(d => d.Country.Name))
                 .ForMember(d => d.City, f => f.MapFrom(d => d.City));
 
-            CreateMap<DeviceDto, Device>();
+            CreateMap<DeviceDto, Device>()
+                .ForMember(d => d.Location, f => f.Ignore());
 
             CreateMap<UserSkills, SkillUserResponse>()
                 .ForMember(d => d.Name, f => f.MapFrom(d => d.Skill.Name))

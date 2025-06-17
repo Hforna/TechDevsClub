@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Profile.Domain.Exceptions;
 
-namespace Profile.Api.Middlewares
+namespace Profile.Api.Filters
 {
     public class ExceptionHandler : IExceptionHandler
     {

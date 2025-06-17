@@ -58,18 +58,39 @@ namespace Profile.Application.ApplicationServices
             if (!isValidPassword)
                 throw new ContextException(ResourceExceptMessages.EMAIL_OR_PASSWORD_INVALID, System.Net.HttpStatusCode.BadRequest);
 
-            user.RefreshTokenExpiration = _tokenService.GetRefreshTokenExpiration();
-            user.RefreshToken = _tokenService.GenerateRefreshToken();
-
             await _userManager.UpdateAsync(user);
 
-            var location = _geoLocation.GetLocationInfosByIp(_requestService.GetRequestIp()!);
+            var ip = _requestService.GetRequestIp();
+            var location = _geoLocation.GetLocationInfosByIp(ip);
 
-            var deviceInfos = _requestService.GetDeviceInfos();
-            var device = _mapper.Map<Device>(deviceInfos);
-            device.Location = _mapper.Map<DeviceLocation>(location);
+            var device = await _uof.DeviceRepository.DeviceByUserIdAndIp(user.Id, ip);
 
-            await _uof.GenericRepository.Add<Device>(device);
+            if(device is null)
+            {
+                var deviceInfos = _requestService.GetDeviceInfos();
+                device = _mapper.Map<Device>(deviceInfos);
+                device.UserId = user.Id;
+                device.Ip = ip;
+                device.Location = _mapper.Map<DeviceLocation>(location);
+                await _uof.GenericRepository.Add<Device>(device);
+
+                await _uof.Commit();
+            } else
+            {
+                device.Location = _mapper.Map<DeviceLocation>(location);
+                device.LastAccess = DateTime.UtcNow;
+                _uof.GenericRepository.Update<Device>(device);
+            }
+
+            var refreshToken = new RefreshToken()
+            {
+                DeviceId = device.Id,
+                UserId = user.Id,
+                Value = _tokenService.GenerateRefreshToken(),
+                RefreshTokenExpiration = _tokenService.GetRefreshTokenExpiration()
+            };
+            await _uof.GenericRepository.Add<RefreshToken>(refreshToken);
+
             await _uof.Commit();
 
             var userRoles = await _userManager.GetRolesAsync(user);
@@ -87,7 +108,7 @@ namespace Profile.Application.ApplicationServices
             return new LoginResponse()
             {
                 AccessToken = accessToken,
-                RefreshToken = user.RefreshToken
+                RefreshToken = refreshToken.Value
             };
         }
     }

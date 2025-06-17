@@ -15,12 +15,12 @@ namespace Profile.Domain.Aggregates
     {
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public long Id { get; set; }
+        public string Ip { get; set; }
         public long UserId { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public string Model { get; set; }
         public string OsType { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime LastAccess { get; set; } = DateTime.UtcNow;
         public DeviceLocation Location { get; set; }
     }

@@ -35,12 +35,11 @@ namespace Profile.Api.Middlewares
                         _logger.LogWarning($"Device is null, id: {deviceId}");
                         await next(context);
                     }
-                    device.LastAccess = DateTime.UtcNow;
+                    device!.LastAccess = DateTime.UtcNow;
                     uof.GenericRepository.Update<Device>(device);
                     await uof.Commit();
                 }
             }
-
             await next(context);
         }
     }

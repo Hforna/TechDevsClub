@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Profile.Domain.Dtos;
 using Profile.Domain.Services;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,13 @@ namespace Profile.Infrastructure.Services
 
         public string GetRequestIp()
         {
+            //If application is running in containers on development
+            return "187.7.70.182";
+
             var ipAddress = _httpContext.HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
 
             if(string.IsNullOrEmpty(ipAddress))
-                return _httpContext.HttpContext.Connection.LocalIpAddress!
+                return _httpContext.HttpContext.Connection.RemoteIpAddress!
                     .MapToIPv4()
                     .ToString();
 

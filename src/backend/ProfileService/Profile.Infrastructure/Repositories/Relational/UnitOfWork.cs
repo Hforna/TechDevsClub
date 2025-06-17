@@ -14,7 +14,7 @@ namespace Profile.Infrastructure.Repositories
 
         public UnitOfWork(DataContext context, IGenericRepository genericRepository, 
             IUserRepository userRepository, IConnectionRepository connectionRepository, 
-            IProfileRepository profileRepository, ISkillRespository skillRepository)
+            IProfileRepository profileRepository, ISkillRespository skillRepository, IDeviceRepository deviceRepository)
         {
             _context = context;
             GenericRepository = genericRepository;
@@ -22,6 +22,7 @@ namespace Profile.Infrastructure.Repositories
             ConnectionRepository = connectionRepository;
             ProfileRepository = profileRepository;
             SkillRepository = skillRepository;
+            DeviceRepository = deviceRepository;
         }
 
         public IGenericRepository GenericRepository { get; set; }
@@ -29,6 +30,7 @@ namespace Profile.Infrastructure.Repositories
         public IConnectionRepository ConnectionRepository { get; set; }
         public IProfileRepository ProfileRepository { get; set; }
         public ISkillRespository SkillRepository { get; set; }
+        public IDeviceRepository DeviceRepository { get; set; }
 
         public async Task Commit(CancellationToken cancellationToken = default)
         {

@@ -1,5 +1,6 @@
 ﻿using MaxMind.GeoIP2;
 using Microsoft.Extensions.Options;
+using Profile.Domain.Dtos;
 using Profile.Domain.Exceptions;
 using Profile.Domain.Services.External;
 using System;

@@ -112,6 +112,7 @@ namespace Profile.Infrastructure
             services.AddScoped<IProfileRepository, ProfileRepository>();
             services.AddScoped<ISkillRespository, SkillRepository>();
             services.AddScoped<IConnectionRepository, ConnectionRepository>();
+            services.AddScoped<IDeviceRepository, DeviceRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
