@@ -63,6 +63,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddAuthentication();
 
 builder.Services.AddTransient<CultureInfoMiddleware>();
+builder.Services.AddTransient<DeviceTrackerMiddleware>();
 
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 
@@ -87,6 +88,9 @@ app.UseMiddleware<CultureInfoMiddleware>();
 //    await next();
 //});
 //
+
+app.UseMiddleware<DeviceTrackerMiddleware>();
+
 app.Use(async (context, next) =>
 {
     await context.Session.LoadAsync();
