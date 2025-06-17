@@ -22,14 +22,10 @@ A collaborative platform for developers to learn, collaborate, and advance their
 | **.NET 8**            | Core runtime                             |
 | **ASP.NET Core**      | REST APIs & WebSocket (SignalR)          |
 | **Entity Framework Core** | ORM for SQL Server/PostgreSQL        |
-| **Dapper**            | High-performance queries                 |
 | **MassTransit**       | RabbitMQ messaging                       |
-| **MongoDB.Driver**    | NoSQL data persistence                   |
+| **MongoDB**           | NoSQL data persistence                   |
+| **Redis**             | NoSQL Cache data                         |
 | **xUnit**             | Unit & integration testing               |
-
-### Frontend
-- **Blazor WebAssembly** (Admin Panel)
-- **React** (User Interface)
 
 ### Infrastructure
 | Tool                  | Function                                 |
@@ -38,11 +34,10 @@ A collaborative platform for developers to learn, collaborate, and advance their
 | **Kubernetes**        | Production orchestration                 |
 | **Azure DevOps**      | CI/CD pipelines                         |
 | **Redis**             | Distributed caching                      |
-| **Prometheus + Grafana** | Real-time monitoring                 |
 
 ## 🚀 Getting Started
 ### Prerequisites
 - .NET SDK 8+
 - Docker Desktop
-- PostgreSQL 15+
+- SqlServer
 - RabbitMQ
