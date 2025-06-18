@@ -118,6 +118,7 @@ app.MapUserEndpoints();
 app.MapProfileEndpoint();
 app.MapLoginEndpoints();
 app.MapConnectionEndpoints();
+app.MapTokenEndpoints();
 
 app.Run();
 

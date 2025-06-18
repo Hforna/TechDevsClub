@@ -29,15 +29,25 @@ namespace Profile.Api.Endpoints
                 .WithSummary("Update the address of an user")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
-            app.MapPut("update-password", UpdatePassword);
+            app.MapPut("update-password", UpdatePassword)
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
-            app.MapPost("set-skills", SetUserSkills);
+            app.MapPost("set-skills", SetUserSkills)
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
+
+            app.MapGet("forgot-password", ForgotPassword)
+                .WithName("ForgotAccountPassword")
+                .WithSummary("Request a redefinition password by user email");
+
+            app.MapPost("reset-password", ResetPassword)
+                .WithName("ResetUserPassword")
+                .WithSummary("Reset a password with token that was sent on e-mail");
 
             return app;
         }
 
         [ProducesResponseType(typeof(ValidationException), StatusCodes.Status400BadRequest)]
-        static async Task<IResult> CreateUser([FromServices]IUserService service, [FromBody]CreateUserRequest request)
+        static async Task<IResult> CreateUser([FromServices] IUserService service, [FromBody] CreateUserRequest request)
         {
             var result = await service.CreateUser(request);
 
@@ -46,7 +56,7 @@ namespace Profile.Api.Endpoints
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(AuthenticationException), StatusCodes.Status400BadRequest)]
-        static async Task<IResult> ConfirmEmail([FromServices]IUserService service, [FromQuery]string email, [FromQuery]string token)
+        static async Task<IResult> ConfirmEmail([FromServices] IUserService service, [FromQuery] string email, [FromQuery] string token)
         {
             await service.ConfirmEmail(email, token);
 
@@ -54,7 +64,7 @@ namespace Profile.Api.Endpoints
         }
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
-        static async Task<IResult> UpdateUserAddress([FromServices]IUserService service, [FromBody]UpdateAddressRequest request)
+        static async Task<IResult> UpdateUserAddress([FromServices] IUserService service, [FromBody] UpdateAddressRequest request)
         {
             var result = await service.UpdateUserAddress(request);
 
@@ -62,18 +72,38 @@ namespace Profile.Api.Endpoints
         }
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
-        static async Task<IResult> SetUserSkills([FromBody]SetUserSkillsRequest request, [FromServices]IUserService service)
+        static async Task<IResult> SetUserSkills([FromBody] SetUserSkillsRequest request, [FromServices] IUserService service)
         {
             var result = await service.SetUserSkills(request);
 
             return Results.Ok(result);
         }
 
-        static async Task<IResult> UpdatePassword([FromBody]UpdatePasswordRequest request, [FromServices]IUserService service)
+        //static async Task<IResult> RemoveUserSkills([FromBody]RemoveUserSkillsRequest request, [FromServices]IUserService service)
+        //{
+        //
+        //}
+
+        static async Task<IResult> UpdatePassword([FromBody] UpdatePasswordRequest request, [FromServices] IUserService service)
         {
             await service.UpdatePassword(request);
 
             return Results.NoContent();
+        }
+
+        static async Task<IResult> ForgotPassword([FromQuery] string email, [FromServices] IUserService service)
+        {
+            await service.ForgotPassword(email);
+
+            return Results.Ok();
+        }
+
+        static async Task<IResult> ResetPassword([FromQuery] string email, [FromQuery] string token, 
+            [FromBody]ResetPasswordRequest request, [FromServices]IUserService service)
+        {
+            await service.ResetPassword(email, token, request);
+
+            return Results.Ok();
         }
     }
 }

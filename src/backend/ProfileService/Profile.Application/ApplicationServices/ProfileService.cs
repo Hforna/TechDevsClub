@@ -73,7 +73,7 @@ namespace Profile.Application.ApplicationServices
             }
 
             if (profile.IsPrivate && 
-                (user is not null && profile.User.Id != user.Id)) 
+                ((user is null || profile.User.Id != user.Id))) 
                 throw new DomainException(ResourceExceptMessages.PROFILE_PRIVATE, System.Net.HttpStatusCode.Unauthorized);
 
             var response = _mapper.Map<ProfileResponse>(profile);

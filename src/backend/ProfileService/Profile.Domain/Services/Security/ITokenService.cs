@@ -14,6 +14,7 @@ namespace Profile.Domain.Services.Security
         public long GetDeviceId(string token);
         public Guid ValidateToken(string token);
         public DateTime GetRefreshTokenExpiration();
+        public List<Claim> GetTokenClaims(string token);
         public string GenerateRefreshToken();
     }
 }

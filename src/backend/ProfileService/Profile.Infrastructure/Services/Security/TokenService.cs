@@ -51,7 +51,6 @@ namespace Profile.Infrastructure.Services.Security
         public long GetDeviceId(string token)
         {
             var handler = new JwtSecurityTokenHandler();
-            ValidateToken(token);
             var read = handler.ReadJwtToken(token);
             var id = read.Claims.FirstOrDefault(d => d.Type == "device-id")!.Value;
 
@@ -66,11 +65,26 @@ namespace Profile.Infrastructure.Services.Security
         public Guid GetUserIdentifierByToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
-            ValidateToken(token);
             var read = handler.ReadJwtToken(token);
             var uid = Guid.Parse(read.Claims.FirstOrDefault(d => d.Type == ClaimTypes.Sid).Value);
 
             return uid;
+        }
+
+        public List<Claim> GetTokenClaims(string token)
+        {
+            var @params = new TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = GetSecurityKey(),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+
+            var handler = new JwtSecurityTokenHandler();
+            var result = handler.ValidateToken(token, @params, out SecurityToken validated);
+
+            return result.Claims.ToList();
         }
 
         public Guid ValidateToken(string token)

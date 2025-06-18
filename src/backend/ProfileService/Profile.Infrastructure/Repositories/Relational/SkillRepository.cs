@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Profile.Infrastructure.Repositories
+namespace Profile.Infrastructure.Repositories.Relational
 {
     public class SkillRepository : ISkillRespository
     {

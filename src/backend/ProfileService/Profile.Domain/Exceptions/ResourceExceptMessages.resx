@@ -193,4 +193,19 @@
   <data name="UPDATE_WITH_THE_SAME_PASSWORD" xml:space="preserve">
     <value>The new password cannot be equal the old password</value>
   </data>
+  <data name="USER_WITH_EMAIL_NOT_EXISTS" xml:space="preserve">
+    <value>An user using this e-mail does not exist</value>
+  </data>
+  <data name="PASSWORD_CANT_BE_LIKE_OLD" xml:space="preserve">
+    <value>New password cannot be equal the old password</value>
+  </data>
+  <data name="INVALID_TOKEN" xml:space="preserve">
+    <value>Request header token is invalid</value>
+  </data>
+  <data name="DEVICE_NOT_AUTHENTICATED" xml:space="preserve">
+    <value>Device is not authenticated</value>
+  </data>
+  <data name="REFRESH_TOKEN_NOT_EXISTS" xml:space="preserve">
+    <value>Invalid refresh token</value>
+  </data>
 </root>

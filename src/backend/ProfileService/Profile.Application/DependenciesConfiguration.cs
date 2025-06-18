@@ -38,6 +38,7 @@ namespace Profile.Application
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IConnectionService, ConnectionService>();
+            services.AddScoped<ITokenAppService, TokenAppService>();
         }
 
         static void AddSqids(IServiceCollection services, IConfiguration configuration)

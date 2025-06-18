@@ -31,6 +31,8 @@ namespace Profile.Application.Services
         public Task<Address> UpdateUserAddress(UpdateAddressRequest request);
         public Task<UserSkillsResponse> SetUserSkills(SetUserSkillsRequest request);
         public Task UpdatePassword(UpdatePasswordRequest request);
+        public Task ForgotPassword(string email);
+        public Task ResetPassword(string email, string token, ResetPasswordRequest request);
     }
 
     public class UserService : IUserService
@@ -207,6 +209,48 @@ namespace Profile.Application.Services
                 await _emailService.SendEmail(user.Email, user.UserName, "You updated your password", @$"Your password was updated, 
                 location infos: Country: {locationInfos.Country.Name}, City: {locationInfos.City}");
             }
+
+            await _uof.Commit();
+        }
+
+        public async Task ForgotPassword(string email)
+        {
+            var user = await _uof.UserRepository.UserByEmail(email);
+
+            if (user is null)
+                throw new ContextException(ResourceExceptMessages.USER_WITH_EMAIL_NOT_EXISTS, HttpStatusCode.NotFound);
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            await _emailService.SendEmail(user.Email, user.UserName, "You requested a password redefinition", 
+                $"Click on this link for reset you password {AppConfigs.AppUrl}users/reset-password?email={user.Email}&token={token}");
+        }
+
+        public async Task ResetPassword(string email, string token, ResetPasswordRequest request)
+        {
+            if (request.NewPassword.Length < 8)
+                throw new ValidationException(ResourceExceptMessages.PASSWORD_LENGTH, HttpStatusCode.BadRequest);
+
+            if (request.NewPassword != request.RepeatPassword)
+                throw new ValidationException(ResourceExceptMessages.UPDATE_WITH_THE_SAME_PASSWORD, HttpStatusCode.BadRequest);
+
+            var user = await _uof.UserRepository.UserByEmail(email);
+
+            if (user is null)
+                throw new ContextException(ResourceExceptMessages.USER_WITH_EMAIL_NOT_EXISTS, HttpStatusCode.NotFound);
+
+            var isSamePassword = _passwordEncrypt.IsValidPassword(request.NewPassword, user.PasswordHash);
+
+            if (isSamePassword)
+                throw new ValidationException(ResourceExceptMessages.PASSWORD_CANT_BE_LIKE_OLD, HttpStatusCode.BadRequest);
+
+            var isValidToken = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token);
+
+            if (!isValidToken)
+                throw new ValidationException(ResourceExceptMessages.INVALID_EMAIL_TOKEN, HttpStatusCode.BadRequest);
+
+            user.PasswordHash = _passwordEncrypt.Encrypt(request.NewPassword);
+            _uof.GenericRepository.Update<User>(user);
 
             await _uof.Commit();
         }

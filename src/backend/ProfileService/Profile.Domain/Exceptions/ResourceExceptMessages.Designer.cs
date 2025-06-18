@@ -88,6 +88,15 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Device is not authenticated.
+        /// </summary>
+        public static string DEVICE_NOT_AUTHENTICATED {
+            get {
+                return ResourceManager.GetString("DEVICE_NOT_AUTHENTICATED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a This e-mail already exists.
         /// </summary>
         public static string EMAIL_EXISTS {
@@ -161,6 +170,15 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Request header token is invalid.
+        /// </summary>
+        public static string INVALID_TOKEN {
+            get {
+                return ResourceManager.GetString("INVALID_TOKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid url format.
         /// </summary>
         public static string INVALID_URL_FORMAT {
@@ -184,6 +202,15 @@ namespace Profile.Domain.Exceptions {
         public static string OUT_OF_RANGE_PER_PAGE_MAX_100 {
             get {
                 return ResourceManager.GetString("OUT_OF_RANGE_PER_PAGE_MAX_100", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a New password cannot be equal the old password.
+        /// </summary>
+        public static string PASSWORD_CANT_BE_LIKE_OLD {
+            get {
+                return ResourceManager.GetString("PASSWORD_CANT_BE_LIKE_OLD", resourceCulture);
             }
         }
         
@@ -220,6 +247,15 @@ namespace Profile.Domain.Exceptions {
         public static string PROFILE_PRIVATE {
             get {
                 return ResourceManager.GetString("PROFILE_PRIVATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid refresh token.
+        /// </summary>
+        public static string REFRESH_TOKEN_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("REFRESH_TOKEN_NOT_EXISTS", resourceCulture);
             }
         }
         
@@ -283,6 +319,15 @@ namespace Profile.Domain.Exceptions {
         public static string USER_NOT_AUTHENTICATED {
             get {
                 return ResourceManager.GetString("USER_NOT_AUTHENTICATED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a An user using this e-mail does not exist.
+        /// </summary>
+        public static string USER_WITH_EMAIL_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("USER_WITH_EMAIL_NOT_EXISTS", resourceCulture);
             }
         }
     }

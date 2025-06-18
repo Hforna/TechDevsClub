@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Profile.Infrastructure.Repositories
+namespace Profile.Infrastructure.Repositories.Relational
 {
     public class ConnectionRepository : IConnectionRepository
     {

@@ -9,7 +9,8 @@ namespace Profile.Domain.Repositories
 {
     public interface IDeviceRepository
     {
-        public Task<List<Device>?> DeviceByUserIdentifier(Guid userIdentifier);
+        public Task<List<Device>?> DevicesByUserIdentifier(Guid userIdentifier);
         public Task<Device?> DeviceByUserIdAndIp(long userId, string ip);
+        public Task<RefreshToken?> GetRefreshTokenByDeviceAndUser(long userId, long deviceId);
     }
 }

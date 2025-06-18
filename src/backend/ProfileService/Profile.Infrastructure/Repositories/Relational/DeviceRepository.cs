@@ -24,9 +24,17 @@ namespace Profile.Infrastructure.Repositories.Relational
             return await _context.Devices.FirstOrDefaultAsync(d => d.UserId == userId && d.Ip == ip);
         }
 
-        Task<List<Device>?> IDeviceRepository.DeviceByUserIdentifier(Guid userIdentifier)
+        public async Task<List<Device>?> DevicesByUserIdentifier(Guid userIdentifier)
         {
-            throw new NotImplementedException();
+            return await _context.Devices.Where(d => d.User.Active && d.User.UserIdentifier == userIdentifier).ToListAsync();
         }
+
+        public async Task<RefreshToken?> GetRefreshTokenByDeviceAndUser(long userId, long deviceId)
+        {
+            return await _context.RefreshTokens.SingleOrDefaultAsync(d => d.UserId == userId 
+            && d.DeviceId == deviceId 
+            && DateTime.UtcNow < d.RefreshTokenExpiration);
+        }
+
     }
 }
