@@ -305,6 +305,15 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User doesn&apos;t have this skill.
+        /// </summary>
+        public static string USER_DOESNT_HAVE_SKILL {
+            get {
+                return ResourceManager.GetString("USER_DOESNT_HAVE_SKILL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User already has this skill.
         /// </summary>
         public static string USER_HAS_SKILL {

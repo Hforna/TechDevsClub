@@ -35,6 +35,8 @@ namespace Profile.Application.Services
                 .ForMember(d => d.GithubMetadata, f => f.MapFrom(d => d.GithubMeta))
                 .ForMember(d => d.SocialLinks, f => f.MapFrom(d => d.SocialLinks));
 
+            CreateMap<Skill, SkillResponse>();
+
             CreateMap<SocialLink, SocialLinksResponse>();
 
             CreateMap<SocialLinkRequest, SocialLink>();

@@ -23,6 +23,11 @@ namespace Profile.Infrastructure.Repositories.Relational
             return await _context.Skills.SingleOrDefaultAsync(d => d.Name == name);
         }
 
+        public async Task<List<Skill>?> GetAllSkills()
+        {
+            return await _context.Skills.AsNoTracking().ToListAsync();
+        }
+
         public async Task<List<Skill>?> GetSkillsByNames(string[] names)
         {
             return await _context.Skills.Where(d => names.Contains(d.Name)).ToListAsync();

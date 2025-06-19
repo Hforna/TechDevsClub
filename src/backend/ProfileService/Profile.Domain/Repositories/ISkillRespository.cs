@@ -13,6 +13,7 @@ namespace Profile.Domain.Repositories
         public Task<bool> SkillExists(string name);
         public Task<Skill?> GetSkillByName(string name);
         public Task<UserSkills?> GetUserSkills(User user);
+        public Task<List<Skill>?> GetAllSkills();
         public Task<List<Skill>?> GetSkillsByNames(string[] names);
     }
 }

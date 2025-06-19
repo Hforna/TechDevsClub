@@ -27,7 +27,7 @@ namespace Profile.Api.BackgroundJobs
 
         void DoWork(object state)
         {
-            _ = Task.Run(async () =>
+            Task.Run(async () =>
             {
                 try
                 {
@@ -58,7 +58,7 @@ namespace Profile.Api.BackgroundJobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error executing daily background work");
+                    _logger.LogError(ex, "Error executing background work");
                 }
                 finally
                 {

@@ -32,9 +32,6 @@ namespace Profile.Api.Endpoints
             app.MapPut("update-password", UpdatePassword)
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
-            app.MapPost("set-skills", SetUserSkills)
-                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
-
             app.MapGet("forgot-password", ForgotPassword)
                 .WithName("ForgotAccountPassword")
                 .WithSummary("Request a redefinition password by user email");
@@ -70,19 +67,6 @@ namespace Profile.Api.Endpoints
 
             return Results.Ok(result);
         }
-
-        [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
-        static async Task<IResult> SetUserSkills([FromBody] SetUserSkillsRequest request, [FromServices] IUserService service)
-        {
-            var result = await service.SetUserSkills(request);
-
-            return Results.Ok(result);
-        }
-
-        //static async Task<IResult> RemoveUserSkills([FromBody]RemoveUserSkillsRequest request, [FromServices]IUserService service)
-        //{
-        //
-        //}
 
         static async Task<IResult> UpdatePassword([FromBody] UpdatePasswordRequest request, [FromServices] IUserService service)
         {

@@ -24,6 +24,27 @@ namespace Profile.Domain.Aggregates
         public ICollection<RefreshToken> RefreshTokens { get; set; }
         public Guid UserIdentifier { get; set; } = Guid.NewGuid();
 
+        public void RemoveSkill(Skill skill)
+        {
+            if (Skills.Select(d => d.Skill).Contains(skill) == false)
+                throw new DomainException(ResourceExceptMessages.USER_DOESNT_HAVE_SKILL, System.Net.HttpStatusCode.BadRequest);
+
+            Skills.Remove(Skills.FirstOrDefault(d => d.Skill == skill)!);
+        }
+
+        public void RemoveSkillsByNames(List<string> names)
+        {
+            if (names.Any(d => Skills
+            .Select(d => d.Skill.Name)
+            .Contains(d) == false))
+                throw new DomainException(ResourceExceptMessages.USER_DOESNT_HAVE_SKILL, System.Net.HttpStatusCode.BadRequest);
+
+            foreach(var name in names)
+            {
+                Skills.Remove(Skills.FirstOrDefault(d => d.Skill.Name == name)!);
+            }
+        }
+
         public void AddSkill(long skillId, LevelsEnum level)
         {
             if (Skills.Select(d => d.SkillId).Contains(skillId))

@@ -208,4 +208,7 @@
   <data name="REFRESH_TOKEN_NOT_EXISTS" xml:space="preserve">
     <value>Invalid refresh token</value>
   </data>
+  <data name="USER_DOESNT_HAVE_SKILL" xml:space="preserve">
+    <value>User doesn't have this skill</value>
+  </data>
 </root>
