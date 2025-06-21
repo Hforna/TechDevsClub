@@ -1,9 +1,5 @@
 # 🚀 Tech Devs Club - Developer Platform
 
-[![.NET 8](https://img.shields.io/badge/.NET-8-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/your-username/tech-devs-club/dotnet.yml)](https://github.com/your-username/tech-devs-club/actions)
-
 A collaborative platform for developers to learn, collaborate, and advance their careers, built with modern .NET architecture.
 
 <img src="https://via.placeholder.com/800x400?text=Sample+Dashboard" alt="Dashboard Preview">
@@ -14,6 +10,7 @@ A collaborative platform for developers to learn, collaborate, and advance their
 - **Real-Time Hackathons**: Dynamic rankings with GitHub integration.
 - **Smart Mentorship**: Algorithmic mentor-mentee matching.
 - **Job Board**: Personalized job matching with AI-powered CV analysis.
+- **Authentication**: User can authenticate by jwt by application or external services like: github, google, etc...
 
 ## 🛠️ Technology Stack
 ### Backend (.NET Ecosystem)
@@ -31,8 +28,6 @@ A collaborative platform for developers to learn, collaborate, and advance their
 | Tool                  | Function                                 |
 |-----------------------|------------------------------------------|
 | **Docker**            | Microservices containerization           |
-| **Kubernetes**        | Production orchestration                 |
-| **Azure DevOps**      | CI/CD pipelines                         |
 | **Redis**             | Distributed caching                      |
 
 ## 🚀 Getting Started
