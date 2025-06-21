@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Profile.Api.Filters;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
 using Profile.Application.Services;
 using Profile.Domain.Exceptions;
+using System.Security.Claims;
 
 namespace Profile.Api.Endpoints
 {
@@ -40,6 +42,10 @@ namespace Profile.Api.Endpoints
                 .WithName("ResetUserPassword")
                 .WithSummary("Reset a password with token that was sent on e-mail");
 
+            app.MapGet("create-github", CreateUserByGitHub)
+                .WithName("CreateUserByGitHubOAuth")
+                .WithSummary("Create an user by github authentication, user will be redirected to their github accoun for application authorization");
+
             return app;
         }
 
@@ -49,6 +55,25 @@ namespace Profile.Api.Endpoints
             var result = await service.CreateUser(request);
 
             return Results.Created(string.Empty, result);
+        }
+
+        static async Task<IResult> CreateUserByGitHub([FromServices] IUserService service, HttpContext context)
+        {
+            var result = await context.AuthenticateAsync("GitHub");
+
+            if (IsNotAuthenticated(result))
+                return Results.Challenge(new Microsoft.AspNetCore.Authentication.AuthenticationProperties()
+                {
+                    RedirectUri = "localhost:51629/api/users/create-github"
+                }, authenticationSchemes: new List<string>() { "GitHub" });
+
+            var email = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Email == d.Type).Value;
+            var name = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Name == d.Type).Value;
+
+            await service.CreateUserByOauth(email, name);
+            await context.SignOutAsync();
+
+            return Results.Redirect("localhost:8080/api/login/github");
         }
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
@@ -88,6 +113,13 @@ namespace Profile.Api.Endpoints
             await service.ResetPassword(email, token, request);
 
             return Results.Ok();
+        }
+
+        static bool IsNotAuthenticated(AuthenticateResult result)
+        {
+            return result.Principal is null
+                || result.Principal.Identities.Any(d => d.IsAuthenticated == false)
+                || result.Succeeded.Equals(false);
         }
     }
 }

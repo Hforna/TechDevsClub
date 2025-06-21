@@ -19,6 +19,8 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Profile.Domain.Repositories;
+using Profile.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,6 +93,7 @@ builder.Services.AddAuthentication(cfg =>
 
     opt.ClaimActions.MapJsonKey("sub", "id");
     opt.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
+    opt.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
 
     opt.Events.OnCreatingTicket = async ctx =>
     {
@@ -160,11 +163,6 @@ app.Use(async (context, next) =>
         await context.Session.CommitAsync();
     }
     await next();
-});
-
-app.MapGet("/", (HttpContext ctx) =>
-{
-    return ctx.User.Claims.Select(d => new { d.Type, d.Value }).ToList();
 });
 
 app.UseRateLimiter();
