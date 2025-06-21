@@ -21,6 +21,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Profile.Application.Services
 {
@@ -32,6 +33,7 @@ namespace Profile.Application.Services
         public Task<UserSkillsResponse> SetUserSkills(SetUserSkillsRequest request);
         public Task UpdatePassword(UpdatePasswordRequest request);
         public Task ForgotPassword(string email);
+        public Task CreateUserByOauth(string email, string userName);
         public Task ResetPassword(string email, string token, ResetPasswordRequest request);
     }
 
@@ -253,6 +255,26 @@ namespace Profile.Application.Services
             _uof.GenericRepository.Update<User>(user);
 
             await _uof.Commit();
+        }
+
+        public async Task CreateUserByOauth(string email, string userName)
+        {
+            var user = await _uof.UserRepository.UserByEmail(email);
+
+            if (user is null)
+            {
+                user = new User()
+                {
+                    Email = email,
+                    Active = true,
+                    UserName = userName,
+                    PasswordHash = "--------",
+                    SecurityStamp = Guid.NewGuid().ToString()
+                };
+
+                await _uof.GenericRepository.Add<User>(user);
+                await _uof.Commit();
+            }
         }
     }
 }
