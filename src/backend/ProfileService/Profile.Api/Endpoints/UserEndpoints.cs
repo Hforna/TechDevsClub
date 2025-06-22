@@ -64,16 +64,21 @@ namespace Profile.Api.Endpoints
             if (IsNotAuthenticated(result))
                 return Results.Challenge(new Microsoft.AspNetCore.Authentication.AuthenticationProperties()
                 {
-                    RedirectUri = "localhost:51629/api/users/create-github"
+                    RedirectUri = "localhost:51334/api/users/create-github"
                 }, authenticationSchemes: new List<string>() { "GitHub" });
 
-            var email = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Email == d.Type).Value;
-            var name = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Name == d.Type).Value;
 
-            await service.CreateUserByOauth(email, name);
+            var email = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Email == d.Type)!;
+            var name = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Name == d.Type)!.Value;
+            if (email is null)
+            {
+                await context.SignOutAsync();
+                return Results.BadRequest("E-mail not provided by github");
+            }
+            await service.CreateUserByOauth(email.Value, name);
             await context.SignOutAsync();
 
-            return Results.Redirect("localhost:8080/api/login/github");
+            return Results.Redirect("localhost:51334/api/login/github");
         }
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]

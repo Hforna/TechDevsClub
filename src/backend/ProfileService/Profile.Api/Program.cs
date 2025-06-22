@@ -21,6 +21,8 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Profile.Domain.Repositories;
 using Profile.Application.Services;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +82,7 @@ builder.Services.AddAuthentication(cfg =>
 }).AddCookie("cookie")
 .AddOAuth("GitHub", opt =>
 {
+    
     opt.SignInScheme = "cookie";
     opt.ClientId = builder.Configuration.GetValue<string>("services:gitHub:clientId")!;
     opt.ClientSecret = builder.Configuration.GetValue<string>("services:gitHub:clientSecret")!;
@@ -95,12 +98,33 @@ builder.Services.AddAuthentication(cfg =>
     opt.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
     opt.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
 
+    opt.Scope.Add("user:email");
+
     opt.Events.OnCreatingTicket = async ctx =>
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
         request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ctx.AccessToken);
         using var result = await ctx.Backchannel.SendAsync(request);
         var user = await result.Content.ReadFromJsonAsync<JsonElement>();
+        if(user.TryGetProperty("email", out var value) == false)
+        {
+            var resultToString = await result.Content.ReadAsStringAsync();
+            var deserialize = JsonConvert.DeserializeObject(resultToString) as JObject;
+
+            using var requestEmail = new HttpRequestMessage(HttpMethod.Get, $"{ctx.Options.UserInformationEndpoint}/emails");
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ctx.AccessToken);
+            using var emailResult = await ctx.Backchannel.SendAsync(requestEmail);
+            var resultAsJson = await emailResult.Content.ReadFromJsonAsync<JsonElement>();
+
+            var firstEmail = resultAsJson
+            .EnumerateArray()
+            .FirstOrDefault(d => d.GetProperty("primary").GetBoolean() == true)
+            .GetProperty("email").GetString();
+
+            deserialize!.SelectToken("email").Replace(firstEmail);
+            var JobjToString = deserialize.ToString();
+            user = JsonDocument.Parse(JobjToString).RootElement;
+        }
 
         ctx.RunClaimActions(user);
     };
@@ -134,6 +158,7 @@ app.UseMiddleware<CultureInfoMiddleware>();
 
 app.Use(async (context, next) =>
 {
+    
     var result = await context.AuthenticateAsync("cookie");
     if (result.Succeeded)
     {
