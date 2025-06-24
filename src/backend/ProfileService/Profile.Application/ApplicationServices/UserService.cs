@@ -28,6 +28,7 @@ namespace Profile.Application.Services
     public interface IUserService
     {
         public Task<UserResponse> CreateUser(CreateUserRequest request);
+        public Task UserCanAuthenticate(string email);
         public Task ConfirmEmail(string email, string token);
         public Task<Address> UpdateUserAddress(UpdateAddressRequest request);
         public Task<UserSkillsResponse> SetUserSkills(SetUserSkillsRequest request);
@@ -261,32 +262,28 @@ namespace Profile.Application.Services
         {
             var user = await _uof.UserRepository.UserByEmail(email);
 
-            user = new User()
+            if (user is null)
             {
-                Email = email,
-                Active = true,
-                UserName = userName,
-                PasswordHash = "--------",
-                SecurityStamp = Guid.NewGuid().ToString()
-            };
+                user = new User()
+                {
+                    Email = email,
+                    Active = true,
+                    UserName = userName,
+                    PasswordHash = "--------",
+                    SecurityStamp = Guid.NewGuid().ToString()
+                };
 
-            await _uof.GenericRepository.Add<User>(user);
-            await _uof.Commit();
+                await _uof.GenericRepository.Add<User>(user);
+                await _uof.Commit();
+            }
+        }
 
-            //if (user is null)
-            //{
-            //    user = new User()
-            //    {
-            //        Email = email,
-            //        Active = true,
-            //        UserName = userName,
-            //        PasswordHash = "--------",
-            //        SecurityStamp = Guid.NewGuid().ToString()
-            //    };
+        public async Task UserCanAuthenticate(string email)
+        {
+            var user = await _uof.UserRepository.UserByEmail(email);
 
-            //            //    await _uof.GenericRepository.Add<User>(user);
-            //    await _uof.Commit();
-            //}
+            if (user is null)
+                throw new ContextException(ResourceExceptMessages.USER_DOESNT_EXISTS, HttpStatusCode.NotFound);
         }
     }
 }
