@@ -261,20 +261,32 @@ namespace Profile.Application.Services
         {
             var user = await _uof.UserRepository.UserByEmail(email);
 
-            if (user is null)
+            user = new User()
             {
-                user = new User()
-                {
-                    Email = email,
-                    Active = true,
-                    UserName = userName,
-                    PasswordHash = "--------",
-                    SecurityStamp = Guid.NewGuid().ToString()
-                };
+                Email = email,
+                Active = true,
+                UserName = userName,
+                PasswordHash = "--------",
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
 
-                await _uof.GenericRepository.Add<User>(user);
-                await _uof.Commit();
-            }
+            await _uof.GenericRepository.Add<User>(user);
+            await _uof.Commit();
+
+            //if (user is null)
+            //{
+            //    user = new User()
+            //    {
+            //        Email = email,
+            //        Active = true,
+            //        UserName = userName,
+            //        PasswordHash = "--------",
+            //        SecurityStamp = Guid.NewGuid().ToString()
+            //    };
+
+            //            //    await _uof.GenericRepository.Add<User>(user);
+            //    await _uof.Commit();
+            //}
         }
     }
 }

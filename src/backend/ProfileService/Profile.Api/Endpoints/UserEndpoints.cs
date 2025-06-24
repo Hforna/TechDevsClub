@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Profile.Api.Filters;
@@ -46,6 +47,8 @@ namespace Profile.Api.Endpoints
                 .WithName("CreateUserByGitHubOAuth")
                 .WithSummary("Create an user by github authentication, user will be redirected to their github accoun for application authorization");
 
+            app.MapGet("handle-github-callback", HandleGitHubCallback);
+
             return app;
         }
 
@@ -59,26 +62,35 @@ namespace Profile.Api.Endpoints
 
         static async Task<IResult> CreateUserByGitHub([FromServices] IUserService service, HttpContext context)
         {
-            var result = await context.AuthenticateAsync("GitHub");
+            var result = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             if (IsNotAuthenticated(result))
                 return Results.Challenge(new Microsoft.AspNetCore.Authentication.AuthenticationProperties()
                 {
-                    RedirectUri = "localhost:51334/api/users/create-github"
+                    RedirectUri = "https://localhost:56075/api/users/handle-github-callback"
                 }, authenticationSchemes: new List<string>() { "GitHub" });
 
+            return Results.Redirect("https://localhost:56075/api/login/github");
+        }
+
+        static async Task<IResult> HandleGitHubCallback([FromServices]IUserService service, HttpContext context)
+        {
+            var result = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if(IsNotAuthenticated(result))
+                return Results.Redirect("https://localhost:56075/api/login/github");
 
             var email = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Email == d.Type)!;
             var name = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Name == d.Type)!.Value;
             if (email is null)
             {
-                await context.SignOutAsync();
+                await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return Results.BadRequest("E-mail not provided by github");
             }
             await service.CreateUserByOauth(email.Value, name);
-            await context.SignOutAsync();
+            await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return Results.Redirect("localhost:51334/api/login/github");
+            return Results.Redirect("https://localhost:56075/api/login/github");
         }
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
