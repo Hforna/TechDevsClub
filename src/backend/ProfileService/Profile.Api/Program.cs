@@ -79,11 +79,11 @@ builder.Services.AddAuthentication(cfg =>
 {
     cfg.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     cfg.DefaultChallengeScheme = "GitHub";
-}).AddCookie("cookie")
+}).AddCookie("Cookies")
 .AddOAuth("GitHub", opt =>
 {
     
-    opt.SignInScheme = "cookie";
+    opt.SignInScheme = "Cookies";
     opt.ClientId = builder.Configuration.GetValue<string>("services:gitHub:clientId")!;
     opt.ClientSecret = builder.Configuration.GetValue<string>("services:gitHub:clientSecret")!;
 
@@ -106,13 +106,13 @@ builder.Services.AddAuthentication(cfg =>
         request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ctx.AccessToken);
         using var result = await ctx.Backchannel.SendAsync(request);
         var user = await result.Content.ReadFromJsonAsync<JsonElement>();
-        if(user.TryGetProperty("email", out var value) == false)
+        if(user.TryGetProperty("email", out var value) && string.IsNullOrEmpty(value.GetString()))
         {
             var resultToString = await result.Content.ReadAsStringAsync();
             var deserialize = JsonConvert.DeserializeObject(resultToString) as JObject;
 
             using var requestEmail = new HttpRequestMessage(HttpMethod.Get, $"{ctx.Options.UserInformationEndpoint}/emails");
-            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ctx.AccessToken);
+            requestEmail.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ctx.AccessToken);
             using var emailResult = await ctx.Backchannel.SendAsync(requestEmail);
             var resultAsJson = await emailResult.Content.ReadFromJsonAsync<JsonElement>();
 
@@ -159,7 +159,7 @@ app.UseMiddleware<CultureInfoMiddleware>();
 app.Use(async (context, next) =>
 {
     
-    var result = await context.AuthenticateAsync("cookie");
+    var result = await context.AuthenticateAsync("Cookies");
     if (result.Succeeded)
     {
         Console.WriteLine("User not authenticated by cookie");
