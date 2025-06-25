@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
 using Profile.Application.Services;
+using Profile.Domain.Exceptions;
 using System.Security.Claims;
 
 namespace Profile.Api.Endpoints
@@ -35,14 +36,14 @@ namespace Profile.Api.Endpoints
             return Results.Ok(result);
         }
 
-        static async Task<IResult> LoginByGitHub([FromQuery]string redirectUrl, HttpContext context, [FromServices]IUserService service)
+        static async Task<IResult> LoginByGitHub([FromQuery]string redirectUrl, HttpContext context, [FromServices]ILoginService service)
         {
             var result = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             if (IsNotAuthenticated(result))
                 return Results.Challenge(new Microsoft.AspNetCore.Authentication.AuthenticationProperties()
                 {
-                    RedirectUri = "https://localhost:56075/api/login/github"
+                    RedirectUri = $"https://localhost:56075/api/login/github?redirectUrl={redirectUrl}"
                 },
                 authenticationSchemes: new List<string>() { "GitHub" });
 
@@ -52,7 +53,15 @@ namespace Profile.Api.Endpoints
                 await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return Results.BadRequest("E-mail not provided");
             }
-            var user = service.UserCanAuthenticate(email.Value);
+
+            try
+            {
+                var user = service.AuthenticateUserByOAuth(email.Value);
+            } catch(ContextException cx)
+            {
+                await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                throw;
+            }
 
             return Results.Redirect(redirectUrl);
         }

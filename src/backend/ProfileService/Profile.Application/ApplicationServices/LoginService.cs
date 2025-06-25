@@ -12,6 +12,7 @@ using Profile.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace Profile.Application.ApplicationServices
     public interface ILoginService
     {
         public Task<LoginResponse> LoginByApplication(LoginRequest request);
+        public Task AuthenticateUserByOAuth(string email);
     }
 
     public class LoginService : ILoginService
@@ -44,6 +46,39 @@ namespace Profile.Application.ApplicationServices
             _requestService = requestService;
             _mapper = mapper;
             _geoLocation = geoLocation;
+        }
+
+        public async Task AuthenticateUserByOAuth(string email)
+        {
+            var user = await _uof.UserRepository.UserByEmail(email);
+
+            if (user is null)
+                throw new ContextException(ResourceExceptMessages.USER_DOESNT_EXISTS, HttpStatusCode.NotFound);
+
+            var ip = _requestService.GetRequestIp();
+
+            var device = await _uof.DeviceRepository.DeviceByUserIdAndIp(user.Id, ip);
+
+            if (device is null)
+            {
+                var deviceInfos = _requestService.GetDeviceInfos();
+                var deviceLocation = _geoLocation.GetLocationInfosByIp(ip);
+
+                device = _mapper.Map<Device>(deviceInfos);
+                device.Ip = ip;
+                device.Location = _mapper.Map<DeviceLocation>(deviceLocation);
+                await _uof.GenericRepository.Add<Device>(device);
+            } else
+            {
+                var deviceRefreshToken = await _uof.DeviceRepository.GetRefreshTokenByDeviceAndUser(user.Id, device.Id);
+
+                if (deviceRefreshToken is not null)
+                {
+                    _uof.GenericRepository.Delete<RefreshToken>(deviceRefreshToken);
+                }
+            }
+            device.LastAccess = DateTime.UtcNow;
+            await _uof.Commit();
         }
 
         public async Task<LoginResponse> LoginByApplication(LoginRequest request)

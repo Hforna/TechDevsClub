@@ -90,7 +90,7 @@ namespace Profile.Api.Endpoints
             await service.CreateUserByOauth(email.Value, name);
             await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return Results.Redirect("https://localhost:56075/api/login/github");
+            return Results.Redirect("https://localhost:56075/");
         }
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]

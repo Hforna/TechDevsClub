@@ -28,7 +28,6 @@ namespace Profile.Application.Services
     public interface IUserService
     {
         public Task<UserResponse> CreateUser(CreateUserRequest request);
-        public Task UserCanAuthenticate(string email);
         public Task ConfirmEmail(string email, string token);
         public Task<Address> UpdateUserAddress(UpdateAddressRequest request);
         public Task<UserSkillsResponse> SetUserSkills(SetUserSkillsRequest request);
@@ -276,14 +275,6 @@ namespace Profile.Application.Services
                 await _uof.GenericRepository.Add<User>(user);
                 await _uof.Commit();
             }
-        }
-
-        public async Task UserCanAuthenticate(string email)
-        {
-            var user = await _uof.UserRepository.UserByEmail(email);
-
-            if (user is null)
-                throw new ContextException(ResourceExceptMessages.USER_DOESNT_EXISTS, HttpStatusCode.NotFound);
         }
     }
 }
