@@ -32,7 +32,13 @@ namespace Profile.Domain.Entities
             Status = ConnectionStatus.Approved;
         }
 
-        public void Reject() => Status = ConnectionStatus.Rejected;
+        public void Reject()
+        {
+            if (Status != ConnectionStatus.Pending)
+                throw new DomainException(ResourceExceptMessages.ONLY_ACCEPT_PENDING_CONNECTION, System.Net.HttpStatusCode.Unauthorized);
+
+            Status = ConnectionStatus.Rejected;
+        }
 
         public class Mapping : IEntityTypeConfiguration<Connection>
         {

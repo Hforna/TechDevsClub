@@ -24,6 +24,11 @@ namespace Profile.Api.Endpoints
                 .WithDescription("Accept a connection request by connection id")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
+            app.MapGet("{id}/reject", AcceptConnection)
+                .WithName("RejectConnectionRequest")
+                .WithDescription("Reject a connection request by connection id")
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
+
             return app;
         }
 
@@ -48,6 +53,15 @@ namespace Profile.Api.Endpoints
             var result = await service.AcceptConnection(id);
 
             return Results.Accepted(string.Empty, result);
+        }
+
+        static async Task<IResult> RejectConnection([FromServices]IConnectionService service, HttpContext context)
+        {
+            var id = await BinderIdValidatorExtension.Validate(context, "id");
+
+            await service.RejectConnection(id);
+
+            return Results.NoContent();
         }
     }
 }

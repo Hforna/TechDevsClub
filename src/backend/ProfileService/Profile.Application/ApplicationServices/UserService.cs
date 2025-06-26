@@ -269,10 +269,20 @@ namespace Profile.Application.Services
                     Active = true,
                     UserName = userName,
                     PasswordHash = "--------",
-                    SecurityStamp = Guid.NewGuid().ToString()
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    EmailConfirmed = true
                 };
 
                 await _uof.GenericRepository.Add<User>(user);
+                await _uof.Commit();
+
+                var profile = new ProfileEntity()
+                {
+                    UserId = user.Id,
+                    User = user,
+                    Description = ""
+                };
+
                 await _uof.Commit();
             }
         }

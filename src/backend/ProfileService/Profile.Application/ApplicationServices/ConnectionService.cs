@@ -12,6 +12,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Profile.Application.ApplicationServices
 {
@@ -19,6 +20,8 @@ namespace Profile.Application.ApplicationServices
     {
         public Task<ConnectionResponse> CreateConnection(long profileId);
         public Task<ConnectionResponse> AcceptConnection(long connectionId);
+        public Task RejectConnection(long connectionId);
+
     }
 
     public class ConnectionService : IConnectionService
@@ -79,16 +82,7 @@ namespace Profile.Application.ApplicationServices
             if (profileConnected is null)
                 throw new ContextException(ResourceExceptMessages.PROFILE_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var connectionExists = _uof.ConnectionRepository.ConnectionExists(profile.Id, profileConnected.Id);
-
-            if (connectionExists is null)
-                throw new ContextException(ResourceExceptMessages.ALREADY_CONNECTED, System.Net.HttpStatusCode.Unauthorized);
-
-            var connection = new Connection()
-            {
-                ConnectorId = profile.Id,
-                ConnectedId = profileConnected.Id
-            };
+            var connection = await CreateConnectionIfNotExists(profile.Id, profileConnected.Id);
 
             if (profileConnected.IsPrivate == false)
             {
@@ -108,6 +102,36 @@ namespace Profile.Application.ApplicationServices
             await _uof.Commit();    
 
             return _mapper.Map<ConnectionResponse>(connection);            
+        }
+
+        public async Task RejectConnection(long connectionId)
+        {
+            var user = await _uof.UserRepository.UserByIdentifier(_userUid);
+            var profile = await _uof.ProfileRepository.ProfileByUser(user!);
+
+            var connection = await _uof.GenericRepository.GetById<Connection>(connectionId);
+
+            if (connection is null)
+                throw new ContextException(ResourceExceptMessages.CONNECTION_BY_ID_NOT_EXISTS, System.Net.HttpStatusCode.BadRequest);
+
+            _uof.GenericRepository.Delete<Connection>(connection);
+            await _uof.Commit();
+        }
+
+        private async Task<Connection> CreateConnectionIfNotExists(long profileId, long profileConnectedId)
+        {
+            var connectionExists = await _uof.ConnectionRepository.ConnectionExists(profileId, profileConnectedId);
+
+            if (!connectionExists)
+                throw new ContextException(ResourceExceptMessages.ALREADY_CONNECTED, System.Net.HttpStatusCode.Unauthorized);
+
+            var connection = new Connection()
+            {
+                ConnectorId = profileId,
+                ConnectedId = profileConnectedId
+            };
+
+            return connection;
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using StackExchange.Redis;
 
 namespace Profile.Infrastructure.Repositories
 {
@@ -19,9 +20,9 @@ namespace Profile.Infrastructure.Repositories
             _cache = cache;
         }
 
-        //public async Task SetProfileVisitedByUser(long profileId)
-        //{
-        //    var profilesVisited = await _cache.GetAsync<>("");
-        //}
+        public async Task SetProfileVisitedByUser(long profileId)
+        {
+            var profilesVisited = 
+        }
     }
 }
