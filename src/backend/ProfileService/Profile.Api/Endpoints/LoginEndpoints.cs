@@ -36,14 +36,14 @@ namespace Profile.Api.Endpoints
             return Results.Ok(result);
         }
 
-        static async Task<IResult> LoginByGitHub([FromQuery]string redirectUrl, HttpContext context, [FromServices]ILoginService service)
+        static async Task<IResult> LoginByGitHub(HttpContext context, [FromServices]ILoginService service)
         {
             var result = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             if (IsNotAuthenticated(result))
                 return Results.Challenge(new Microsoft.AspNetCore.Authentication.AuthenticationProperties()
                 {
-                    RedirectUri = $"https://localhost:56075/api/login/github?redirectUrl={redirectUrl}"
+                    RedirectUri = $"https://localhost:56075/api/login/github"
                 },
                 authenticationSchemes: new List<string>() { "GitHub" });
 
@@ -56,14 +56,14 @@ namespace Profile.Api.Endpoints
 
             try
             {
-                var user = service.AuthenticateUserByOAuth(email.Value);
+                var user = await service.AuthenticateUserByOAuth(email.Value, result.Principal.Claims.ToList());
+
+                return Results.Ok(user);
             } catch(ContextException cx)
             {
                 await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 throw;
             }
-
-            return Results.Redirect(redirectUrl);
         }
 
         static bool IsNotAuthenticated(AuthenticateResult result)

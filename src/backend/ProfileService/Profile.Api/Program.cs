@@ -40,7 +40,6 @@ builder.Services.Configure<SmptSettings>(builder.Configuration.GetSection("SmtpS
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 
-builder.Services.AddScoped<IRequestToken, RequestToken>();
 
 builder.Services.AddHttpContextAccessor();
 

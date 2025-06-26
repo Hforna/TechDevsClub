@@ -46,7 +46,6 @@ namespace Profile.Application.Services
         private readonly IEmailService _emailService;
         private readonly ILogger<UserService> _logger;
         private readonly ITokenService _tokenService;
-        private readonly IRequestToken _requestToken;
         private readonly IGeoLocationService _geoLocation;
         private readonly IRequestService _requestService;
         private readonly string _token;
@@ -54,7 +53,7 @@ namespace Profile.Application.Services
         public UserService(IUnitOfWork uof, IMapper mapper, 
             UserManager<User> userManager, IPasswordEncrypt passwordEncrypt,
             IEmailService emailService, ILogger<UserService> logger, 
-            ITokenService tokenService, IRequestToken requestToken, 
+            ITokenService tokenService,
             IGeoLocationService geoLocation, IRequestService requestService)
         {
             _uof = uof;
@@ -66,8 +65,6 @@ namespace Profile.Application.Services
             _passwordEncrypt = passwordEncrypt;
             _emailService = emailService;
             _tokenService = tokenService;
-            _requestToken = requestToken;
-            _token = _requestToken.GetToken();
         }
 
         public async Task<UserResponse> CreateUser(CreateUserRequest request)
@@ -139,9 +136,7 @@ namespace Profile.Application.Services
 
         public async Task<Address> UpdateUserAddress(UpdateAddressRequest request)
         {
-            var userId = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
-
-            var user = await _uof.UserRepository.UserByIdentifier(userId!);
+            var user = await _tokenService.GetUserByToken();
 
             if (user is null)
                 throw new ContextException(ResourceExceptMessages.USER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
@@ -159,8 +154,7 @@ namespace Profile.Application.Services
         {
             var skillsRequest = request.Skills;
 
-            var uid = _tokenService.GetUserIdentifierByToken(_token);
-            var user = await _uof.UserRepository.UserByIdentifier(uid!);
+            var user = await _tokenService.GetUserByToken();
 
             var skillNames = skillsRequest.Select(d => d.Name).Distinct().ToArray();
             var skills = await _uof.SkillRepository.GetSkillsByNames(skillNames);
@@ -190,7 +184,7 @@ namespace Profile.Application.Services
         {
             RequestValidatorCommons.Validate<UpdatePasswordRequest, UpdatePasswordValidator>(request);
 
-            var user = await _uof.UserRepository.UserByIdentifier(_tokenService.GetUserIdentifierByToken(_token));
+            var user = await _tokenService.GetUserByToken();
 
             if (_passwordEncrypt.IsValidPassword(request.Password, user.PasswordHash) == false)
                 throw new ValidationException(ResourceExceptMessages.PASSWORD_INVALID, HttpStatusCode.BadRequest);
@@ -284,6 +278,8 @@ namespace Profile.Application.Services
                 };
 
                 await _uof.Commit();
+
+                await _userManager.AddToRoleAsync(user, "normal");
             }
         }
     }
