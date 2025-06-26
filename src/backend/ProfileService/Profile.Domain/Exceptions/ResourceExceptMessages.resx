@@ -211,4 +211,7 @@
   <data name="USER_DOESNT_HAVE_SKILL" xml:space="preserve">
     <value>User doesn't have this skill</value>
   </data>
+  <data name="TOKEN_IS_NULL" xml:space="preserve">
+    <value>Access token is null</value>
+  </data>
 </root>

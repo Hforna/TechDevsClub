@@ -22,7 +22,7 @@ namespace Profile.Infrastructure.Repositories
 
         public async Task SetProfileVisitedByUser(long profileId)
         {
-            var profilesVisited = 
+            
         }
     }
 }

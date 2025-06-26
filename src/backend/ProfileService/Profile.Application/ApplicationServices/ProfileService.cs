@@ -5,6 +5,7 @@ using Profile.Application.Responses;
 using Profile.Domain.Aggregates;
 using Profile.Domain.Exceptions;
 using Profile.Domain.Repositories;
+using Profile.Domain.Services;
 using Profile.Domain.Services.External;
 using Profile.Domain.Services.Security;
 using Profile.Domain.ValueObjects;
@@ -28,7 +29,6 @@ namespace Profile.Application.ApplicationServices
     public class ProfileService : IProfileService
     {
         private readonly ITokenService _tokenService;
-        private readonly IRequestToken _requestToken;
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
         private readonly SqidsEncoder<long> _sqids;
@@ -36,22 +36,21 @@ namespace Profile.Application.ApplicationServices
         private readonly ILogger<ProfileService> _logger;
         private readonly Guid _userUid;
         private readonly ISessionService _sessionService;
+        private readonly IRequestService _requestService;
 
-        public ProfileService(ITokenService tokenService, IRequestToken requestToken, 
+        public ProfileService(ITokenService tokenService, 
             IUnitOfWork uof, IMapper mapper,
             IGitHubService gitHubService, SqidsEncoder<long> sqids,
-            ILogger<ProfileService> logger, ISessionService sessionService)
+            ILogger<ProfileService> logger, ISessionService sessionService, IRequestService requestService)
         {
             _tokenService = tokenService;
-            _requestToken = requestToken;
+            _requestService = requestService;
             _uof = uof;
             _logger = logger;
             _mapper = mapper;
             _sqids = sqids;
             _gitHubService = gitHubService;
             _sessionService = sessionService;
-
-            _userUid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
         }
 
         public async Task<ProfileResponse> GetProfile(long id)
@@ -63,13 +62,12 @@ namespace Profile.Application.ApplicationServices
                 _logger.LogError($"Profile doesn't exists: profile id: {profile.Id}, is user active: {profile.User.Active}");
                 throw new ContextException(ResourceExceptMessages.PROFILE_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
             }
-            var token = _requestToken.GetToken();
+            var token = _requestService.GetAccessToken();
             User? user = null;
 
             if(!string.IsNullOrEmpty(token))
             {
-                var userUid = _tokenService.GetUserIdentifierByToken(token);
-                user = await _uof.UserRepository.UserByIdentifier(userUid);
+                user = await _tokenService.GetUserByToken();
             }
 
             if (profile.IsPrivate && 
@@ -125,9 +123,7 @@ namespace Profile.Application.ApplicationServices
 
         public async Task<ProfileResponse> UpdateProfile(UpdateProfileRequest request)
         {
-            var userUid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
-
-            var user = await _uof.UserRepository.UserByIdentifier(userUid);
+            var user = await _tokenService.GetUserByToken();
             var profile = await _uof.ProfileRepository.ProfileByUser(user);
             _mapper.Map(request, profile);
 

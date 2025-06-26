@@ -25,18 +25,16 @@ namespace Profile.Application.ApplicationServices
     {
         private readonly ITokenService _tokenService;
         private readonly UserManager<User> _userManager;
-        private readonly IRequestToken _requestToken;
         private readonly IUnitOfWork _uof;
         private readonly IRequestService _requestService;
         private readonly ILogger<TokenAppService> _logger;
 
         public TokenAppService(ITokenService tokenService, UserManager<User> userManager, 
-            IRequestToken requestToken, IUnitOfWork uof, 
+            IUnitOfWork uof, 
             IRequestService requestService, ILogger<TokenAppService> logger)
         {
             _tokenService = tokenService;
             _userManager = userManager;
-            _requestToken = requestToken;
             _uof = uof;
             _requestService = requestService;
             _logger = logger;
@@ -44,8 +42,7 @@ namespace Profile.Application.ApplicationServices
 
         public async Task<LoginResponse> RefreshToken(RefreshTokenRequest request)
         {
-            var userUid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
-            var user = await _uof.UserRepository.UserByIdentifier(userUid);
+            var user = await _tokenService.GetUserByToken();
 
             var requestIp = _requestService.GetRequestIp();
 
@@ -67,9 +64,11 @@ namespace Profile.Application.ApplicationServices
 
             _logger.LogInformation("New refresh token generated for user: {user.Id} for device: {device.Id}", user.Id, device.Id);
 
-            var claims = _tokenService.GetTokenClaims(_requestToken.GetToken());
+            var requestToken = _requestService.GetAccessToken();
 
-            var accessToken = _tokenService.GenerateToken(claims, userUid);
+            var claims = _tokenService.GetTokenClaims(requestToken!);
+
+            var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier);
 
             return new LoginResponse()
             {

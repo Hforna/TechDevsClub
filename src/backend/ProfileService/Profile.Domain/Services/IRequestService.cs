@@ -11,5 +11,6 @@ namespace Profile.Domain.Services
     {
         public string GetRequestIp();
         public DeviceDto? GetDeviceInfos();
+        public string? GetAccessToken();
     }
 }

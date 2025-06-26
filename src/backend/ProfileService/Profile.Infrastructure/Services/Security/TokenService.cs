@@ -1,4 +1,8 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Profile.Domain.Aggregates;
+using Profile.Domain.Exceptions;
+using Profile.Domain.Repositories;
+using Profile.Domain.Services;
 using Profile.Domain.Services.Security;
 using System;
 using System.Collections.Generic;
@@ -17,12 +21,17 @@ namespace Profile.Infrastructure.Services.Security
         private readonly int _expiresOn;
         private readonly string _signKey;
         private readonly int _refreshHoursExpiration;
+        private readonly IRequestService _requestService;
+        private readonly IUnitOfWork _uof;
 
-        public TokenService(int expiresOn, string signKey, int refreshHoursExpiration)
+        public TokenService(int expiresOn, string signKey, int refreshHoursExpiration, 
+            IRequestService requestService, IUnitOfWork uof)
         {
             _expiresOn = expiresOn;
+            _uof = uof;
             _signKey = signKey;
             _refreshHoursExpiration = refreshHoursExpiration;
+            _requestService = requestService;
         }
 
         public string GenerateRefreshToken()
@@ -62,8 +71,13 @@ namespace Profile.Infrastructure.Services.Security
             return DateTime.UtcNow.AddHours(_refreshHoursExpiration);
         }
 
-        public Guid GetUserIdentifierByToken(string token)
+        public Guid GetUserIdentifierByToken()
         {
+            var token = _requestService.GetAccessToken();
+
+            if (string.IsNullOrEmpty(token))
+                throw new AuthenticationException(ResourceExceptMessages.TOKEN_IS_NULL, System.Net.HttpStatusCode.BadRequest);
+
             var handler = new JwtSecurityTokenHandler();
             var read = handler.ReadJwtToken(token);
             var uid = Guid.Parse(read.Claims.FirstOrDefault(d => d.Type == ClaimTypes.Sid).Value);
@@ -105,5 +119,17 @@ namespace Profile.Infrastructure.Services.Security
         }
 
         SymmetricSecurityKey GetSecurityKey() => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_signKey));
+
+        public async Task<User> GetUserByToken()
+        {
+            var uid = GetUserIdentifierByToken();
+
+            var user = await _uof.UserRepository.UserByIdentifier(uid);
+
+            if (user is null)
+                throw new ContextException(ResourceExceptMessages.USER_DOESNT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            return user!;
+        }
     }
 }

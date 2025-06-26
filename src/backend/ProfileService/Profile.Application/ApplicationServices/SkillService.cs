@@ -3,6 +3,7 @@ using Profile.Application.Requests;
 using Profile.Application.Responses;
 using Profile.Domain.Aggregates;
 using Profile.Domain.Repositories;
+using Profile.Domain.Services;
 using Profile.Domain.Services.Security;
 using System;
 using System.Collections.Generic;
@@ -24,15 +25,15 @@ namespace Profile.Application.ApplicationServices
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _uof;
         private readonly ITokenService _tokenService;
-        private readonly IRequestToken _requestToken;
+        private readonly IRequestService _requestService;
 
         public SkillService(IMapper mapper, IUnitOfWork uof, 
-            ITokenService tokenService, IRequestToken requestToken)
+            ITokenService tokenService, IRequestService requestService)
         {
             _mapper = mapper;
+            _requestService = requestService;
             _uof = uof;
             _tokenService = tokenService;
-            _requestToken = requestToken;
         }
 
         public async Task<List<SkillResponse>> GetSkills()
@@ -47,8 +48,7 @@ namespace Profile.Application.ApplicationServices
 
         public async Task RemoveUserSkills(RemoveUserSkillsRequest request)
         {
-            var userUid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken());
-            var user = await _uof.UserRepository.UserByIdentifier(userUid);
+            var user = await _tokenService.GetUserByToken();
 
             user.RemoveSkillsByNames(request.Skills.Select(d => d.Name).ToList());
 

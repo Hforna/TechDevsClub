@@ -22,7 +22,7 @@ namespace Profile.Application.ApplicationServices
     public interface ILoginService
     {
         public Task<LoginResponse> LoginByApplication(LoginRequest request);
-        public Task AuthenticateUserByOAuth(string email);
+        public Task<LoginResponse> AuthenticateUserByOAuth(string email, List<Claim> providerClaims);
     }
 
     public class LoginService : ILoginService
@@ -48,7 +48,7 @@ namespace Profile.Application.ApplicationServices
             _geoLocation = geoLocation;
         }
 
-        public async Task AuthenticateUserByOAuth(string email)
+        public async Task<LoginResponse> AuthenticateUserByOAuth(string email, List<Claim> providerClaims)
         {
             var user = await _uof.UserRepository.UserByEmail(email);
 
@@ -79,6 +79,35 @@ namespace Profile.Application.ApplicationServices
             }
             device.LastAccess = DateTime.UtcNow;
             await _uof.Commit();
+
+            var refreshToken = new RefreshToken()
+            {
+                DeviceId = device.Id,
+                UserId = user.Id,
+                Value = _tokenService.GenerateRefreshToken(),
+                RefreshTokenExpiration = _tokenService.GetRefreshTokenExpiration()
+            };
+            await _uof.GenericRepository.Add<RefreshToken>(refreshToken);
+
+            await _uof.Commit();
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var claims = providerClaims;
+
+            foreach (var role in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            claims.Add(new Claim(ClaimTypes.Email, user.Email));
+            claims.Add(new Claim("device-id", device.Id.ToString()));
+
+            var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier);
+
+            return new LoginResponse()
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken.Value
+            };
         }
 
         public async Task<LoginResponse> LoginByApplication(LoginRequest request)

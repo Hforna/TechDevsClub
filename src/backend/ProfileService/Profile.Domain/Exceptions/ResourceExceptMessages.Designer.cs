@@ -287,6 +287,15 @@ namespace Profile.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Access token is null.
+        /// </summary>
+        public static string TOKEN_IS_NULL {
+            get {
+                return ResourceManager.GetString("TOKEN_IS_NULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a The new password cannot be equal the old password.
         /// </summary>
         public static string UPDATE_WITH_THE_SAME_PASSWORD {

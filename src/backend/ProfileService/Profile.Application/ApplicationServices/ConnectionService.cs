@@ -4,6 +4,7 @@ using Profile.Domain.Aggregates;
 using Profile.Domain.Entities;
 using Profile.Domain.Exceptions;
 using Profile.Domain.Repositories;
+using Profile.Domain.Services;
 using Profile.Domain.Services.Security;
 using Sqids;
 using System;
@@ -26,26 +27,23 @@ namespace Profile.Application.ApplicationServices
 
     public class ConnectionService : IConnectionService
     {
-        private readonly IRequestToken _requestToken;
+        private readonly IRequestService _requestService;
         private readonly ITokenService _tokenService;
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
-        private readonly Guid _userUid;
 
-        public ConnectionService(IRequestToken requestToken, ITokenService tokenService, 
+        public ConnectionService(IRequestService requestService, ITokenService tokenService, 
             IUnitOfWork uof, IMapper mapper)
         {
-            _requestToken = requestToken;
+            _requestService = requestService;
             _tokenService = tokenService;
             _uof = uof;
             _mapper = mapper;
-
-            _userUid = _tokenService.GetUserIdentifierByToken(_requestToken.GetToken())!;
         }
 
         public async Task<ConnectionResponse> AcceptConnection(long connectionId)
         {
-            var user = await _uof.UserRepository.UserByIdentifier(_userUid);
+            var user = await _tokenService.GetUserByToken();
             var profile = await _uof.ProfileRepository.ProfileByUser(user);
 
             var connection = await _uof.GenericRepository.GetById<Connection>(connectionId);
@@ -72,7 +70,7 @@ namespace Profile.Application.ApplicationServices
 
         public async Task<ConnectionResponse> CreateConnection(long profileId)
         {
-            var user = await _uof.UserRepository.UserByIdentifier(_userUid);
+            var user = await _tokenService.GetUserByToken();
             var profile = await _uof.ProfileRepository.ProfileByUser(user!);
 
             if (profile.Id == profileId) throw new ContextException(ResourceExceptMessages.CONNECT_WITH_YOURSELF, System.Net.HttpStatusCode.Unauthorized);
@@ -106,7 +104,7 @@ namespace Profile.Application.ApplicationServices
 
         public async Task RejectConnection(long connectionId)
         {
-            var user = await _uof.UserRepository.UserByIdentifier(_userUid);
+            var user = await _tokenService.GetUserByToken();
             var profile = await _uof.ProfileRepository.ProfileByUser(user!);
 
             var connection = await _uof.GenericRepository.GetById<Connection>(connectionId);

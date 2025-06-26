@@ -93,7 +93,8 @@ namespace Profile.Infrastructure
             services.AddScoped<ITokenService, TokenService>(d => new TokenService(
                 int.Parse(configuration.GetSection("services:security:jwt:expiresOn").Value!), 
                 configuration.GetSection("services:security:jwt:signKey").Value!, 
-                int.Parse(configuration.GetSection("services:security:jwt:refreshTokenExpiration").Value!)));
+                int.Parse(configuration.GetSection("services:security:jwt:refreshTokenExpiration").Value!), 
+                d.CreateScope().ServiceProvider.GetRequiredService<IRequestService>(), d.CreateScope().ServiceProvider.GetRequiredService<IUnitOfWork>()));
         }
 
         static void AddServices(IServiceCollection services)

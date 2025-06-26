@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Profile.Domain.Dtos;
 using Profile.Domain.Services;
 using System;
@@ -43,6 +45,16 @@ namespace Profile.Infrastructure.Services
             var parse = parser.Parse(userAgent);
 
             return new DeviceDto(parse.Device.Brand, parse.Device.Model, parse.OS.Family, parse.Device.Family);
+        }
+
+        public string? GetAccessToken()
+        {
+            var token = _httpContext!.HttpContext!.Request.Headers.Authorization.ToString();
+
+            if (string.IsNullOrEmpty(token))
+                return null;
+
+            return token["Bearer ".Length..].Trim();
         }
     }
 }
