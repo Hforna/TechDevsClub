@@ -12,13 +12,14 @@ namespace Career.Domain.Aggregates.JobRoot
     public class JobApplication
     {
         public Guid Id { get; set; }
-        public DateTime AppliedAt { get; set; }
+        public DateTime AppliedAt { get; private set; } = DateTime.UtcNow;
         public ApplicationStatus Status { get; set; }
         public Guid JobId { get; set; }
         [ForeignKey("JobId")]
         public Job Job { get; set; }
         public Guid UserId { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
         public decimal? DesiredSalary { get; set; }
     }
 }

@@ -56,8 +56,6 @@ namespace Profile.Api.Endpoints
         static async Task<IResult> GetProfilesRecommendedByUserProfileVisits([FromQuery]int page, [FromQuery]int perPage, 
             [FromServices]IProfileService service)
         {
-            if (perPage > 100) throw new ValidationException(ResourceExceptMessages.OUT_OF_RANGE_PER_PAGE_MAX_100, System.Net.HttpStatusCode.BadRequest);
-
             var result = await service.GetProfileRecommendedByProfileVisits(page, perPage);
 
             if (result is null) return Results.NoContent();

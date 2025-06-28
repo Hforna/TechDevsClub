@@ -19,6 +19,7 @@ namespace Profile.Application.ApplicationServices
 {
     public interface IConnectionService
     {
+        public Task<ConnectionsPaginationResponse> ProfileConnectionsPagination(long profileId, int page, int perPage);
         public Task<ConnectionResponse> CreateConnection(long profileId);
         public Task<ConnectionResponse> AcceptConnection(long connectionId);
         public Task RejectConnection(long connectionId);
@@ -100,6 +101,33 @@ namespace Profile.Application.ApplicationServices
             await _uof.Commit();    
 
             return _mapper.Map<ConnectionResponse>(connection);            
+        }
+
+        public async Task<ConnectionsPaginationResponse> ProfileConnectionsPagination(long profileId, int page, int perPage)
+        {
+            if (perPage > 100) throw new ValidationException(ResourceExceptMessages.OUT_OF_RANGE_PER_PAGE_MAX_100, System.Net.HttpStatusCode.BadRequest);
+
+            var profile = await _uof.ProfileRepository.ProfileById(profileId);
+
+            if (profile is null)
+                throw new ContextException(ResourceExceptMessages.PROFILE_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            var connections = await _uof.ConnectionRepository.ProfileConnectionsPaged(profileId, page, perPage);
+
+            var response = new ConnectionsPaginationResponse()
+            {
+                HasNextPage = connections.HasNextPage,
+                HasPreviousPage = connections.HasPreviousPage,
+                IsFirstPage = connections.IsFirstPage,
+                Count = connections.Count,
+                IsLastPage = connections.IsLastPage,
+                PageNumber = connections.PageNumber,
+            };
+            response.Connections = connections
+                .Select(connection => _mapper.Map<ConnectionResponse>(connection))
+                .ToList();
+
+            return response;
         }
 
         public async Task RejectConnection(long connectionId)

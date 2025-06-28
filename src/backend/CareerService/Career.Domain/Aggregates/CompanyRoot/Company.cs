@@ -20,6 +20,8 @@ namespace Career.Domain.Aggregates.CompanyRoot
         public bool Verified { get; set; }
         public string? Website { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public CompanyRate Rate { get; set; }
+        public decimal Rate { get; set; }
+        public ICollection<Staff>? Staffs { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
     }
 }

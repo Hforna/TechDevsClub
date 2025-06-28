@@ -32,6 +32,15 @@ namespace Profile.Api.Endpoints
             return app;
         }
 
+        static async Task<IResult> ProfileConnection([FromServices]IConnectionService service, HttpContext context, [FromQuery]int page, [FromQuery]int perPage)
+        {
+            var profileId = await BinderIdValidatorExtension.Validate(context, "profileId");
+
+            var result = await service.ProfileConnectionsPagination(profileId, page, perPage);
+
+            return Results.Ok(result);
+        }
+
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(DomainException), StatusCodes.Status401Unauthorized)]

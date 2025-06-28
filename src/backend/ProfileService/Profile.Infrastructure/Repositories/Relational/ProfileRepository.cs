@@ -77,6 +77,7 @@ namespace Profile.Infrastructure.Repositories.Relational
             
             var profiles = await _context.Profiles
                 .FromSqlRaw(query, parameters.ToArray())
+                .AsNoTracking()
                 .ToListAsync();
             
             return profiles.ToPagedList(page, perPage);

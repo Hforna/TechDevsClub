@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,6 +7,7 @@
     <UserSecretsId>1b2eda5e-e5ae-4ddb-a859-f74f610dcb93</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..\..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,5 +18,9 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
   </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Career.Infrastructure\Career.Infrastructure.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -88,6 +88,8 @@ namespace Profile.Application.ApplicationServices
 
         public async Task<PaginationProfilesResponse?> GetProfileRecommendedByProfileVisits(int page, int perPage)
         {
+            if (perPage > 100) throw new ValidationException(ResourceExceptMessages.OUT_OF_RANGE_PER_PAGE_MAX_100, System.Net.HttpStatusCode.BadRequest);
+
             var profilesVisited = _sessionService.GetProfilesVisitedByUser();
 
             if (profilesVisited is null)

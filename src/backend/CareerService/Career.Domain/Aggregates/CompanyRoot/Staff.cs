@@ -13,10 +13,11 @@ namespace Career.Domain.Aggregates.CompanyRoot
         public Guid Id { get; set; }
         public string UserId { get; set; }
         public Guid CompanyId { get; set; }
+        public Company Company { get; set; }
     }
 
     [Table("staff_roles")]
-    public class StaffRoles
+    public class StaffRole
     {
         public Guid Id { get; set; }
         public Guid StaffId { get; set; }
