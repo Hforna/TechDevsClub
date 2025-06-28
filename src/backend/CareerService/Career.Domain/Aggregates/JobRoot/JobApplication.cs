@@ -1,0 +1,24 @@
+﻿using Career.Domain.Enums;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Career.Domain.Aggregates.JobRoot
+{
+    [Table("job_applications")]
+    public class JobApplication
+    {
+        public Guid Id { get; set; }
+        public DateTime AppliedAt { get; set; }
+        public ApplicationStatus Status { get; set; }
+        public Guid JobId { get; set; }
+        [ForeignKey("JobId")]
+        public Job Job { get; set; }
+        public Guid UserId { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public decimal? DesiredSalary { get; set; }
+    }
+}

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Career.Application": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
