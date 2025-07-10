@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Career.Domain.Enums
 {
-    public enum Currency
+    public enum EApplicationStatus
     {
-        USD,
-        BRL,
-        EUR
+        Applied,
+        Interview,
+        Rejected
     }
 }

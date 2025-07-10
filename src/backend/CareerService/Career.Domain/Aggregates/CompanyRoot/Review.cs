@@ -17,6 +17,6 @@ namespace Career.Domain.Aggregates.CompanyRoot
         [ForeignKey("CompanyId")]
         public Company Company { get; set; }
         public string Text { get; set; }
-        public CompanyRate Rate { get; set; }
+        public ECompanyRate Rate { get; set; }
     }
 }

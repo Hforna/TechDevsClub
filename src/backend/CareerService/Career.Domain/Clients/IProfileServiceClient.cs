@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Career.Domain.Enums
+namespace Career.Domain.Clients
 {
-    public enum ApplicationStatus
+    public interface IProfileServiceClient
     {
-        Applied,
-        Interview,
-        Rejected
+        public Task GetUserInfos()
     }
 }

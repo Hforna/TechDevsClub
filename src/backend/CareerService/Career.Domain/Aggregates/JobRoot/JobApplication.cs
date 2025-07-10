@@ -13,7 +13,7 @@ namespace Career.Domain.Aggregates.JobRoot
     {
         public Guid Id { get; set; }
         public DateTime AppliedAt { get; private set; } = DateTime.UtcNow;
-        public ApplicationStatus Status { get; set; }
+        public EApplicationStatus Status { get; set; }
         public Guid JobId { get; set; }
         [ForeignKey("JobId")]
         public Job Job { get; set; }

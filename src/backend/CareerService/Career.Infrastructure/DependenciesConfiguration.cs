@@ -1,4 +1,5 @@
-﻿using Career.Infrastructure.Persistence;
+﻿using Career.Domain.Repositories;
+using Career.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ namespace Career.Infrastructure
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             AddDbContext(services, configuration);
+            AddRepositories(services);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -22,6 +24,13 @@ namespace Career.Infrastructure
             var connectionString = configuration.GetConnectionString("sqlserver");
 
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(connectionString));
+        }
+
+        static void AddRepositories(IServiceCollection services)
+        {
+            services.AddScoped<IGenericRepository, GenericRepository>();
+            services.AddScoped<CompanyRepository, CompanyRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
 }

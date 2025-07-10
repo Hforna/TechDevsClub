@@ -15,8 +15,8 @@ namespace Career.Domain.ValueObjects
             ZipCode = zipCode;
         }
 
-        public string Country { get; set; }
-        public string State { get; set; }
-        public string? ZipCode { get; set; }
+        public string Country { get; private set; }
+        public string State { get; private set; }
+        public string? ZipCode { get; private set; }
     }
 }

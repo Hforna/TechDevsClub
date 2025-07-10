@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Career.Domain.Enums
 {
-    public enum CompanyRate
+    public enum ECompanyRate
     {
         VeryBad,
         Bad,
