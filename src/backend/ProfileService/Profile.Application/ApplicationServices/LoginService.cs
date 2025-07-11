@@ -67,6 +67,7 @@ namespace Profile.Application.ApplicationServices
                 device = _mapper.Map<Device>(deviceInfos);
                 device.Ip = ip;
                 device.Location = _mapper.Map<DeviceLocation>(deviceLocation);
+                device.Location.Country = deviceLocation.Country.Name;
                 await _uof.GenericRepository.Add<Device>(device);
             } else
             {
@@ -136,6 +137,7 @@ namespace Profile.Application.ApplicationServices
                 device.UserId = user.Id;
                 device.Ip = ip;
                 device.Location = _mapper.Map<DeviceLocation>(location);
+                device.Location.Country = location.Country.Name;
                 await _uof.GenericRepository.Add<Device>(device);
 
                 await _uof.Commit();

@@ -14,6 +14,7 @@ using Profile.Domain.Services;
 using Profile.Domain.Services.External;
 using Profile.Domain.Services.Security;
 using Profile.Domain.ValueObjects;
+using Sqids;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace Profile.Application.Services
         public Task UpdatePassword(UpdatePasswordRequest request);
         public Task ForgotPassword(string email);
         public Task CreateUserByOauth(string email, string userName);
+        public Task<UserInfosResponse> GetUserInfos();
+        public Task<UserRolesResponse> GetUserRoles();
         public Task ResetPassword(string email, string token, ResetPasswordRequest request);
     }
 
@@ -48,15 +51,16 @@ namespace Profile.Application.Services
         private readonly ITokenService _tokenService;
         private readonly IGeoLocationService _geoLocation;
         private readonly IRequestService _requestService;
-        private readonly string _token;
+        private readonly SqidsEncoder<long> _sqids;
 
         public UserService(IUnitOfWork uof, IMapper mapper, 
             UserManager<User> userManager, IPasswordEncrypt passwordEncrypt,
             IEmailService emailService, ILogger<UserService> logger, 
             ITokenService tokenService,
-            IGeoLocationService geoLocation, IRequestService requestService)
+            IGeoLocationService geoLocation, IRequestService requestService, SqidsEncoder<long> sqids)
         {
             _uof = uof;
+            _sqids = sqids;
             _mapper = mapper;
             _requestService = requestService;
             _logger = logger;
@@ -171,7 +175,7 @@ namespace Profile.Application.Services
                 user.AddSkill(skillsDict[skill.Name], skill.Level);
             }
 
-            _uof.GenericRepository.Update<User>(user);
+            await _uof.GenericRepository.AddRange<UserSkills>(user.Skills);
             await _uof.Commit();
 
             var response = new UserSkillsResponse();
@@ -281,6 +285,40 @@ namespace Profile.Application.Services
 
                 await _userManager.AddToRoleAsync(user, "normal");
             }
+        }
+
+        public async Task<UserInfosResponse> GetUserInfos()
+        {
+            var user = await _tokenService.GetUserByToken();
+
+            var response = _mapper.Map<UserInfosResponse>(user);
+
+            return response;
+        }
+
+        public async Task<UserRolesResponse> GetUserRoles()
+        {
+            var user = await _tokenService.GetUserByToken();
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var encodeUserId = _sqids.Encode(user.Id);
+            var response = new UserRolesResponse()
+            {
+                UserId = encodeUserId,
+                Roles = roles.Select(role =>
+                {
+                    var response = new UserRoleResponse()
+                    {
+                        UserId = encodeUserId,
+                        RoleName = role
+                    };
+
+                    return response;
+                }).ToList()
+            };
+
+            return response;
         }
     }
 }

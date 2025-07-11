@@ -45,11 +45,30 @@ namespace Profile.Api.Endpoints
 
             app.MapGet("create-github", CreateUserByGitHub)
                 .WithName("CreateUserByGitHubOAuth")
-                .WithSummary("Create an user by github authentication, user will be redirected to their github accoun for application authorization");
+                .WithSummary("Create an user by github authentication, user will be redirected to their github account for application authorization");
+
+            app.MapGet("roles", GetUserRoles);
+
+            app.MapGet("", GetUserInfos)
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
             app.MapGet("handle-github-callback", HandleGitHubCallback);
 
             return app;
+        }
+
+        static async Task<IResult> GetUserRoles([FromServices]IUserService service)
+        {
+            var result = await service.GetUserRoles();
+
+            return Results.Ok(result);
+        }
+
+        static async Task<IResult> GetUserInfos([FromServices] IUserService service)
+        {
+            var result = await service.GetUserInfos();
+            
+            return Results.Ok(result);
         }
 
         [ProducesResponseType(typeof(ValidationException), StatusCodes.Status400BadRequest)]

@@ -37,6 +37,9 @@ namespace Profile.Application.Services
 
             CreateMap<Skill, SkillResponse>();
 
+            CreateMap<User, UserInfosResponse>()
+                .ForMember(d => d.Id, f => f.MapFrom(d => sqids.Encode(d.Id)));
+
             CreateMap<SocialLink, SocialLinksResponse>();
 
             CreateMap<SocialLinkRequest, SocialLink>();

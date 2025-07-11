@@ -29,6 +29,9 @@ namespace Profile.Infrastructure.Data
 
             builder.Entity<Role>().HasData(new Role() { Name = "normal", NormalizedName = "NORMAL", Id = 1 });
             builder.Entity<Role>().HasData(new Role() {  Name = "admin", NormalizedName = "ADMIN", Id = 2 });
+            builder.Entity<Role>().HasData(new Role() {  Name = "company_owner", NormalizedName = "COMPANY_OWNER", Id = 3 });
+            builder.Entity<Role>().HasData(new Role() {  Name = "recruiter", NormalizedName = "RECRUITER", Id = 4 });
+            builder.Entity<Role>().HasData(new Role() {  Name = "hiring_manager", NormalizedName = "HIRING_MANAGER", Id = 5 });
             
             builder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
             builder.ApplyConfiguration(new UserSkills.Mapping());
