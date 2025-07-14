@@ -123,4 +123,13 @@
   <data name="STAFF_IN_COMPANY" xml:space="preserve">
     <value>Staff already is in company</value>
   </data>
+  <data name="INVALID_SERIALIZER_TYPE" xml:space="preserve">
+    <value>Invalid serialization type</value>
+  </data>
+  <data name="EMPTY_REQUEST_TOKEN" xml:space="preserve">
+    <value>Request token is null</value>
+  </data>
+  <data name="USER_ROLE_OWNER_FOR_CREATE_COMPANY" xml:space="preserve">
+    <value>User doesn't have permission for create company</value>
+  </data>
 </root>

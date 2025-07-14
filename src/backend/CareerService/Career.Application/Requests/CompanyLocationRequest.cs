@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Career.Application.Requests
 {
-    public class CreateLocationRequest
+    public class CompanyLocationRequest
     {
         public string Country { get; set; }
         public string ZipCode { get; set; }

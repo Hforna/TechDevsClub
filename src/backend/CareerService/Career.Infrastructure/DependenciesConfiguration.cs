@@ -1,5 +1,8 @@
 ﻿using Career.Domain.Repositories;
+using Career.Domain.Services.Clients;
 using Career.Infrastructure.Persistence;
+using Career.Infrastructure.Services;
+using Career.Infrastructure.Services.Clients;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +20,7 @@ namespace Career.Infrastructure
         {
             AddDbContext(services, configuration);
             AddRepositories(services);
+            AddServices(services);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -31,6 +35,13 @@ namespace Career.Infrastructure
             services.AddScoped<IGenericRepository, GenericRepository>();
             services.AddScoped<CompanyRepository, CompanyRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+
+        static void AddServices(IServiceCollection services)
+        {
+            services.AddScoped<IProfileServiceClient, ProfileServiceClient>();
+
+            services.AddScoped<IRequestService, RequestService>();
         }
     }
 }

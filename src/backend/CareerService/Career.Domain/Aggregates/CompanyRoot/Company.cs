@@ -18,6 +18,8 @@ namespace Career.Domain.Aggregates.CompanyRoot
         public string OwnerId { get; set; }
         public string? Logo { get; set; }
         public Location Location { get; set; }
+        public string Description { get; set; }
+        public int EmployeersNumber  { get; set; }
         public bool Verified { get; set; } = false;
         public string? Website { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -61,6 +61,24 @@ namespace Career.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Request token is null.
+        /// </summary>
+        public static string EMPTY_REQUEST_TOKEN {
+            get {
+                return ResourceManager.GetString("EMPTY_REQUEST_TOKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid serialization type.
+        /// </summary>
+        public static string INVALID_SERIALIZER_TYPE {
+            get {
+                return ResourceManager.GetString("INVALID_SERIALIZER_TYPE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Max salary must be greather or equal than min salary.
         /// </summary>
         public static string MIN_SALARY_LOWER_THAN_HIGHER {
@@ -75,6 +93,15 @@ namespace Career.Domain.Exceptions {
         public static string STAFF_IN_COMPANY {
             get {
                 return ResourceManager.GetString("STAFF_IN_COMPANY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User doesn&apos;t have permission for create company.
+        /// </summary>
+        public static string USER_ROLE_OWNER_FOR_CREATE_COMPANY {
+            get {
+                return ResourceManager.GetString("USER_ROLE_OWNER_FOR_CREATE_COMPANY", resourceCulture);
             }
         }
     }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Career.Domain.Clients
+namespace Career.Domain.Services.Clients
 {
-    public interface IProfileServiceClient
+    public interface IRequestService
     {
-        public Task GetUserInfos()
+        public string? GetBearerToken();
     }
 }

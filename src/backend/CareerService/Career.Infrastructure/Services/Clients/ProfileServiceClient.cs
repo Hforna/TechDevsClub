@@ -1,0 +1,75 @@
+﻿using Career.Domain.Dtos;
+using Career.Domain.Exceptions;
+using Career.Domain.Services.Clients;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace Career.Infrastructure.Services.Clients
+{
+    public class ProfileServiceClient : IProfileServiceClient
+    {
+        private readonly IHttpClientFactory _httpClient;
+        private readonly ILogger<ProfileServiceClient> _logger;
+
+
+        public ProfileServiceClient(IHttpClientFactory httpClient, ILogger<ProfileServiceClient> logger)
+        {
+            _httpClient = httpClient;
+            _logger = logger;
+        }
+
+        public async Task<UserInfosDto> GetUserInfos(string accessToken)
+        {
+            using var client = _httpClient.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            var response = await client.GetAsync("profile.api/users");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var deserialize = JsonSerializer.Deserialize<UserInfosDto>(content);
+
+                return deserialize!;
+            }
+            catch (SerializationException ex)
+            {
+                _logger.LogError(ex, $"Error while trying to deserialize user infos response: {ex.Message}");
+
+                throw new ClientException(ResourceExceptMessages.INVALID_SERIALIZER_TYPE);
+            }
+        }
+
+        public async Task<UserRolesDto> GetUserRoles(string accessToken)
+        {
+            using var client = _httpClient.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            var response = await client.GetAsync("profile.api/users/roles");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var deserialize = JsonSerializer.Deserialize<UserRolesDto>(content);
+
+                return deserialize!;
+            }
+            catch (SerializationException ex)
+            {
+                _logger.LogError(ex, $"Error while trying to deserialize user infos response: {ex.Message}");
+
+                throw new ClientException(ResourceExceptMessages.INVALID_SERIALIZER_TYPE);
+            }
+        }
+    }
+}

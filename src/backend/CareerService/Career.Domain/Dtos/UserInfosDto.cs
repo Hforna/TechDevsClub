@@ -8,8 +8,8 @@ namespace Career.Domain.Dtos
 {
     public sealed record UserInfosDto
     {
-        public string Id { get; set; }
-        public string Email { get; set; }
-        public List<UserRoleDto>? UserRoles { get; set; }
+        public string id { get; set; }
+        public string email { get; set; }
+        public DateTime createdAt { get; set; }
     }
 }

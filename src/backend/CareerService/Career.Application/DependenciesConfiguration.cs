@@ -14,11 +14,17 @@ namespace Career.Application
         public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             AddServices(services);
+            AddAutoMapper(services);
         }
 
         static void AddServices(IServiceCollection services)
         {
             services.AddScoped<ICompanyService, CompanyService>();
+        }
+
+        static void AddAutoMapper(IServiceCollection services)
+        {
+            services.AddAutoMapper(d => d.AddProfile(new MapperConfiguration()));
         }
     }
 }
