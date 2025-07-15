@@ -68,6 +68,11 @@ builder.Services.AddAuthorization(cfg =>
     cfg.AddPolicy("NormalUser", p => p.RequireRole("normal", "admin", "recruiter", "hiring_manager"));
 });
 
+builder.Services.AddCors(cfg =>
+{
+    cfg.AddPolicy("ServicesOnly", plc => plc.WithOrigins("https://career.api:8081"));
+});
+
 builder.Services.AddSingleton<BinderId>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -201,6 +206,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
     KnownProxies = { IPAddress.Parse("172.25.0.1") }
 });
+
+app.UseCors();
 
 app.UseAuthorization();
 

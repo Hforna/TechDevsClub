@@ -37,6 +37,7 @@ namespace Profile.Application.Services
         public Task CreateUserByOauth(string email, string userName);
         public Task<UserInfosResponse> GetUserInfos();
         public Task<UserRolesResponse> GetUserRoles();
+        public Task<UserInfosResponse> UserInfosById(long userId);
         public Task ResetPassword(string email, string token, ResetPasswordRequest request);
     }
 
@@ -318,6 +319,18 @@ namespace Profile.Application.Services
                     return response;
                 }).ToList()
             };
+
+            return response;
+        }
+
+        public async Task<UserInfosResponse> UserInfosById(long userId)
+        {
+            var user = await _uof.GenericRepository.GetById<User>(userId);
+
+            if (user is null)
+                throw new ContextException(ResourceExceptMessages.USER_DOESNT_EXISTS, HttpStatusCode.NotFound);
+
+            var response = _mapper.Map<UserInfosResponse>(user);
 
             return response;
         }

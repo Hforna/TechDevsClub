@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Profile.Api.Binders;
 using Profile.Api.Filters;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
@@ -47,10 +48,14 @@ namespace Profile.Api.Endpoints
                 .WithName("CreateUserByGitHubOAuth")
                 .WithSummary("Create an user by github authentication, user will be redirected to their github account for application authorization");
 
-            app.MapGet("roles", GetUserRoles);
+            app.MapGet("roles", GetUserRoles)
+                .RequireCors("OnlyServices");
 
             app.MapGet("", GetUserInfos)
+                .RequireCors("OnlyServices")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();
+
+            app.MapGet("infos/{userId}", GetUserInfosById).RequireCors("OnlyServices");
 
             app.MapGet("handle-github-callback", HandleGitHubCallback);
 
@@ -60,6 +65,15 @@ namespace Profile.Api.Endpoints
         static async Task<IResult> GetUserRoles([FromServices]IUserService service)
         {
             var result = await service.GetUserRoles();
+
+            return Results.Ok(result);
+        }
+
+        static async Task<IResult> GetUserInfosById([FromRoute]string userId, [FromServices]IUserService service, HttpContext context)
+        {
+            var validateId = await BinderIdValidatorExtension.Validate(context, "userId");
+
+            var result = await service.UserInfosById(validateId);
 
             return Results.Ok(result);
         }
