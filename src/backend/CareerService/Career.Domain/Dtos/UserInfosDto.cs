@@ -9,6 +9,7 @@ namespace Career.Domain.Dtos
     public sealed record UserInfosDto
     {
         public string id { get; set; }
+        public string userName { get; set; }
         public string email { get; set; }
         public DateTime createdAt { get; set; }
     }

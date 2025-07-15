@@ -28,16 +28,19 @@ namespace Career.Infrastructure.Services.Clients
 
         public async Task<UserInfosDto> GetUserInfos(string accessToken)
         {
-            using var client = _httpClient.CreateClient();
+            using var client = _httpClient.CreateClient("profile.api");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-            var response = await client.GetAsync("profile.api/users");
+            var response = await client.GetAsync("api/users");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
             try
             {
                 var deserialize = JsonSerializer.Deserialize<UserInfosDto>(content);
+
+                if (deserialize! is null)
+                    throw new SerializationException(ResourceExceptMessages.INVALID_SERIALIZER_TYPE);
 
                 return deserialize!;
             }
@@ -51,10 +54,10 @@ namespace Career.Infrastructure.Services.Clients
 
         public async Task<UserRolesDto> GetUserRoles(string accessToken)
         {
-            using var client = _httpClient.CreateClient();
+            using var client = _httpClient.CreateClient("profile.api");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-            var response = await client.GetAsync("profile.api/users/roles");
+            var response = await client.GetAsync("api/users/roles");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

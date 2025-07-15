@@ -91,7 +91,8 @@ namespace Profile.Application.Services
             await _uof.GenericRepository.Add<User>(user);
             await _uof.Commit();
 
-            await _userManager.AddToRoleAsync(user, "normal");
+            var userRole = request.CompanyOwner ? "company_owner" : "normal";
+            await _userManager.AddToRoleAsync(user, userRole);
 
             var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var encodedToken = WebUtility.UrlEncode(confirmationToken);
@@ -112,9 +113,9 @@ namespace Profile.Application.Services
             if (userByEmail is null)
                 throw new ContextException(ResourceExceptMessages.EMAIL_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var decodedToken = WebUtility.UrlDecode(token);
+            var fixedToken = token.Replace(" ", "+");
 
-            var tokenIsValid = await _userManager.ConfirmEmailAsync(userByEmail, decodedToken.Replace(" ", "+"));
+            var tokenIsValid = await _userManager.ConfirmEmailAsync(userByEmail, fixedToken);
 
             if (!tokenIsValid.Succeeded)
             {

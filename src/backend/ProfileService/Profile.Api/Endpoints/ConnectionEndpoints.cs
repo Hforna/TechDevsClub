@@ -17,17 +17,20 @@ namespace Profile.Api.Endpoints
             app.MapGet("create-connection/{profileId}", CreateConnectionWithProfile)
                 .WithName("CreateConnectionWithProfile")
                 .WithDescription("User create a connection with a profile by it id")
-                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>()
+                .RequireAuthorization("NormalUser");
 
             app.MapGet("{id}/accept", AcceptConnection)
                 .WithName("AcceptConnectionRequest")
                 .WithDescription("Accept a connection request by connection id")
-                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>()
+                .RequireAuthorization("NormalUser");
 
             app.MapGet("{id}/reject", AcceptConnection)
                 .WithName("RejectConnectionRequest")
                 .WithDescription("Reject a connection request by connection id")
-                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>()
+                .RequireAuthorization("NormalUser");
 
             return app;
         }

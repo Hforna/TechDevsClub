@@ -63,6 +63,11 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddAuthorization(cfg =>
+{
+    cfg.AddPolicy("NormalUser", p => p.RequireRole("normal", "admin", "recruiter", "hiring_manager"));
+});
+
 builder.Services.AddSingleton<BinderId>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

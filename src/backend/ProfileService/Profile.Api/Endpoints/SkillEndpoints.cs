@@ -18,7 +18,8 @@ namespace Profile.Api.Endpoints
             app.MapPost("add-skills", SetUserSkills)
                 .WithName("SetUserSkills")
                 .WithDescription("Add user skills by the request list")
-                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>()
+                .RequireAuthorization("NormalUser");
 
             app.MapGet("catalog", GetSkills)
                 .WithName("GetAllSkills")
@@ -26,8 +27,10 @@ namespace Profile.Api.Endpoints
 
             app.MapDelete("", RemoveUserSkills)
                 .WithName("RemoveUserSkills")
-                .WithDescription("Remove skills that user has, by it names");
-            
+                .WithDescription("Remove skills that user has, by its names")
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>()
+                .RequireAuthorization("NormalUser");
+
             return app;
         }
 

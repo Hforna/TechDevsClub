@@ -33,7 +33,8 @@ namespace Career.Infrastructure
         static void AddRepositories(IServiceCollection services)
         {
             services.AddScoped<IGenericRepository, GenericRepository>();
-            services.AddScoped<CompanyRepository, CompanyRepository>();
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IStaffRepository, StaffRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 

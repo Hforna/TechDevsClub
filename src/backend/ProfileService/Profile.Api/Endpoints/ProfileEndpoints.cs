@@ -20,7 +20,8 @@ namespace Profile.Api.Endpoints
 
             app.MapPut("", UpdateProfile)
                 .WithName("UpdateProfile")
-                .WithSummary("Update an user profile and consult their github profile to get github infos for profile");
+                .WithSummary("Update an user profile and consult their github profile to get github infos for profile")
+                .RequireAuthorization("NormalUser");
 
             app.MapGet("{id}", GetProfile)
                 .WithName("GetProfileById")

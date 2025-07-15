@@ -86,10 +86,10 @@ namespace Profile.Api.Endpoints
             if (IsNotAuthenticated(result))
                 return Results.Challenge(new Microsoft.AspNetCore.Authentication.AuthenticationProperties()
                 {
-                    RedirectUri = "https://localhost:56075/api/users/handle-github-callback"
+                    RedirectUri = $"https://{context.Request.Host}/api/users/handle-github-callback"
                 }, authenticationSchemes: new List<string>() { "GitHub" });
 
-            return Results.Redirect("https://localhost:56075/api/login/github");
+            return Results.Redirect($"https://{context.Request.Host}/api/login/github");
         }
 
         static async Task<IResult> HandleGitHubCallback([FromServices]IUserService service, HttpContext context)
@@ -97,7 +97,7 @@ namespace Profile.Api.Endpoints
             var result = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             if(IsNotAuthenticated(result))
-                return Results.Redirect("https://localhost:56075/api/login/github");
+                return Results.Redirect($"https://{context.Request.Host}/api/login/github");
 
             var email = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Email == d.Type)!;
             var name = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Name == d.Type)!.Value;
@@ -109,7 +109,7 @@ namespace Profile.Api.Endpoints
             await service.CreateUserByOauth(email.Value, name);
             await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return Results.Redirect("https://localhost:56075/");
+            return Results.Redirect($"https://{context.Request.Host}/");
         }
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status404NotFound)]
