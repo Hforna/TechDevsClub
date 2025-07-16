@@ -48,13 +48,8 @@ namespace Career.Application.Services
             if (userRoles.roles.Select(d => d.roleName).Contains("company_owner") == false)
                 throw new DomainException(ResourceExceptMessages.USER_ROLE_OWNER_FOR_CREATE_COMPANY);
 
-            var company = new Company()
-            {
-                Name = request.Name,
-                Website = request.Website,
-                Description = request.Description,
-                OwnerId = userInfos.id
-            };
+            var company = _mapper.Map<Company>(request);
+            company.OwnerId = userInfos.id;
 
             await _uow.GenericRepository.Add<Company>(company);
             await _uow.Commit();

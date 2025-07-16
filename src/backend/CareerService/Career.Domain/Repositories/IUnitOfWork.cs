@@ -9,6 +9,7 @@ namespace Career.Domain.Repositories
     public interface IUnitOfWork
     {
         public ICompanyRepository CompanyRepository { get; set; }
+        public IStaffRepository StaffRepository { get; set; }
         public IGenericRepository GenericRepository { get; set; }
         public Task Commit();
     }

@@ -20,6 +20,7 @@ namespace Career.Application
         static void AddServices(IServiceCollection services)
         {
             services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<IStaffService, StaffService>();
         }
 
         static void AddAutoMapper(IServiceCollection services)

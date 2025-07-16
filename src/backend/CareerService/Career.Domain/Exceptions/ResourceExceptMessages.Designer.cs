@@ -61,11 +61,29 @@ namespace Career.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Company not found.
+        /// </summary>
+        public static string COMPANY_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("COMPANY_NOT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Request token is null.
         /// </summary>
         public static string EMPTY_REQUEST_TOKEN {
             get {
                 return ResourceManager.GetString("EMPTY_REQUEST_TOKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Occured an error while trying to send email to user.
+        /// </summary>
+        public static string ERROR_SENDING_EMAIL {
+            get {
+                return ResourceManager.GetString("ERROR_SENDING_EMAIL", resourceCulture);
             }
         }
         
@@ -88,11 +106,47 @@ namespace Career.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Staff does not have permission for hire a staff.
+        /// </summary>
+        public static string STAFF_DOESNT_HAVE_PERMISSION_FOR_HIRE {
+            get {
+                return ResourceManager.GetString("STAFF_DOESNT_HAVE_PERMISSION_FOR_HIRE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Staff already is in company.
         /// </summary>
         public static string STAFF_IN_COMPANY {
             get {
                 return ResourceManager.GetString("STAFF_IN_COMPANY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User already is in company.
+        /// </summary>
+        public static string USER_ALREADY_IN_COMPANY {
+            get {
+                return ResourceManager.GetString("USER_ALREADY_IN_COMPANY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User must be binded to company.
+        /// </summary>
+        public static string USER_NOT_BINDED_TO_COMPANY {
+            get {
+                return ResourceManager.GetString("USER_NOT_BINDED_TO_COMPANY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User requested not exists.
+        /// </summary>
+        public static string USER_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("USER_NOT_EXISTS", resourceCulture);
             }
         }
         

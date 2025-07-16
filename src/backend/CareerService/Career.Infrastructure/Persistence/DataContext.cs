@@ -22,6 +22,7 @@ namespace Career.Infrastructure.Persistence
         public DbSet<Job> Jobs { get; set; }
         public DbSet<JobApplication> JobApplications { get; set; }
         public DbSet<JobRequirement> JobRequirements { get; set; }
+        public DbSet<RequestStaff> RequestsStaffs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

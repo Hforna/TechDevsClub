@@ -9,5 +9,7 @@ namespace Career.Domain.Repositories
 {
     public interface IStaffRepository
     {
+        public Task<List<StaffRole>?> GetStaffRolesInCompany(Guid companyId, Guid staffId);
+        public Task<Staff?> GetStaffByUserIdAndCompany(string userId, Guid companyId);
     }
 }

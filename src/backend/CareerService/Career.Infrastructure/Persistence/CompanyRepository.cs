@@ -18,11 +18,16 @@ namespace Career.Infrastructure.Persistence
             _context = context;
         }
 
-        public async Task<bool> CompanyContainsStaff(Guid companyId, Staff staff)
+        public async Task<Company?> CompanyById(Guid companyId)
+        {
+            return await _context.Companies.SingleOrDefaultAsync(d => d.Id == companyId);
+        }
+
+        public async Task<bool> CompanyContainsStaff(Guid companyId, string userId)
         {
             return await _context.Companies
                 .AnyAsync(d => d.Id == companyId 
-                        && d.Staffs.Contains(staff));
+                        && d.Staffs.Select(d => d.UserId).Contains(userId));
         }
     }
 }

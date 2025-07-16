@@ -1,4 +1,5 @@
 ﻿using Career.Domain.Repositories;
+using Career.Domain.Services;
 using Career.Domain.Services.Clients;
 using Career.Infrastructure.Persistence;
 using Career.Infrastructure.Services;
@@ -43,6 +44,8 @@ namespace Career.Infrastructure
             services.AddScoped<IProfileServiceClient, ProfileServiceClient>();
 
             services.AddScoped<IRequestService, RequestService>();
+
+            services.AddSingleton<IEmailService, EmailService>();
         }
     }
 }

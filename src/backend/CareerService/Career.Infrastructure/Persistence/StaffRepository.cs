@@ -17,5 +17,19 @@ namespace Career.Infrastructure.Persistence
         {
             _context = context;
         }
+
+        public async Task<Staff?> GetStaffByUserIdAndCompany(string userId, Guid companyId)
+        {
+            return await _context.Staffs
+                .SingleOrDefaultAsync(d => d.UserId == userId && d.CompanyId == companyId);
+        }
+
+        public async Task<List<StaffRole>?> GetStaffRolesInCompany(Guid companyId, Guid staffId)
+        {
+            return await _context.StaffRoles
+                .AsNoTracking()
+                .Where(d => d.CompanyId == companyId && d.StaffId == staffId)
+                .ToListAsync();
+        }
     }
 }

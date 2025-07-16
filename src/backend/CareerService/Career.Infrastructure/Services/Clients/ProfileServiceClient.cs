@@ -1,4 +1,5 @@
-﻿using Career.Domain.Dtos;
+﻿using Azure.Core;
+using Career.Domain.Dtos;
 using Career.Domain.Exceptions;
 using Career.Domain.Services.Clients;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,6 @@ namespace Career.Infrastructure.Services.Clients
         private readonly IHttpClientFactory _httpClient;
         private readonly ILogger<ProfileServiceClient> _logger;
 
-
         public ProfileServiceClient(IHttpClientFactory httpClient, ILogger<ProfileServiceClient> logger)
         {
             _httpClient = httpClient;
@@ -38,6 +38,36 @@ namespace Career.Infrastructure.Services.Clients
             try
             {
                 var deserialize = JsonSerializer.Deserialize<UserInfosDto>(content);
+
+                if (deserialize! is null)
+                    throw new SerializationException(ResourceExceptMessages.INVALID_SERIALIZER_TYPE);
+
+                return deserialize!;
+            }
+            catch (SerializationException ex)
+            {
+                _logger.LogError(ex, $"Error while trying to deserialize user infos response: {ex.Message}");
+
+                throw new ClientException(ResourceExceptMessages.INVALID_SERIALIZER_TYPE);
+            }
+        }
+
+        public async Task<UserInfosWithRolesDto> GetUserInfosById(string userId)
+        {
+            using var client = _httpClient.CreateClient("profile.api");
+
+            var response = await client.GetAsync($"api/users/infos/{userId}");
+
+            if(response.IsSuccessStatusCode == false)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    throw new DomainException(ResourceExceptMessages.USER_NOT_EXISTS);
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var deserialize = JsonSerializer.Deserialize<UserInfosWithRolesDto>(content);
 
                 if (deserialize! is null)
                     throw new SerializationException(ResourceExceptMessages.INVALID_SERIALIZER_TYPE);

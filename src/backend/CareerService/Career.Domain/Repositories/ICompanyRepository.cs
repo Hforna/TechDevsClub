@@ -9,6 +9,7 @@ namespace Career.Domain.Repositories
 {
     public interface ICompanyRepository
     {
-        public Task<bool> CompanyContainsStaff(Guid companyId, Staff staff);
+        public Task<bool> CompanyContainsStaff(Guid companyId, string userId);
+        public Task<Company?> CompanyById(Guid companyId);
     }
 }
