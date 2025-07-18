@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Career.Application.Requests
+namespace Career.Application.Requests.Company
 {
     public class CompanyLocationRequest
     {

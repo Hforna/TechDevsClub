@@ -8,6 +8,7 @@ using Career.Domain;
 using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.Aggregates.JobRoot;
 using Career.Domain.ValueObjects;
+using Career.Domain.Entities;
 
 namespace Career.Infrastructure.Persistence
 {
@@ -23,6 +24,7 @@ namespace Career.Infrastructure.Persistence
         public DbSet<JobApplication> JobApplications { get; set; }
         public DbSet<JobRequirement> JobRequirements { get; set; }
         public DbSet<RequestStaff> RequestsStaffs { get; set; }
+        public DbSet<Notification> Notification { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

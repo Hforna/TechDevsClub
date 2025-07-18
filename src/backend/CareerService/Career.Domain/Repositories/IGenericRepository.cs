@@ -9,5 +9,6 @@ namespace Career.Domain.Repositories
     public interface IGenericRepository
     {
         public Task Add<T>(T entity) where T : class;
+        public void Update<T>(T entity) where T : class;
     }
 }

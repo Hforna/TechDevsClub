@@ -150,4 +150,13 @@
   <data name="ERROR_SENDING_EMAIL" xml:space="preserve">
     <value>Occured an error while trying to send email to user</value>
   </data>
+  <data name="COMPANY_RATE_INVALID" xml:space="preserve">
+    <value>Company rate must be between 0 and 5</value>
+  </data>
+  <data name="USER_NOT_COMPANY_OWNER" xml:space="preserve">
+    <value>User must be owner of this company</value>
+  </data>
+  <data name="NOTIFICATION_MESSAGE_THOUSAND_MAX" xml:space="preserve">
+    <value>Notification message length must be thousand or less</value>
+  </data>
 </root>

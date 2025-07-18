@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +23,17 @@ namespace Career.Domain.Aggregates.CompanyRoot
         public bool Verified { get; set; } = false;
         public string? Website { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public decimal Rate { get; set; }
+        private decimal _rate;
+        public decimal Rate {
+            get => _rate;
+            set
+            {
+                if (value > 5 || value < 0)
+                    throw new DomainException(ResourceExceptMessages.COMPANY_RATE_INVALID);
+
+                _rate = value;
+            }
+        }
         public ICollection<Staff> Staffs { get; set; } = [];
         public ICollection<Review> Reviews { get; set; } = [];
     }

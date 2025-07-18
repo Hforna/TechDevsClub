@@ -21,7 +21,8 @@ namespace Career.Infrastructure
         {
             AddDbContext(services, configuration);
             AddRepositories(services);
-            AddServices(services);
+            AddServices(services, configuration);
+            AddStorage(services, configuration);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -39,13 +40,21 @@ namespace Career.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
-        static void AddServices(IServiceCollection services)
+        static void AddServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IProfileServiceClient, ProfileServiceClient>();
 
             services.AddScoped<IRequestService, RequestService>();
 
             services.AddSingleton<IEmailService, EmailService>();
+
+            services.Configure<SmptSettings>(configuration.GetSection("services:smtpSettings"));
+        }
+
+        static void AddStorage(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton<IStorageImageService>(d =>
+            new AzureStorageImageService(new Azure.Storage.Blobs.BlobServiceClient(configuration.GetValue<string>("services:azure:blobClient"))));
         }
     }
 }

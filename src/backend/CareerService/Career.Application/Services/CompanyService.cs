@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Career.Application.Requests;
+using Career.Application.Requests.Company;
 using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.DomainServices;
@@ -18,6 +18,7 @@ namespace Career.Application.Services
     public interface ICompanyService
     {
         public Task<CompanyResponse> CreateCompany(CreateCompanyRequest request);
+        public Task<CompanyResponse> UpdateCompany(UpdateCompanyRequest request);
     }
 
     public class CompanyService : ICompanyService
@@ -60,6 +61,24 @@ namespace Career.Application.Services
             return _mapper.Map<CompanyResponse>(company);
         }
 
-       
+        public async Task<CompanyResponse> UpdateCompany(UpdateCompanyRequest request)
+        {
+            var accessToken = _requestService.GetBearerToken();
+
+            var user = await _profileService.GetUserInfos(accessToken!);
+
+            var company = await _uow.CompanyRepository.CompanyById(request.CompanyId) 
+                ?? throw new NullEntityException(ResourceExceptMessages.COMPANY_NOT_EXISTS);
+
+            if (company.OwnerId != user.id)
+                throw new DomainException(ResourceExceptMessages.USER_NOT_COMPANY_OWNER);
+
+            _mapper.Map(request, company);
+
+            _uow.GenericRepository.Update<Company>(company);
+            await _uow.Commit();
+
+            return _mapper.Map<CompanyResponse>(company);
+        }
     }
 }

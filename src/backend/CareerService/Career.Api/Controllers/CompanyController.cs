@@ -1,4 +1,4 @@
-﻿using Career.Application.Requests;
+﻿using Career.Application.Requests.Company;
 using Career.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +24,16 @@ namespace Career.Api.Controllers
             var result = await _companyService.CreateCompany(request);
 
             return Created(string.Empty, result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCompany([FromForm]UpdateCompanyRequest request)
+        {
+            var result = await _companyService.UpdateCompany(request);
+
+            _logger.LogInformation($"Company updated: {request.CompanyId}");
+
+            return Ok(result);
         }
     }
 }
