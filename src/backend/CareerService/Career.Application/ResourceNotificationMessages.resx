@@ -117,52 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MIN_SALARY_LOWER_THAN_HIGHER" xml:space="preserve">
-    <value>Max salary must be greather or equal than min salary</value>
-  </data>
-  <data name="STAFF_IN_COMPANY" xml:space="preserve">
-    <value>Staff already is in company</value>
-  </data>
-  <data name="INVALID_SERIALIZER_TYPE" xml:space="preserve">
-    <value>Invalid serialization type</value>
-  </data>
-  <data name="EMPTY_REQUEST_TOKEN" xml:space="preserve">
-    <value>Request token is null</value>
-  </data>
-  <data name="USER_ROLE_OWNER_FOR_CREATE_COMPANY" xml:space="preserve">
-    <value>User doesn't have permission for create company</value>
-  </data>
-  <data name="COMPANY_NOT_EXISTS" xml:space="preserve">
-    <value>Company not found</value>
-  </data>
-  <data name="USER_NOT_BINDED_TO_COMPANY" xml:space="preserve">
-    <value>User must be binded to company</value>
-  </data>
-  <data name="STAFF_DOESNT_HAVE_PERMISSION_FOR_HIRE" xml:space="preserve">
-    <value>Staff does not have permission for hire a staff</value>
-  </data>
-  <data name="USER_ALREADY_IN_COMPANY" xml:space="preserve">
-    <value>User already is in company</value>
-  </data>
-  <data name="USER_NOT_EXISTS" xml:space="preserve">
-    <value>User requested not exists</value>
-  </data>
-  <data name="ERROR_SENDING_EMAIL" xml:space="preserve">
-    <value>Occured an error while trying to send email to user</value>
-  </data>
-  <data name="COMPANY_RATE_INVALID" xml:space="preserve">
-    <value>Company rate must be between 0 and 5</value>
-  </data>
-  <data name="USER_NOT_COMPANY_OWNER" xml:space="preserve">
-    <value>User must be owner of this company</value>
-  </data>
-  <data name="NOTIFICATION_MESSAGE_THOUSAND_MAX" xml:space="preserve">
-    <value>Notification message length must be thousand or less</value>
-  </data>
-  <data name="STAFF_REQUEST_NOT_EXISTS" xml:space="preserve">
-    <value>Staff request was not found</value>
-  </data>
-  <data name="USER_CANNOT_SEE_STAFF_REQUEST_STATUS" xml:space="preserve">
-    <value>User can't see staff request status</value>
+  <data name="REQUEST_STAFF_NOTIFICATION" xml:space="preserve">
+    <value>You recived a new staff request to be staff of:</value>
   </data>
 </root>

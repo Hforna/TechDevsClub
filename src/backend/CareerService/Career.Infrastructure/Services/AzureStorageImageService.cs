@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Career.Infrastructure.Services
 {
-    public class StorageImageService : IStorageImageService
+    public class AzureStorageImageService : IStorageImageService
     {
         private readonly BlobServiceClient _blobClient;
 
-        public StorageImageService(BlobServiceClient blobClient)
+        public AzureStorageImageService(BlobServiceClient blobClient)
         {
             _blobClient = blobClient;
         }

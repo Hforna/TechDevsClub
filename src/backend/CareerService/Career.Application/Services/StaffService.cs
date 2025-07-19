@@ -3,6 +3,7 @@ using Career.Application.Requests;
 using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.DomainServices;
+using Career.Domain.Entities;
 using Career.Domain.Exceptions;
 using Career.Domain.Repositories;
 using Career.Domain.Services;
@@ -18,7 +19,9 @@ namespace Career.Application.Services
 {
     public interface IStaffService
     {
-        public Task<RequestStaffResponse> RequestStaffToCompany(PutStaffOnCompanyRequest request);
+        public Task<StaffRequestResponse> StaffRequestToCompany(PutStaffOnCompanyRequest request);
+        public Task<StaffRequestResponse> GetStaffRequestStatus(Guid requestId);
+        public Task<StaffRequestsResponse> UserStaffRequests(int perPage, int page);
     }
 
     public class StaffService : IStaffService
@@ -30,6 +33,7 @@ namespace Career.Application.Services
         private readonly IRequestService _requestService;
         private readonly ICompanyDomainService _companyDomain;
         private readonly IEmailService _emailService;
+        private string _accessToken;
 
         public StaffService(IProfileServiceClient profileService, IUnitOfWork uow, 
             ILogger<StaffService> logger, IMapper mapper, IRequestService requestService, ICompanyDomainService companyDomain, IEmailService emailService)
@@ -41,12 +45,25 @@ namespace Career.Application.Services
             _mapper = mapper;
             _requestService = requestService;
             _companyDomain = companyDomain;
+
+            _accessToken = _requestService.GetBearerToken()!;
         }
 
-        public async Task<RequestStaffResponse> RequestStaffToCompany(PutStaffOnCompanyRequest request)
+        public async Task<StaffRequestResponse> GetStaffRequestStatus(Guid requestId)
         {
-            var accessToken = _requestService.GetBearerToken();
-            var userInfos = await _profileService.GetUserInfos(accessToken!);
+            var userInfos = await _profileService.GetUserInfos(_accessToken);
+
+            var request = await _uow.StaffRepository.GetRequestStaffById(requestId) ?? throw new NullEntityException(ResourceExceptMessages.STAFF_REQUEST_NOT_EXISTS);
+
+            if (request.UserId != userInfos.id || request.RequesterId != userInfos.id)
+                throw new DomainException(ResourceExceptMessages.USER_CANNOT_SEE_STAFF_REQUEST_STATUS);
+
+            return _mapper.Map<StaffRequestResponse>(request);
+        }
+
+        public async Task<StaffRequestResponse> StaffRequestToCompany(PutStaffOnCompanyRequest request)
+        {
+            var userInfos = await _profileService.GetUserInfos(_accessToken);
 
             var company = await _uow.CompanyRepository.CompanyById(request.CompanyId);
 
@@ -58,7 +75,7 @@ namespace Career.Application.Services
             if (userInCompany)
                 throw new DomainException(ResourceExceptMessages.USER_ALREADY_IN_COMPANY);
 
-            if(company.OwnerId != userInfos.id)
+            if (company.OwnerId != userInfos.id)
             {
                 var userStaff = await _uow.StaffRepository.GetStaffByUserIdAndCompany(userInfos.id, company.Id);
 
@@ -78,21 +95,61 @@ namespace Career.Application.Services
             try
             {
                 await _emailService.SendEmailToUserBeStaff(userToStaff.userName, userToStaff.email, company.Name);
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 _logger.LogError(ex, $"Unexpectadly error ocurred while trying to send message for user be staff: {ex.Message}");
 
                 throw new ExternalServiceException(ResourceExceptMessages.ERROR_SENDING_EMAIL);
             }
-   
-            var requestStaff = new RequestStaff() { 
-                CompanyId = company.Id, RequesterId = userInfos.id, 
+
+            var requestStaff = new RequestStaff() {
+                CompanyId = company.Id, RequesterId = userInfos.id,
                 Role = request.Role, UserId = request.UserId };
 
+            var notification = new Notification()
+            {
+                Message = $"",
+                Title = "",
+                Type = Domain.Enums.ENotificationType.StaffRequest,
+                UserId = userToStaff.id,
+            };
+
+            await _uow.GenericRepository.Add<Notification>(notification);
             await _uow.GenericRepository.Add<RequestStaff>(requestStaff);
+
             await _uow.Commit();
 
-            return _mapper.Map<RequestStaffResponse>(requestStaff);
+            return _mapper.Map<StaffRequestResponse>(requestStaff);
+        }
+
+        public async Task<StaffRequestsResponse> UserStaffRequests(int perPage, int page)
+        {
+            var userInfos = await _profileService.GetUserInfos(_accessToken);
+
+            var requests = _uow.StaffRepository.GetUserStaffRequestsPaged(perPage, page, userInfos.id);
+
+            var staffRequestsItems = requests.ToList();
+
+            var response = new StaffRequestsResponse()
+            {
+                Requests = staffRequestsItems.Select(staffreq =>
+                {
+                    var response = _mapper.Map<StaffRequestResponse>(staffreq);
+
+                    return response;
+                }).ToList(),
+                TotalAccepted = staffRequestsItems.Count(d => d.Status == Domain.Enums.ERequestStaffStatus.APPROVED),
+                TotalRejected = staffRequestsItems.Count(d => d.Status == Domain.Enums.ERequestStaffStatus.REJECTED),
+                TotalPending = staffRequestsItems.Count(d => d.Status == Domain.Enums.ERequestStaffStatus.PENDING),
+                UserId = userInfos.id,
+                Count = requests.Count,
+                HasNextPage = requests.HasNextPage,
+                HasPreviousPage = requests.HasPreviousPage,
+                IsLastPage = requests.IsLastPage,
+                IsFirstPage = requests.IsFirstPage     
+            };
+
+            return response;
         }
     }
 }

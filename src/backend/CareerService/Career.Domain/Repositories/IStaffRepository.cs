@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace Career.Domain.Repositories
 {
@@ -11,5 +12,7 @@ namespace Career.Domain.Repositories
     {
         public Task<List<StaffRole>?> GetStaffRolesInCompany(Guid companyId, Guid staffId);
         public Task<Staff?> GetStaffByUserIdAndCompany(string userId, Guid companyId);
+        public Task<RequestStaff?> GetRequestStaffById(Guid requestStaff);
+        public IPagedList<RequestStaff> GetUserStaffRequestsPaged(int perPage, int page, string userId);
     }
 }

@@ -1,6 +1,7 @@
 using Career.Infrastructure;
 using Career.Application;
 using Career.Domain;
+using Career.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddRouting(d => d.LowercaseUrls = true);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddDomain();
+
 
 builder.Services.AddHttpContextAccessor();
 

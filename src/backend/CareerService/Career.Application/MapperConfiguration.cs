@@ -26,7 +26,7 @@ namespace Career.Application
             CreateMap<Company, CompanyResponse>()
                 .ForMember(d => d.StaffsNumber, f => f.MapFrom(d => d.Staffs.Count));
 
-            CreateMap<RequestStaff, RequestStaffResponse>();
+            CreateMap<RequestStaff, StaffRequestResponse>();
         }
     }
 }

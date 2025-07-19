@@ -21,15 +21,34 @@ namespace Career.Api.Controllers
         {
             try
             {
-                var result = await _staffService.RequestStaffToCompany(request);
+                var result = await _staffService.StaffRequestToCompany(request);
 
-                return Ok(result);
+                return Created(string.Empty, result);
             }catch(Exception ex)
             {
                 _logger.LogError(ex, $"An error ocurred: {ex.Message}");
 
                 throw;
             }
+        }
+
+        [HttpGet("requests/{requestId}")]
+        public async Task<IActionResult> GetRequestToStaffStatus([FromRoute]Guid requestId)
+        {
+            var result = await _staffService.GetStaffRequestStatus(requestId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("requests/my")]
+        public async Task<IActionResult> GetMyStaffRequests([FromQuery]int perPage, [FromQuery]int page)
+        {
+            var result = await _staffService.UserStaffRequests(perPage, page);
+
+            if (!result.Requests.Any())
+                return NoContent();
+
+            return Ok(result);
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace Career.Infrastructure.Persistence
 {
@@ -16,6 +18,11 @@ namespace Career.Infrastructure.Persistence
         public StaffRepository(DataContext context)
         {
             _context = context;
+        }
+
+        public async Task<RequestStaff?> GetRequestStaffById(Guid requestStaff)
+        {
+            return await _context.RequestsStaffs.SingleOrDefaultAsync(d => d.Id == requestStaff);
         }
 
         public async Task<Staff?> GetStaffByUserIdAndCompany(string userId, Guid companyId)
@@ -30,6 +37,14 @@ namespace Career.Infrastructure.Persistence
                 .AsNoTracking()
                 .Where(d => d.CompanyId == companyId && d.StaffId == staffId)
                 .ToListAsync();
+        }
+
+        public IPagedList<RequestStaff> GetUserStaffRequestsPaged(int perPage, int page, string userId)
+        {
+            return _context.RequestsStaffs
+                .AsNoTracking()
+                .Where(d => d.RequesterId == userId)
+                .ToPagedList(page, perPage);
         }
     }
 }
