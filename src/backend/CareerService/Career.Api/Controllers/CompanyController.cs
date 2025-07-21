@@ -21,7 +21,12 @@ namespace Career.Api.Controllers
         [HttpGet("{companyId}/staffs")]
         public async Task<IActionResult> GetAllCompanyStaffs([FromRoute]Guid companyId)
         {
+            var result = await _companyService.GetCompanyStaffs(companyId);
 
+            if (!result.Staffs.Any())
+                return NoContent();
+
+            return Ok(result);
         }
 
         [HttpPost]

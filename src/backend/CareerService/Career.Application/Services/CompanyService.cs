@@ -19,7 +19,7 @@ namespace Career.Application.Services
     {
         public Task<CompanyResponse> CreateCompany(CreateCompanyRequest request);
         public Task<CompanyResponse> UpdateCompany(UpdateCompanyRequest request);
-        public Task<StaffResponse> GetCompanyStaffs(Guid companyId);
+        public Task<StaffsResponse> GetCompanyStaffs(Guid companyId);
     }
 
     public class CompanyService : ICompanyService
@@ -62,7 +62,7 @@ namespace Career.Application.Services
             return _mapper.Map<CompanyResponse>(company);
         }
 
-        public async Task<StaffResponse> GetCompanyStaffs(Guid companyId)
+        public async Task<StaffsResponse> GetCompanyStaffs(Guid companyId)
         {
             var company = await _uow.CompanyRepository.CompanyById(companyId);
 
@@ -72,7 +72,25 @@ namespace Career.Application.Services
                 throw new NullEntityException(ResourceExceptMessages.COMPANY_NOT_EXISTS);
             }
 
+            var staffs = await _uow.StaffRepository.GetAllStaffsFromACompany(companyId);
+            var staffsIds = staffs.Select(d => d.Id).ToList();
+            var staffsRoles = await _uow.StaffRepository.GetStaffsRole(staffsIds);
 
+            var response = new StaffsResponse()
+            {
+                CompanyId = companyId,
+                Staffs = staffs.Select(staff =>
+                {
+                    var response = _mapper.Map<StaffResponse>(staff);
+                    response.Role = staffsRoles
+                    .Where(d => d.StaffId == staff.Id)
+                    .SingleOrDefault()!.Role;
+
+                    return response;
+                }).ToList()
+            };
+
+            return response;
         }
 
         public async Task<CompanyResponse> UpdateCompany(UpdateCompanyRequest request)

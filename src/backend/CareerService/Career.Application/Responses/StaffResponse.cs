@@ -13,4 +13,10 @@ namespace Career.Application.Responses
         public Guid CompanyId { get; set; }
         public string Role { get; set; }
     }
+
+    public class StaffsResponse
+    {
+        public Guid CompanyId { get; set; }
+        public List<StaffResponse> Staffs { get; set; }
+    }
 }

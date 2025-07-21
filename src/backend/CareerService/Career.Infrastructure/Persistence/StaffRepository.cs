@@ -20,6 +20,11 @@ namespace Career.Infrastructure.Persistence
             _context = context;
         }
 
+        public async Task<List<Staff>> GetAllStaffsFromACompany(Guid companyId)
+        {
+            return await _context.Staffs.Where(d => d.CompanyId == companyId).ToListAsync();
+        }
+
         public async Task<RequestStaff?> GetRequestStaffById(Guid requestStaff)
         {
             return await _context.RequestsStaffs.SingleOrDefaultAsync(d => d.Id == requestStaff);
@@ -37,6 +42,11 @@ namespace Career.Infrastructure.Persistence
                 .AsNoTracking()
                 .Where(d => d.CompanyId == companyId && d.StaffId == staffId)
                 .ToListAsync();
+        }
+
+        public async Task<List<StaffRole>> GetStaffsRole(List<Guid> staffsId)
+        {
+            return await _context.StaffRoles.Where(d => staffsId.Contains(d.StaffId)).ToListAsync();
         }
 
         public IPagedList<RequestStaff> GetUserStaffRequestsPaged(int perPage, int page, string userId)

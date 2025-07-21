@@ -14,5 +14,7 @@ namespace Career.Domain.Repositories
         public Task<Staff?> GetStaffByUserIdAndCompany(string userId, Guid companyId);
         public Task<RequestStaff?> GetRequestStaffById(Guid requestStaff);
         public IPagedList<RequestStaff> GetUserStaffRequestsPaged(int perPage, int page, string userId);
+        public Task<List<Staff>> GetAllStaffsFromACompany(Guid companyId);
+        public Task<List<StaffRole>> GetStaffsRole(List<Guid> staffsId);
     }
 }
