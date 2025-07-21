@@ -18,6 +18,12 @@ namespace Career.Api.Controllers
             _companyService = companyService;
         }
 
+        [HttpGet("{companyId}/staffs")]
+        public async Task<IActionResult> GetAllCompanyStaffs([FromRoute]Guid companyId)
+        {
+
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateCompany([FromBody]CreateCompanyRequest request)
         {

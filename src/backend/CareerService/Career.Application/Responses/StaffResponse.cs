@@ -11,5 +11,6 @@ namespace Career.Application.Responses
         public Guid Id { get; set; }
         public string UserId { get; set; }
         public Guid CompanyId { get; set; }
+        public string Role { get; set; }
     }
 }

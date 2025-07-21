@@ -16,7 +16,9 @@ namespace Career.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPost("request-staff-to-company")]
+
+
+        [HttpPost("requests/staff-to-company")]
         public async Task<IActionResult> RequestAStaffToCompany([FromBody]PutStaffOnCompanyRequest request)
         {
             try

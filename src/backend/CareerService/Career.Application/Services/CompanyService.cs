@@ -19,6 +19,7 @@ namespace Career.Application.Services
     {
         public Task<CompanyResponse> CreateCompany(CreateCompanyRequest request);
         public Task<CompanyResponse> UpdateCompany(UpdateCompanyRequest request);
+        public Task<StaffResponse> GetCompanyStaffs(Guid companyId);
     }
 
     public class CompanyService : ICompanyService
@@ -59,6 +60,19 @@ namespace Career.Application.Services
                 $"company details: id: {company.Id}, name: {company.Name}, website: {company.Website}");
 
             return _mapper.Map<CompanyResponse>(company);
+        }
+
+        public async Task<StaffResponse> GetCompanyStaffs(Guid companyId)
+        {
+            var company = await _uow.CompanyRepository.CompanyById(companyId);
+
+            if(company is null)
+            {
+                _logger.LogError($"Company with id {companyId} was not found");
+                throw new NullEntityException(ResourceExceptMessages.COMPANY_NOT_EXISTS);
+            }
+
+
         }
 
         public async Task<CompanyResponse> UpdateCompany(UpdateCompanyRequest request)

@@ -34,7 +34,23 @@ namespace Career.Domain.Aggregates.CompanyRoot
                 _rate = value;
             }
         }
+        public Guid CompanyConfigurationId { get; set; }
+        public CompanyConfiguration? CompanyConfiguration { get; set; }
         public ICollection<Staff> Staffs { get; set; } = [];
         public ICollection<Review> Reviews { get; set; } = [];
+    }
+
+    [Table("companies_configurations")]
+    public class CompanyConfiguration
+    {
+        public Guid Id { get; set; }
+        public Guid CompanyId { get; set; }
+        public Company Company { get; set; }
+        public bool IsPrivate { get; set; }
+        public bool ShowStaffs { get; set; }
+        public bool HighlightVerifiedStatus { get; set; } = true;
+        public bool NotifyStaffsOnNewReview { get; set; } = false;
+        public bool NotifyStaffsOnNewJobApplication { get; set; } = false;
+        public bool NotifyStaffsOnJobApplicationUpdate { get; set; } = false;
     }
 }

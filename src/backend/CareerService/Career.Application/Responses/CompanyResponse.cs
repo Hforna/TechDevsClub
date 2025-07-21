@@ -19,6 +19,5 @@ namespace Career.Application.Responses
         public string? Website { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public decimal Rate { get; set; }
-        public List<StaffResponse> Staffs { get; set; } = [];
     }
 }
