@@ -1,0 +1,28 @@
+services:
+  profile.api:
+    image: ${DOCKER_REGISTRY-}profileapi
+    build:
+      context: .
+      dockerfile: src/backend/ProfileService/Profile.Api/Dockerfile
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+
+  redis:
+    image: redis:latest
+    
+
+  career.api:
+    image: ${DOCKER_REGISTRY-}careerapi
+    build:
+      context: .
+      dockerfile: src/backend/CareerService/Career.Api/Dockerfile
+
+volumes:
+  sqlserverData:
+  redis_data:
+  geoip_data:
+
+networks:
+  backend:
+    

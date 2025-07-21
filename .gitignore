@@ -16,10 +16,6 @@ appsettings*.json
 **/appsettings.Development.json
 **/appsettings.json
 
-docker-compose.dcproj
-docker-compose.yml
-docker-compose.override.yml
-
 # ignore Xamarin.Android Resource.Designer.cs files
 **/*.Droid/**/[Rr]esource.[Dd]esigner.cs
 **/*.Android/**/[Rr]esource.[Dd]esigner.cs
