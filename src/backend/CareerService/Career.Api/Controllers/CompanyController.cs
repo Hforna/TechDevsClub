@@ -18,6 +18,15 @@ namespace Career.Api.Controllers
             _companyService = companyService;
         }
 
+
+        /// <summary>
+        /// Get all staffs from a company, 
+        /// it only will be accepted if user is owner or staff of this company, 
+        /// otherwise company owner must set staffs as public in company configurations
+        /// </summary>
+        /// <param name="perPage">staffs count in response</param>
+        /// <param name="page">page number of staffs</param>
+        /// <returns>return short data of staffs and infos about the page</returns>
         [HttpGet("{companyId}/staffs")]
         public async Task<IActionResult> GetAllCompanyStaffs([FromRoute]Guid companyId)
         {
@@ -27,6 +36,12 @@ namespace Career.Api.Controllers
                 return NoContent();
 
             return Ok(result);
+        }
+
+        [HttpPut("{companyId}/configurations")]
+        public async Task<IActionResult> UpdateCompanyConfigurations()
+        {
+            return Ok();
         }
 
         [HttpPost]
