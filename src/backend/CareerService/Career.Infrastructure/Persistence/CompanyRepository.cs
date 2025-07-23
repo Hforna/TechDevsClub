@@ -20,7 +20,7 @@ namespace Career.Infrastructure.Persistence
 
         public async Task<Company?> CompanyById(Guid companyId)
         {
-            return await _context.Companies.SingleOrDefaultAsync(d => d.Id == companyId);
+            return await _context.Companies.Include(d => d.CompanyConfiguration).SingleOrDefaultAsync(d => d.Id == companyId);
         }
 
         public async Task<bool> CompanyContainsStaff(Guid companyId, string userId)

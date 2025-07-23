@@ -165,4 +165,7 @@
   <data name="USER_CANNOT_SEE_STAFF_REQUEST_STATUS" xml:space="preserve">
     <value>User can't see staff request status</value>
   </data>
+  <data name="SHOW_STAFFS_PRIVATE" xml:space="preserve">
+    <value>Company owner set show staffs as private, you does not have permission to access this</value>
+  </data>
 </root>

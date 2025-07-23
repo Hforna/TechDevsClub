@@ -35,7 +35,7 @@ namespace Career.Domain.Aggregates.CompanyRoot
             }
         }
         public Guid CompanyConfigurationId { get; set; }
-        public CompanyConfiguration? CompanyConfiguration { get; set; }
+        public CompanyConfiguration CompanyConfiguration { get; set; }
         public ICollection<Staff> Staffs { get; set; } = [];
         public ICollection<Review> Reviews { get; set; } = [];
     }

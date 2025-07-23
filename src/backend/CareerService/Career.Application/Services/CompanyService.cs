@@ -29,6 +29,7 @@ namespace Career.Application.Services
         private readonly IProfileServiceClient _profileService;
         private readonly IRequestService _requestService;
         private readonly IMapper _mapper;
+        private readonly string? _accessToken;
 
         public CompanyService(IUnitOfWork uow, ILogger<CompanyService> logger, 
             IProfileServiceClient profileService, IRequestService requestService, IMapper mapper)
@@ -38,6 +39,8 @@ namespace Career.Application.Services
             _profileService = profileService;
             _requestService = requestService;
             _mapper = mapper;
+
+            _accessToken = _requestService.GetBearerToken()!;
         }
 
         public async Task<CompanyResponse> CreateCompany(CreateCompanyRequest request)
@@ -70,6 +73,19 @@ namespace Career.Application.Services
             {
                 _logger.LogError($"Company with id {companyId} was not found");
                 throw new NullEntityException(ResourceExceptMessages.COMPANY_NOT_EXISTS);
+            }
+
+            if (!company.CompanyConfiguration.ShowStaffs)
+            {
+                if (string.IsNullOrEmpty(_accessToken))
+                    throw new DomainException(ResourceExceptMessages.SHOW_STAFFS_PRIVATE);
+
+                var userInfos = await _profileService.GetUserInfos(_accessToken);
+
+                var isStaff = await _uow.CompanyRepository.CompanyContainsStaff(companyId, userInfos.id);
+
+                if (company.OwnerId != userInfos.id && !isStaff)
+                    throw new DomainException(ResourceExceptMessages.SHOW_STAFFS_PRIVATE);
             }
 
             var staffs = await _uow.StaffRepository.GetAllStaffsFromACompany(companyId);

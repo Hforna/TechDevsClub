@@ -22,21 +22,21 @@ namespace Career.Domain.Exceptions {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ResourceExceptMessages {
+    internal class ResourceExceptMessages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public ResourceExceptMessages() {
+        internal ResourceExceptMessages() {
         }
         
         /// <summary>
         ///   Retorna a instância de ResourceManager armazenada em cache usada por essa classe.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Career.Domain.Exceptions.ResourceExceptMessages", typeof(ResourceExceptMessages).Assembly);
@@ -51,7 +51,7 @@ namespace Career.Domain.Exceptions {
         ///   pesquisas de recursos que usam essa classe de recurso de tipo de alta segurança.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Company not found.
         /// </summary>
-        public static string COMPANY_NOT_EXISTS {
+        internal static string COMPANY_NOT_EXISTS {
             get {
                 return ResourceManager.GetString("COMPANY_NOT_EXISTS", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Company rate must be between 0 and 5.
         /// </summary>
-        public static string COMPANY_RATE_INVALID {
+        internal static string COMPANY_RATE_INVALID {
             get {
                 return ResourceManager.GetString("COMPANY_RATE_INVALID", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Request token is null.
         /// </summary>
-        public static string EMPTY_REQUEST_TOKEN {
+        internal static string EMPTY_REQUEST_TOKEN {
             get {
                 return ResourceManager.GetString("EMPTY_REQUEST_TOKEN", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Occured an error while trying to send email to user.
         /// </summary>
-        public static string ERROR_SENDING_EMAIL {
+        internal static string ERROR_SENDING_EMAIL {
             get {
                 return ResourceManager.GetString("ERROR_SENDING_EMAIL", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Invalid serialization type.
         /// </summary>
-        public static string INVALID_SERIALIZER_TYPE {
+        internal static string INVALID_SERIALIZER_TYPE {
             get {
                 return ResourceManager.GetString("INVALID_SERIALIZER_TYPE", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Max salary must be greather or equal than min salary.
         /// </summary>
-        public static string MIN_SALARY_LOWER_THAN_HIGHER {
+        internal static string MIN_SALARY_LOWER_THAN_HIGHER {
             get {
                 return ResourceManager.GetString("MIN_SALARY_LOWER_THAN_HIGHER", resourceCulture);
             }
@@ -117,16 +117,25 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Notification message length must be thousand or less.
         /// </summary>
-        public static string NOTIFICATION_MESSAGE_THOUSAND_MAX {
+        internal static string NOTIFICATION_MESSAGE_THOUSAND_MAX {
             get {
                 return ResourceManager.GetString("NOTIFICATION_MESSAGE_THOUSAND_MAX", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Company owner set show staffs as private, you does not have permission to access this.
+        /// </summary>
+        internal static string SHOW_STAFFS_PRIVATE {
+            get {
+                return ResourceManager.GetString("SHOW_STAFFS_PRIVATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Staff does not have permission for hire a staff.
         /// </summary>
-        public static string STAFF_DOESNT_HAVE_PERMISSION_FOR_HIRE {
+        internal static string STAFF_DOESNT_HAVE_PERMISSION_FOR_HIRE {
             get {
                 return ResourceManager.GetString("STAFF_DOESNT_HAVE_PERMISSION_FOR_HIRE", resourceCulture);
             }
@@ -135,7 +144,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Staff already is in company.
         /// </summary>
-        public static string STAFF_IN_COMPANY {
+        internal static string STAFF_IN_COMPANY {
             get {
                 return ResourceManager.GetString("STAFF_IN_COMPANY", resourceCulture);
             }
@@ -144,7 +153,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Staff request was not found.
         /// </summary>
-        public static string STAFF_REQUEST_NOT_EXISTS {
+        internal static string STAFF_REQUEST_NOT_EXISTS {
             get {
                 return ResourceManager.GetString("STAFF_REQUEST_NOT_EXISTS", resourceCulture);
             }
@@ -153,7 +162,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User already is in company.
         /// </summary>
-        public static string USER_ALREADY_IN_COMPANY {
+        internal static string USER_ALREADY_IN_COMPANY {
             get {
                 return ResourceManager.GetString("USER_ALREADY_IN_COMPANY", resourceCulture);
             }
@@ -162,7 +171,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User can&apos;t see staff request status.
         /// </summary>
-        public static string USER_CANNOT_SEE_STAFF_REQUEST_STATUS {
+        internal static string USER_CANNOT_SEE_STAFF_REQUEST_STATUS {
             get {
                 return ResourceManager.GetString("USER_CANNOT_SEE_STAFF_REQUEST_STATUS", resourceCulture);
             }
@@ -171,7 +180,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User must be binded to company.
         /// </summary>
-        public static string USER_NOT_BINDED_TO_COMPANY {
+        internal static string USER_NOT_BINDED_TO_COMPANY {
             get {
                 return ResourceManager.GetString("USER_NOT_BINDED_TO_COMPANY", resourceCulture);
             }
@@ -180,7 +189,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User must be owner of this company.
         /// </summary>
-        public static string USER_NOT_COMPANY_OWNER {
+        internal static string USER_NOT_COMPANY_OWNER {
             get {
                 return ResourceManager.GetString("USER_NOT_COMPANY_OWNER", resourceCulture);
             }
@@ -189,7 +198,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User requested not exists.
         /// </summary>
-        public static string USER_NOT_EXISTS {
+        internal static string USER_NOT_EXISTS {
             get {
                 return ResourceManager.GetString("USER_NOT_EXISTS", resourceCulture);
             }
@@ -198,7 +207,7 @@ namespace Career.Domain.Exceptions {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User doesn&apos;t have permission for create company.
         /// </summary>
-        public static string USER_ROLE_OWNER_FOR_CREATE_COMPANY {
+        internal static string USER_ROLE_OWNER_FOR_CREATE_COMPANY {
             get {
                 return ResourceManager.GetString("USER_ROLE_OWNER_FOR_CREATE_COMPANY", resourceCulture);
             }
