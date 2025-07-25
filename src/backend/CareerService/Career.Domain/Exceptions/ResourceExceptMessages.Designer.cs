@@ -106,6 +106,15 @@ namespace Career.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Request bearer token is on an invalid format.
+        /// </summary>
+        internal static string INVALID_TOKEN_FORMAT {
+            get {
+                return ResourceManager.GetString("INVALID_TOKEN_FORMAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Max salary must be greather or equal than min salary.
         /// </summary>
         internal static string MIN_SALARY_LOWER_THAN_HIGHER {
@@ -160,6 +169,15 @@ namespace Career.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Request bearer token is expired.
+        /// </summary>
+        internal static string TOKEN_EXPIRED {
+            get {
+                return ResourceManager.GetString("TOKEN_EXPIRED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User already is in company.
         /// </summary>
         internal static string USER_ALREADY_IN_COMPANY {
@@ -174,6 +192,15 @@ namespace Career.Domain.Exceptions {
         internal static string USER_CANNOT_SEE_STAFF_REQUEST_STATUS {
             get {
                 return ResourceManager.GetString("USER_CANNOT_SEE_STAFF_REQUEST_STATUS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User must be authenticated for access this endpoint.
+        /// </summary>
+        internal static string USER_NOT_AUTHENTICATED {
+            get {
+                return ResourceManager.GetString("USER_NOT_AUTHENTICATED", resourceCulture);
             }
         }
         

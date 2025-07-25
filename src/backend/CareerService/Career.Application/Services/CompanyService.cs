@@ -20,6 +20,9 @@ namespace Career.Application.Services
         public Task<CompanyResponse> CreateCompany(CreateCompanyRequest request);
         public Task<CompanyResponse> UpdateCompany(UpdateCompanyRequest request);
         public Task<StaffsResponse> GetCompanyStaffs(Guid companyId);
+        public Task<CompanyConfigurationResponse> UpdateCompanyConfiguration(
+            Guid companyId, 
+            CompanyConfigurationRequest request);
     }
 
     public class CompanyService : ICompanyService

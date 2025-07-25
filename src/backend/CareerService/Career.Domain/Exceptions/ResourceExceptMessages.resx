@@ -168,4 +168,13 @@
   <data name="SHOW_STAFFS_PRIVATE" xml:space="preserve">
     <value>Company owner set show staffs as private, you does not have permission to access this</value>
   </data>
+  <data name="USER_NOT_AUTHENTICATED" xml:space="preserve">
+    <value>User must be authenticated for access this endpoint</value>
+  </data>
+  <data name="TOKEN_EXPIRED" xml:space="preserve">
+    <value>Request bearer token is expired</value>
+  </data>
+  <data name="INVALID_TOKEN_FORMAT" xml:space="preserve">
+    <value>Request bearer token is on an invalid format</value>
+  </data>
 </root>

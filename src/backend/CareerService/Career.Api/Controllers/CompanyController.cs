@@ -1,4 +1,5 @@
-﻿using Career.Application.Requests.Company;
+﻿using Career.Api.Filters;
+using Career.Application.Requests.Company;
 using Career.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,12 +39,17 @@ namespace Career.Api.Controllers
             return Ok(result);
         }
 
+        [UserAuthenticated]
         [HttpPut("{companyId}/configurations")]
-        public async Task<IActionResult> UpdateCompanyConfigurations()
+        public async Task<IActionResult> UpdateCompanyConfigurations([FromRoute]Guid companyId, 
+            [FromBody]CompanyConfigurationRequest request)
         {
+            var result = await _companyService.UpdateCompanyConfiguration(companyId, request);
+
             return Ok();
         }
 
+        [UserAuthenticated]
         [HttpPost]
         public async Task<IActionResult> CreateCompany([FromBody]CreateCompanyRequest request)
         {
@@ -52,6 +58,7 @@ namespace Career.Api.Controllers
             return Created(string.Empty, result);
         }
 
+        [UserAuthenticated]
         [HttpPut]
         public async Task<IActionResult> UpdateCompany([FromForm]UpdateCompanyRequest request)
         {
