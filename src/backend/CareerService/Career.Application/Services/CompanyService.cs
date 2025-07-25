@@ -131,5 +131,25 @@ namespace Career.Application.Services
 
             return _mapper.Map<CompanyResponse>(company);
         }
+
+        public async Task<CompanyConfigurationResponse> UpdateCompanyConfiguration(
+            Guid companyId, 
+            CompanyConfigurationRequest request)
+        {
+            var company = await _uow.CompanyRepository.CompanyById(companyId)
+                ?? throw new NullEntityException(ResourceExceptMessages.COMPANY_NOT_EXISTS);
+
+            var userInfos = await _profileService.GetUserInfos(_accessToken!);
+
+            if (company.OwnerId != userInfos.id)
+                throw new DomainException(ResourceExceptMessages.USER_NOT_COMPANY_OWNER);
+
+            _mapper.Map(request, company);
+
+            _uow.GenericRepository.Update<Company>(company);
+            await _uow.Commit();
+
+            return _mapper.Map<CompanyConfigurationResponse>(company);
+        }
     }
 }

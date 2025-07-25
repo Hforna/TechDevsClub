@@ -1,4 +1,5 @@
-﻿using Career.Domain.ValueObjects;
+﻿using Career.Domain.Aggregates.CompanyRoot;
+using Career.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,17 @@ namespace Career.Application.Responses
         public string? Website { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public decimal Rate { get; set; }
+    }
+
+    public class CompanyConfigurationResponse
+    {
+        public Guid CompanyId { get; set; }
+        public bool IsPrivate { get; set; }
+        public bool ShowStaffs { get; set; }
+        public bool HighlightVerifiedStatus { get; set; } = true;
+        public bool NotifyStaffsOnNewReview { get; set; } = false;
+        public bool NotifyStaffsOnNewJobApplication { get; set; } = false;
+        public bool NotifyStaffsOnJobApplicationUpdate { get; set; } = false;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
