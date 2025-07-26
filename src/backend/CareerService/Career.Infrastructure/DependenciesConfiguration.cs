@@ -23,6 +23,7 @@ namespace Career.Infrastructure
             AddRepositories(services);
             AddServices(services, configuration);
             AddStorage(services, configuration);
+            WebSocketsConnection(services);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -30,6 +31,11 @@ namespace Career.Infrastructure
             var connectionString = configuration.GetConnectionString("sqlserver");
 
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(connectionString));
+        }
+
+        static void WebSocketsConnection(IServiceCollection services)
+        {
+            services.AddSignalRCore();
         }
 
         static void AddRepositories(IServiceCollection services)

@@ -22,6 +22,7 @@ namespace Career.Application.Services
         public Task<StaffRequestResponse> StaffRequestToCompany(PutStaffOnCompanyRequest request);
         public Task<StaffRequestResponse> GetStaffRequestStatus(Guid requestId);
         public Task<StaffRequestsResponse> UserStaffRequests(int perPage, int page);
+        public Task<>
     }
 
     public class StaffService : IStaffService
