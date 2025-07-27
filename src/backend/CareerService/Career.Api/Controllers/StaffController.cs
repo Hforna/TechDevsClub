@@ -43,6 +43,24 @@ namespace Career.Api.Controllers
             }
         }
 
+        [UserAuthenticated]
+        [HttpGet("requests/{requestId}/accept")]
+        public async Task<IActionResult> AcceptRequestToBeStaff([FromRoute]Guid requestId)
+        {
+            var result = await _staffService.AcceptStaffRequest(requestId);
+
+            return Ok(result);
+        }
+
+        [UserAuthenticated]
+        [HttpGet("requests/{requestId}/reject")]
+        public async Task<IActionResult> RejectStaffRequestToBeStaff([FromRoute]Guid requestId)
+        {
+            var result = await _staffService.RejectStaffRequest(requestId);
+
+            return Ok(result);
+        }
+
         /// <summary>
         /// return a status of request that user sent to another user
         /// </summary>

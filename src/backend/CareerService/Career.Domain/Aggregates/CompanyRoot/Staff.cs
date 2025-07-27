@@ -1,4 +1,5 @@
 ﻿using Career.Domain.Enums;
+using Career.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -35,5 +36,21 @@ namespace Career.Domain.Aggregates.CompanyRoot
         public string RequesterId { get; set; }
         public string Role { get; set; }
         public ERequestStaffStatus Status { get; set; }
+
+        public void AcceptRequest()
+        {
+            if(Status == ERequestStaffStatus.REJECTED)
+                throw new DomainException(ResourceExceptMessages.STAFF_REQUEST_ALREADY_REJECTED);
+
+            Status = ERequestStaffStatus.APPROVED;
+        }
+
+        public void RejectRequest()
+        {
+            if (Status == ERequestStaffStatus.APPROVED)
+                throw new DomainException(ResourceExceptMessages.STAFF_REQUEST_ALREADY_ACCEPTED);
+
+            Status = ERequestStaffStatus.REJECTED;
+        }
     }
 }

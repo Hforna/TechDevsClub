@@ -177,4 +177,13 @@
   <data name="INVALID_TOKEN_FORMAT" xml:space="preserve">
     <value>Request bearer token is on an invalid format</value>
   </data>
+  <data name="STAFF_REQUEST_ALREADY_REJECTED" xml:space="preserve">
+    <value>Cannot accept staff request, it already was rejected</value>
+  </data>
+  <data name="STAFF_REQUEST_ALREADY_ACCEPTED" xml:space="preserve">
+    <value>Cannot reject staff request, it already was accepted</value>
+  </data>
+  <data name="USER_NOT_REQUESTED_ON_STAFF_REQUEST" xml:space="preserve">
+    <value>User must be the requested to accept this staff request</value>
+  </data>
 </root>

@@ -22,7 +22,8 @@ namespace Career.Application.Services
         public Task<StaffRequestResponse> StaffRequestToCompany(PutStaffOnCompanyRequest request);
         public Task<StaffRequestResponse> GetStaffRequestStatus(Guid requestId);
         public Task<StaffRequestsResponse> UserStaffRequests(int perPage, int page);
-        public Task<>
+        public Task<StaffRequestResponse> AcceptStaffRequest(Guid requestId);
+        public Task<StaffRequestResponse> RejectStaffRequest(Guid requestId);
     }
 
     public class StaffService : IStaffService
@@ -37,7 +38,9 @@ namespace Career.Application.Services
         private string _accessToken;
 
         public StaffService(IProfileServiceClient profileService, IUnitOfWork uow, 
-            ILogger<StaffService> logger, IMapper mapper, IRequestService requestService, ICompanyDomainService companyDomain, IEmailService emailService)
+            ILogger<StaffService> logger, IMapper mapper, 
+            IRequestService requestService, 
+            ICompanyDomainService companyDomain, IEmailService emailService)
         {
             _profileService = profileService;
             _uow = uow;
@@ -50,6 +53,29 @@ namespace Career.Application.Services
             _accessToken = _requestService.GetBearerToken()!;
         }
 
+        public async Task<StaffRequestResponse> AcceptStaffRequest(Guid requestId)
+        {
+            var staffRequest = await _uow.StaffRepository.GetRequestStaffById(requestId)
+                ?? throw new NullEntityException(ResourceExceptMessages.STAFF_REQUEST_NOT_EXISTS);
+
+            var userInfos = await _profileService.GetUserInfos(_accessToken);
+
+            if (userInfos.id != staffRequest.UserId)
+                throw new DomainException(ResourceExceptMessages.USER_NOT_REQUESTED_ON_STAFF_REQUEST);
+
+            staffRequest.AcceptRequest();
+
+            var company = await _uow.CompanyRepository.CompanyById(staffRequest.CompanyId);
+            await _companyDomain.AddStaffToCompany(company!, userInfos.id);
+
+            _uow.GenericRepository.Update<RequestStaff>(staffRequest);
+            _uow.GenericRepository.Update<Company>(company!);
+
+            await _uow.Commit();
+
+            return _mapper.Map<StaffRequestResponse>(staffRequest);
+        }
+
         public async Task<StaffRequestResponse> GetStaffRequestStatus(Guid requestId)
         {
             var userInfos = await _profileService.GetUserInfos(_accessToken);
@@ -58,6 +84,24 @@ namespace Career.Application.Services
 
             if (request.UserId != userInfos.id || request.RequesterId != userInfos.id)
                 throw new DomainException(ResourceExceptMessages.USER_CANNOT_SEE_STAFF_REQUEST_STATUS);
+
+            return _mapper.Map<StaffRequestResponse>(request);
+        }
+
+        public async Task<StaffRequestResponse> RejectStaffRequest(Guid requestId)
+        {
+            var request = await _uow.StaffRepository.GetRequestStaffById(requestId)
+                ?? throw new NullEntityException(ResourceExceptMessages.STAFF_REQUEST_NOT_EXISTS);
+
+            var userInfos = await _profileService.GetUserInfos(_accessToken);
+
+            if (userInfos.id != request.UserId)
+                throw new DomainException(ResourceExceptMessages.USER_NOT_REQUESTED_ON_STAFF_REQUEST);
+
+            request.RejectRequest();
+
+            _uow.GenericRepository.Update<RequestStaff>(request);
+            await _uow.Commit();
 
             return _mapper.Map<StaffRequestResponse>(request);
         }
