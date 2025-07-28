@@ -43,6 +43,11 @@ namespace Career.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// accept a staff request of an user by it id
+        /// </summary>
+        /// <param name="requestId">staff request for accept</param>
+        /// <returns>return the staff request with status</returns>
         [UserAuthenticated]
         [HttpGet("requests/{requestId}/accept")]
         public async Task<IActionResult> AcceptRequestToBeStaff([FromRoute]Guid requestId)
@@ -52,6 +57,11 @@ namespace Career.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// accept a staff request of an user by it id
+        /// </summary>
+        /// <param name="requestId">staff request for accept</param>
+        /// <returns>return the staff request with status</returns>
         [UserAuthenticated]
         [HttpGet("requests/{requestId}/reject")]
         public async Task<IActionResult> RejectStaffRequestToBeStaff([FromRoute]Guid requestId)
