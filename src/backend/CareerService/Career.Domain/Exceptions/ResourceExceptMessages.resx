@@ -186,4 +186,7 @@
   <data name="USER_NOT_REQUESTED_ON_STAFF_REQUEST" xml:space="preserve">
     <value>User must be the requested to accept this staff request</value>
   </data>
+  <data name="COMPANY_PRIVATE" xml:space="preserve">
+    <value>Company is private, user cannot access this</value>
+  </data>
 </root>

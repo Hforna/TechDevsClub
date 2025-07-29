@@ -2,6 +2,7 @@
 using Career.Application.Requests.Company;
 using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
+using Career.Domain.Dtos;
 using Career.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace Career.Application
 
             CreateMap<Company, CompanyResponse>()
                 .ForMember(d => d.StaffsNumber, f => f.MapFrom(d => d.Staffs.Count));
+
+            CreateMap<CompanyResponseDto, CompanyResponse>();
 
             CreateMap<RequestStaff, StaffRequestResponse>();
         }

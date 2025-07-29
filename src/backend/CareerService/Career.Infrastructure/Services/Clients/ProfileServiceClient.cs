@@ -49,6 +49,11 @@ namespace Career.Infrastructure.Services.Clients
                 _logger.LogError(ex, $"Error while trying to deserialize user infos response: {ex.Message}");
 
                 throw new ClientException(ResourceExceptMessages.INVALID_SERIALIZER_TYPE);
+            }catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Unexpectadly error occured {ex.Message}");
+
+                throw new ClientException(content);
             }
         }
 

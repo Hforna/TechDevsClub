@@ -19,6 +19,15 @@ namespace Career.Api.Controllers
             _companyService = companyService;
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetCompany([FromRoute]Guid id)
+        {
+            var result = await _companyService.GetCompany(id);
+
+            return Ok(result);
+        }
+
 
         /// <summary>
         /// Get all staffs from a company, 

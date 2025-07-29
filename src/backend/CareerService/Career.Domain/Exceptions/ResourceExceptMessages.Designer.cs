@@ -70,6 +70,15 @@ namespace Career.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Company is private, user cannot access this.
+        /// </summary>
+        internal static string COMPANY_PRIVATE {
+            get {
+                return ResourceManager.GetString("COMPANY_PRIVATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Company rate must be between 0 and 5.
         /// </summary>
         internal static string COMPANY_RATE_INVALID {

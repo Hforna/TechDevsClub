@@ -1,4 +1,5 @@
 ﻿using Career.Domain.Aggregates.CompanyRoot;
+using Career.Domain.Dtos;
 using Career.Domain.Exceptions;
 using Career.Domain.Repositories;
 using System;
@@ -13,6 +14,9 @@ namespace Career.Domain.DomainServices
     public interface ICompanyDomainService
     {
         public Task AddStaffToCompany(Company company, string userId);
+        public CompanyResponseDto GetCompanyResponseByConfigurations(
+            CompanyConfiguration configuration, 
+            Company company);
     }
 
     public class CompanyDomainService : ICompanyDomainService
@@ -34,6 +38,19 @@ namespace Career.Domain.DomainServices
             var staff = new Staff() { CompanyId = company.Id, UserId = userId };
 
             company.Staffs.Add(staff);
+        }
+
+        public CompanyResponseDto GetCompanyResponseByConfigurations(
+            CompanyConfiguration configuration, 
+            Company company)
+        {
+            var companyResponse = new CompanyResponseDto();
+
+            companyResponse.Verified = configuration.HighlightVerifiedStatus 
+                ? companyResponse.Verified 
+                : null;
+
+            return companyResponse;
         }
     }
 }
