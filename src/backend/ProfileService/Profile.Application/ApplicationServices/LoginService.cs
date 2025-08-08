@@ -103,11 +103,14 @@ namespace Profile.Application.ApplicationServices
             claims.Add(new Claim("device-id", device.Id.ToString()));
 
             var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier);
+            var accessExpiresAt = _tokenService.GenerateTimeForAccessTokenExpires();
 
             return new LoginResponse()
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken.Value
+                ExpiresAt = accessExpiresAt,
+                RefreshToken = refreshToken.Value,
+                RefreshExpiresAt = refreshToken.RefreshTokenExpiration
             };
         }
 
@@ -170,11 +173,14 @@ namespace Profile.Application.ApplicationServices
             claims.Add(new Claim("device-id", device.Id.ToString()));
 
             var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier);
+            var accessExpiresAt = _tokenService.GenerateTimeForAccessTokenExpires();
 
             return new LoginResponse()
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken.Value
+                RefreshToken = refreshToken.Value,
+                RefreshExpiresAt = refreshToken.RefreshTokenExpiration,
+                ExpiresAt = accessExpiresAt
             };
         }
     }

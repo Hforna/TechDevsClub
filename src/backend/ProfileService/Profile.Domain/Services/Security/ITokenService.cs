@@ -17,6 +17,7 @@ namespace Profile.Domain.Services.Security
         public DateTime GetRefreshTokenExpiration();
         public List<Claim> GetTokenClaims(string token);
         public Task<User> GetUserByToken();
+        public DateTime GenerateTimeForAccessTokenExpires();
         public string GenerateRefreshToken();
     }
 }

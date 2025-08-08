@@ -27,6 +27,8 @@ namespace Profile.Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<User>().HasIndex(d => d.Email).IsUnique();
+
             builder.Entity<Role>().HasData(new Role() { Name = "normal", NormalizedName = "NORMAL", Id = 1 });
             builder.Entity<Role>().HasData(new Role() {  Name = "admin", NormalizedName = "ADMIN", Id = 2 });
             builder.Entity<Role>().HasData(new Role() {  Name = "company_owner", NormalizedName = "COMPANY_OWNER", Id = 3 });
