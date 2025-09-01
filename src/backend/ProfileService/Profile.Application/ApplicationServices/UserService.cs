@@ -7,7 +7,6 @@ using Profile.Application.Requests;
 using Profile.Application.Responses;
 using Profile.Application.Services.Validators;
 using Profile.Domain.Aggregates;
-using Profile.Domain.Consts;
 using Profile.Domain.Exceptions;
 using Profile.Domain.Repositories;
 using Profile.Domain.Services;
@@ -28,12 +27,12 @@ namespace Profile.Application.Services
 {
     public interface IUserService
     {
-        public Task<UserResponse> CreateUser(CreateUserRequest request);
+        public Task<UserResponse> CreateUser(CreateUserRequest request, string uri);
         public Task ConfirmEmail(string email, string token);
         public Task<Address> UpdateUserAddress(UpdateAddressRequest request);
         public Task<UserSkillsResponse> SetUserSkills(SetUserSkillsRequest request);
         public Task UpdatePassword(UpdatePasswordRequest request);
-        public Task ForgotPassword(string email);
+        public Task ForgotPassword(string email, string uri);
         public Task CreateUserByOauth(string email, string userName);
         public Task<UserInfosResponse> GetUserInfos();
         public Task<UserRolesResponse> GetUserRoles();
@@ -72,7 +71,7 @@ namespace Profile.Application.Services
             _tokenService = tokenService;
         }
 
-        public async Task<UserResponse> CreateUser(CreateUserRequest request)
+        public async Task<UserResponse> CreateUser(CreateUserRequest request, string uri)
         {
             RequestValidatorCommons.Validate<CreateUserRequest, CreateUserValidator>(request);
 
@@ -99,7 +98,7 @@ namespace Profile.Application.Services
             var encodedToken = WebUtility.UrlEncode(confirmationToken);
             await _emailService.SendEmail(user.Email, user.UserName,
                 $"Hello {user.UserName} confirm your email clicking on this link"
-                , _emailService.EmailConfirmation($"{AppConfigs.AppUrl}api/users/confirm-email?email={user.Email}&token={encodedToken}"));
+                , _emailService.EmailConfirmation($"{uri}api/users/confirm-email?email={user.Email}&token={encodedToken}"));
             _logger.LogDebug($"Message sent to e-mail {user.Email}");
 
             var response = _mapper.Map<UserResponse>(user);
@@ -215,7 +214,7 @@ namespace Profile.Application.Services
             await _uof.Commit();
         }
 
-        public async Task ForgotPassword(string email)
+        public async Task ForgotPassword(string email, string uri)
         {
             var user = await _uof.UserRepository.UserByEmail(email);
 
@@ -225,7 +224,7 @@ namespace Profile.Application.Services
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             await _emailService.SendEmail(user.Email, user.UserName, "You requested a password redefinition", 
-                $"Click on this link for reset you password {AppConfigs.AppUrl}users/reset-password?email={user.Email}&token={token}");
+                $"Click on this link for reset you password {uri}users/reset-password?email={user.Email}&token={token}");
         }
 
         public async Task ResetPassword(string email, string token, ResetPasswordRequest request)

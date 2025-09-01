@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Profile.Api.Binders;
+using Profile.Api.Extensions;
 using Profile.Api.Filters;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
 using Profile.Application.Services;
 using Profile.Domain.Exceptions;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace Profile.Api.Endpoints
@@ -20,7 +25,7 @@ namespace Profile.Api.Endpoints
         {
             var app = builder.MapGroup(UserGroup);
 
-            app.MapPost("create", CreateUser)
+            app.MapPost("", CreateUser)
                 .WithName("CreateUser")
                 .WithSummary("Create a user request and confirm e-mail after");
 
@@ -44,7 +49,7 @@ namespace Profile.Api.Endpoints
                 .WithName("ResetUserPassword")
                 .WithSummary("Reset a password with token that was sent on e-mail");
 
-            app.MapGet("create-github", CreateUserByGitHub)
+            app.MapGet("github", CreateUserByGitHub)
                 .WithName("CreateUserByGitHubOAuth")
                 .WithSummary("Create an user by github authentication, user will be redirected to their github account for application authorization");
 
@@ -52,10 +57,9 @@ namespace Profile.Api.Endpoints
                 .RequireCors("OnlyServices");
 
             app.MapGet("", GetUserInfos)
-                .RequireCors("OnlyServices")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
-            app.MapGet("infos/{userId}", GetUserInfosById).RequireCors("OnlyServices");
+            app.MapGet("{userId}", GetUserInfosById).RequireCors("OnlyServices");
 
             app.MapGet("handle-github-callback", HandleGitHubCallback);
 
@@ -86,32 +90,36 @@ namespace Profile.Api.Endpoints
         }
 
         [ProducesResponseType(typeof(ValidationException), StatusCodes.Status400BadRequest)]
-        static async Task<IResult> CreateUser([FromServices] IUserService service, [FromBody] CreateUserRequest request)
+        static async Task<IResult> CreateUser([FromServices] IUserService service, [FromBody] CreateUserRequest request, HttpContext httpContext)
         {
-            var result = await service.CreateUser(request);
+            var requestUri = httpContext.GetBaseUri();
 
+            var result = await service.CreateUser(request, requestUri);
             return Results.Created(string.Empty, result);
         }
 
         static async Task<IResult> CreateUserByGitHub([FromServices] IUserService service, HttpContext context)
         {
             var result = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var requestUri = context.GetBaseUri();
 
             if (IsNotAuthenticated(result))
                 return Results.Challenge(new Microsoft.AspNetCore.Authentication.AuthenticationProperties()
                 {
-                    RedirectUri = $"https://{context.Request.Host}/api/users/handle-github-callback"
+                    RedirectUri = $"{context}api/users/handle-github-callback"
                 }, authenticationSchemes: new List<string>() { "GitHub" });
 
-            return Results.Redirect($"https://{context.Request.Host}/api/login/github");
+            return Results.Redirect($"{context}api/login/github");
         }
 
         static async Task<IResult> HandleGitHubCallback([FromServices]IUserService service, HttpContext context)
         {
             var result = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            if(IsNotAuthenticated(result))
-                return Results.Redirect($"https://{context.Request.Host}/api/login/github");
+            var requestUri = context.GetBaseUri();
+
+            if (IsNotAuthenticated(result))
+                return Results.Redirect($"{requestUri}api/login/github");
 
             var email = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Email == d.Type)!;
             var name = result.Principal.Claims.FirstOrDefault(d => ClaimTypes.Name == d.Type)!.Value;
@@ -150,9 +158,11 @@ namespace Profile.Api.Endpoints
             return Results.NoContent();
         }
 
-        static async Task<IResult> ForgotPassword([FromQuery] string email, [FromServices] IUserService service)
+        static async Task<IResult> ForgotPassword([FromQuery] string email, [FromServices] IUserService service, HttpContext httpContext)
         {
-            await service.ForgotPassword(email);
+            var requestUri = httpContext.GetBaseUri();
+
+            await service.ForgotPassword(email, requestUri);
 
             return Results.Ok();
         }
