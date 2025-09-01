@@ -1,4 +1,5 @@
-﻿using Career.Domain.Aggregates.CompanyRoot;
+﻿using AutoMapper.Configuration.Conventions;
+using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,25 @@ using System.Threading.Tasks;
 
 namespace Career.Application.Responses
 {
+    public class CompanyPaginatedResponse
+    {
+        public bool IsFirstPage { get; set; }
+        public bool IsLastPage { get; set; }
+        public List<CompanyShortResponse> Companies { get; set; }
+        public int Count { get; set; }
+        public bool HasNextPage { get; set; }
+        public bool HasPreviousPage { get; set; }
+    }
+
+    public class CompanyShortResponse
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Logo { get; set; }
+        public bool Verified { get; set; }
+        public int Rate { get; set; }
+    }
+
     public class CompanyResponse
     {
         public Guid Id { get; set; }

@@ -42,22 +42,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonUtilities", "src\back
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CareerService", "CareerService", "{4A26E375-F9CB-4512-9746-EE912254F5E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Career.Api", "src\backend\CareerService\Career.Api\Career.Api.csproj", "{420E7DD1-FD70-4CC8-B8B9-8A5B34877537}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Career.Api", "src\backend\CareerService\Career.Api\Career.Api.csproj", "{420E7DD1-FD70-4CC8-B8B9-8A5B34877537}"
 	ProjectSection(ProjectDependencies) = postProject
 		{26240B74-8CD7-4BA1-8079-17A1606506AA} = {26240B74-8CD7-4BA1-8079-17A1606506AA}
 		{71CAF493-9BF2-4EA3-9BA3-D4E8D3139C9D} = {71CAF493-9BF2-4EA3-9BA3-D4E8D3139C9D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Career.Application", "src\backend\CareerService\Career.Application\Career.Application.csproj", "{26240B74-8CD7-4BA1-8079-17A1606506AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Career.Application", "src\backend\CareerService\Career.Application\Career.Application.csproj", "{26240B74-8CD7-4BA1-8079-17A1606506AA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{71CAF493-9BF2-4EA3-9BA3-D4E8D3139C9D} = {71CAF493-9BF2-4EA3-9BA3-D4E8D3139C9D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Career.Domain", "src\backend\CareerService\Career.Domain\Career.Domain.csproj", "{71CAF493-9BF2-4EA3-9BA3-D4E8D3139C9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Career.Domain", "src\backend\CareerService\Career.Domain\Career.Domain.csproj", "{71CAF493-9BF2-4EA3-9BA3-D4E8D3139C9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Career.Infrastructure", "src\backend\CareerService\Career.Infrastructure\Career.Infrastructure.csproj", "{C7E4206E-150F-40F5-8254-1B4F8DF46DB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Career.Infrastructure", "src\backend\CareerService\Career.Infrastructure\Career.Infrastructure.csproj", "{C7E4206E-150F-40F5-8254-1B4F8DF46DB1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{71CAF493-9BF2-4EA3-9BA3-D4E8D3139C9D} = {71CAF493-9BF2-4EA3-9BA3-D4E8D3139C9D}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{BE2F163A-26C0-4ACC-9F39-3E3EE0519037}"
+	ProjectSection(SolutionItems) = preProject
+		IssuesToSolve.txt = IssuesToSolve.txt
 	EndProjectSection
 EndProject
 Global

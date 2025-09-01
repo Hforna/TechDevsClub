@@ -31,14 +31,13 @@ namespace Profile.Infrastructure.Repositories.Relational
             return await _context.Connections.AnyAsync(d => d.ConnectorId == connectedId && d.ConnectedId == connectedId);
         }
 
-        public async Task<IPagedList<Connection>> ProfileConnectionsPaged(long profileId, int page, int perPage)
+        public IPagedList<Connection> ProfileConnectionsPaged(long profileId, int page, int perPage)
         {
-            var connections = await _context.Connections
+            var connections = _context.Connections
                 .AsNoTracking()
-                .Where(d => d.ConnectorId == profileId)
-                .ToListAsync();
+                .Where(d => d.ConnectorId == profileId);
 
-            return connections.ToPagedList(page, perPage);
+            return connections.OrderByDescending(d => d.ConnectedAt).ToPagedList(page, perPage);
         }
 
         public async Task<bool> UsersAreConnected(long connectorId, long connectedId)

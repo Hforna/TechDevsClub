@@ -3,6 +3,7 @@ using Career.Application.Requests.Company;
 using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.DomainServices;
+using Career.Domain.Dtos;
 using Career.Domain.Exceptions;
 using Career.Domain.Repositories;
 using Career.Domain.Services.Clients;
@@ -20,7 +21,9 @@ namespace Career.Application.Services
         public Task<CompanyResponse> CreateCompany(CreateCompanyRequest request);
         public Task<CompanyResponse> UpdateCompany(UpdateCompanyRequest request);
         public Task<CompanyResponse> GetCompany(Guid id);
+        public Task<CompanyPaginatedResponse> GetCompanyFiltered(CompaniesFilterRequest request);
         public Task<StaffsResponse> GetCompanyStaffs(Guid companyId);
+        public Task<CompanyConfigurationResponse> GetCompanyConfigurationInfos(Guid companyId);
         public Task<CompanyConfigurationResponse> UpdateCompanyConfiguration(
             Guid companyId, 
             CompanyConfigurationRequest request);
@@ -111,6 +114,48 @@ namespace Career.Application.Services
                 response = _mapper.Map<CompanyResponse>(responseByconfiguration);
             }
             return response;
+        }
+
+        public async Task<CompanyConfigurationResponse> GetCompanyConfigurationInfos(Guid companyId)
+        {
+            var company = await _uow.CompanyRepository.CompanyById(companyId) 
+                ?? throw new NullEntityException(ResourceExceptMessages.COMPANY_NOT_EXISTS);
+
+            var user = await _profileService.GetUserInfos(_accessToken!);
+
+            if (user.id != company.OwnerId)
+                throw new DomainException(ResourceExceptMessages.USER_NOT_COMPANY_OWNER);
+
+            return _mapper.Map<CompanyConfigurationResponse>(company.CompanyConfiguration);
+        }
+
+        public async Task<CompanyPaginatedResponse> GetCompanyFiltered(CompaniesFilterRequest request)
+        {
+            if (request.PerPage > 100)
+                throw new RequestException(ResourceExceptMessages.MAX_PERPAGE_100);
+
+            var filterDto = _mapper.Map<CompanyFilterDto>(request);
+
+            var companies = _uow.CompanyRepository.GetCompaniesPaginated(filterDto);
+
+            var companiesResponse = companies.Select(company =>
+            {
+                var response = _companyDomain.GetCompanyResponseByConfigurations(company.CompanyConfiguration, company);
+
+                //get all companies logo from azure storage blob
+
+                return _mapper.Map<CompanyShortResponse>(response);
+            });
+
+            return new CompanyPaginatedResponse()
+            {
+                Companies = companiesResponse.ToList(),
+                Count = companies.Count,
+                HasNextPage = companies.HasNextPage,
+                HasPreviousPage = companies.HasPreviousPage,
+                IsFirstPage = companies.IsFirstPage,
+                IsLastPage = companies.IsLastPage
+            };
         }
 
         public async Task<StaffsResponse> GetCompanyStaffs(Guid companyId)

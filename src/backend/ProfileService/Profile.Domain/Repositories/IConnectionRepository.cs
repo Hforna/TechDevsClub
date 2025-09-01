@@ -10,7 +10,7 @@ namespace Profile.Domain.Repositories
 {
     public interface IConnectionRepository
     {
-        public Task<IPagedList<Connection>> ProfileConnectionsPaged(long profileId, int page, int perPage);
+        public IPagedList<Connection> ProfileConnectionsPaged(long profileId, int page, int perPage);
         public Task<bool> UsersAreConnected(long connectorId, long connectedId);
         public Task<bool> ConnectionExists(long connectorId, long connectedId);
         public Task<Connection?> ConnectionByConnectedAndConnector(long connectorId, long connectedId);

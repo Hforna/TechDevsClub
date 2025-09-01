@@ -16,9 +16,16 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddRouting(d => d.LowercaseUrls = true);
 
+builder.Services.Configure<SmptSettings>(builder.Configuration.GetSection("services:SmtpSettings"));
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddDomain();
+
+builder.Services.AddAuthorization(d =>
+{
+    d.AddPolicy("OnlyOwner", d => d.RequireRole("owner"));
+});
 
 var jwtSettings = builder.Configuration.GetSection("jwt");
 

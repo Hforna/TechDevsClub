@@ -1,6 +1,7 @@
 ﻿using Career.Api.Filters;
 using Career.Application.Requests.Company;
 using Career.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,14 @@ namespace Career.Api.Controllers
         public async Task<IActionResult> GetCompany([FromRoute]Guid id)
         {
             var result = await _companyService.GetCompany(id);
+
+            return Ok(result);
+        }
+
+        [HttpPost("filter")]
+        public async Task<IActionResult> GetCompaniesPaginated([FromBody]CompaniesFilterRequest request)
+        {
+            var result = await _companyService.GetCompanyFiltered(request);
 
             return Ok(result);
         }
@@ -56,6 +65,16 @@ namespace Career.Api.Controllers
             var result = await _companyService.UpdateCompanyConfiguration(companyId, request);
 
             return Ok();
+        }
+
+        [UserAuthenticated]
+        [HttpGet("{companyId}/configurations")]
+        [Authorize("OnlyOwner")]
+        public async Task<IActionResult> GetCompanyConfigurations([FromRoute]Guid companyId)
+        {
+            var result = await _companyService.GetCompanyConfigurationInfos(companyId);
+
+            return Ok(result);
         }
 
         [UserAuthenticated]

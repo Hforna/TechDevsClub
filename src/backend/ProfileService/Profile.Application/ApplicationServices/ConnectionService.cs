@@ -112,7 +112,7 @@ namespace Profile.Application.ApplicationServices
             if (profile is null)
                 throw new ContextException(ResourceExceptMessages.PROFILE_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var connections = await _uof.ConnectionRepository.ProfileConnectionsPaged(profileId, page, perPage);
+            var connections = _uof.ConnectionRepository.ProfileConnectionsPaged(profileId, page, perPage);
 
             var response = new ConnectionsPaginationResponse()
             {

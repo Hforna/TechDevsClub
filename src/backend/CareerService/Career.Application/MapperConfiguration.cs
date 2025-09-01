@@ -30,6 +30,8 @@ namespace Career.Application
             CreateMap<CompanyResponseDto, CompanyResponse>();
 
             CreateMap<RequestStaff, StaffRequestResponse>();
+
+            CreateMap<CompaniesFilterRequest, CompanyFilterDto>();
         }
     }
 }

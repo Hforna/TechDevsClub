@@ -1,5 +1,6 @@
 ﻿using Career.Domain.Services;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,9 @@ namespace Career.Infrastructure.Services
     {
         private readonly SmptSettings _smptSettings;
 
-        public EmailService(SmptSettings smptSettings)
+        public EmailService(IOptions<SmptSettings> smptSettings)
         {
-            _smptSettings = smptSettings;
+            _smptSettings = smptSettings.Value;
         }
 
         private string UserRequestToBeStaffSubject(string toUserName)

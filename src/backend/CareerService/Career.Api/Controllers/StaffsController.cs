@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Career.Api.Controllers
 {
-    public class StaffController : BaseController
+    [Route("[controller]")]
+    public class StaffsController : BaseController
     {
         private readonly IStaffService _staffService;
-        private readonly ILogger<StaffController> _logger;
+        private readonly ILogger<StaffsController> _logger;
 
-        public StaffController(IStaffService staffService, ILogger<StaffController> logger)
+        public StaffsController(IStaffService staffService, ILogger<StaffsController> logger)
         {
             _staffService = staffService;
             _logger = logger;

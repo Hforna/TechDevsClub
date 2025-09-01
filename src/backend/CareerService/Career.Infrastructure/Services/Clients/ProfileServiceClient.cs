@@ -61,7 +61,7 @@ namespace Career.Infrastructure.Services.Clients
         {
             using var client = _httpClient.CreateClient("profile.api");
 
-            var response = await client.GetAsync($"api/users/infos/{userId}");
+            var response = await client.GetAsync($"api/users/{userId}");
 
             if(response.IsSuccessStatusCode == false)
             {

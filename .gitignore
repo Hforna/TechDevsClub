@@ -202,3 +202,4 @@ FakesAssemblies/
 
 /.sonarqube
 coverage.opencover.xml
+/IssuesToSolve.txt

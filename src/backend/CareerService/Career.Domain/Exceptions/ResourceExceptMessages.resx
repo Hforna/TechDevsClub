@@ -189,4 +189,7 @@
   <data name="COMPANY_PRIVATE" xml:space="preserve">
     <value>Company is private, user cannot access this</value>
   </data>
+  <data name="MAX_PERPAGE_100" xml:space="preserve">
+    <value>Max items per page is 100</value>
+  </data>
 </root>
