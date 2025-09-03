@@ -30,6 +30,11 @@ namespace Career.Infrastructure.Persistence
             return await _context.RequestsStaffs.SingleOrDefaultAsync(d => d.Id == requestStaff);
         }
 
+        public async Task<Staff?> GetStaffByIdAndCompany(Guid staffId, Guid companyId)
+        {
+            return await _context.Staffs.SingleOrDefaultAsync(d => d.Id == staffId && d.CompanyId == companyId);
+        }
+
         public async Task<Staff?> GetStaffByUserIdAndCompany(string userId, Guid companyId)
         {
             return await _context.Staffs

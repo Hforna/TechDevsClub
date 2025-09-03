@@ -120,4 +120,7 @@
   <data name="REQUEST_STAFF_NOTIFICATION" xml:space="preserve">
     <value>You recived a new staff request to be staff of:</value>
   </data>
+  <data name="USER_WERE_FIRED" xml:space="preserve">
+    <value>You were fired from a company</value>
+  </data>
 </root>

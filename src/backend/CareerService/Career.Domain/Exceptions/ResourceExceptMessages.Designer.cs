@@ -178,6 +178,15 @@ namespace Career.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Staff is not in company.
+        /// </summary>
+        public static string STAFF_NOT_IN_COMPANY {
+            get {
+                return ResourceManager.GetString("STAFF_NOT_IN_COMPANY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Cannot reject staff request, it already was accepted.
         /// </summary>
         public static string STAFF_REQUEST_ALREADY_ACCEPTED {

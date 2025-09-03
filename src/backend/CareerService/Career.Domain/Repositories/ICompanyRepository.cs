@@ -12,6 +12,7 @@ namespace Career.Domain.Repositories
     public interface ICompanyRepository
     {
         public Task<bool> CompanyContainsStaff(Guid companyId, string userId);
+        public Task<bool> CompanyContainsStaff(Guid companyId, Guid staffId);
         public Task<Company?> CompanyById(Guid companyId);
         public IPagedList<Company> GetCompaniesPaginated(CompanyFilterDto dto);
     }

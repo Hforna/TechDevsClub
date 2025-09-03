@@ -4,6 +4,7 @@ using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.DomainServices;
 using Career.Domain.Dtos;
+using Career.Domain.Entities;
 using Career.Domain.Exceptions;
 using Career.Domain.Repositories;
 using Career.Domain.Services.Clients;
@@ -22,6 +23,7 @@ namespace Career.Application.Services
         public Task<CompanyResponse> UpdateCompany(UpdateCompanyRequest request);
         public Task<CompanyResponse> GetCompany(Guid id);
         public Task<CompanyPaginatedResponse> GetCompanyFiltered(CompaniesFilterRequest request);
+        public Task FireStaffFromCompany(Guid companyId, Guid staffId, string reason);
         public Task<StaffsResponse> GetCompanyStaffs(Guid companyId);
         public Task<CompanyConfigurationResponse> GetCompanyConfigurationInfos(Guid companyId);
         public Task<CompanyConfigurationResponse> UpdateCompanyConfiguration(
@@ -55,10 +57,8 @@ namespace Career.Application.Services
 
         public async Task<CompanyResponse> CreateCompany(CreateCompanyRequest request)
         {
-            var token = _requestService.GetBearerToken();
-
-            var userInfos = await _profileService.GetUserInfos(token!);
-            var userRoles = await _profileService.GetUserRoles(token!);
+            var userInfos = await _profileService.GetUserInfos(_accessToken!);
+            var userRoles = await _profileService.GetUserRoles(_accessToken!);
 
             if (userRoles.roles.Select(d => d.roleName).Contains("company_owner") == false)
                 throw new DomainException(ResourceExceptMessages.USER_ROLE_OWNER_FOR_CREATE_COMPANY);
@@ -73,6 +73,34 @@ namespace Career.Application.Services
                 $"company details: id: {company.Id}, name: {company.Name}, website: {company.Website}");
 
             return _mapper.Map<CompanyResponse>(company);
+        }
+
+        public async Task FireStaffFromCompany(Guid companyId, Guid staffId, string reason)
+        {
+            var company = await _uow.CompanyRepository.CompanyById(companyId) 
+                ?? throw new NullEntityException(ResourceExceptMessages.COMPANY_NOT_EXISTS);
+
+            var userInfos = await _profileService.GetUserInfos(_accessToken!);
+
+            if (company.OwnerId != userInfos.id)
+                throw new DomainException(ResourceExceptMessages.USER_NOT_COMPANY_OWNER);
+
+            var staff = await _uow.StaffRepository.GetStaffByIdAndCompany(staffId, companyId)
+                ?? throw new NullEntityException(ResourceExceptMessages.STAFF_NOT_IN_COMPANY);
+
+            _uow.GenericRepository.Remove<Staff>(staff);
+
+            var notification = new Notification()
+            {
+                UserId = staff.UserId,
+                Type = Domain.Enums.ENotificationType.Information,
+                IsRead = true,
+                Title = ResourceNotificationMessages.USER_WERE_FIRED,
+                Message = reason
+            };
+            await _uow.GenericRepository.Add<Notification>(notification);
+
+            await _uow.Commit();
         }
 
         public async Task<CompanyResponse> GetCompany(Guid id)

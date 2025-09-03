@@ -10,5 +10,6 @@ namespace Career.Domain.Repositories
     {
         public Task Add<T>(T entity) where T : class;
         public void Update<T>(T entity) where T : class;
+        public void Remove<T>(T entity) where T : class;
     }
 }

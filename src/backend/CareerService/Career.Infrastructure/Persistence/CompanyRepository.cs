@@ -35,6 +35,13 @@ namespace Career.Infrastructure.Persistence
                         && d.Staffs.Select(d => d.UserId).Contains(userId));
         }
 
+        public async Task<bool> CompanyContainsStaff(Guid companyId, Guid staffId)
+        {
+            return await _context.Companies
+                .AnyAsync(d => d.Id == companyId
+                        && d.Staffs.Select(d => d.Id).Contains(staffId));
+        }
+
         public IPagedList<Company> GetCompaniesPaginated(CompanyFilterDto dto)
         {
             var companies = _context.Companies.Include(d => d.CompanyConfiguration).AsNoTracking();

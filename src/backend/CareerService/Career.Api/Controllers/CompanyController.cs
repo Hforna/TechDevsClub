@@ -4,6 +4,7 @@ using Career.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 namespace Career.Api.Controllers
 {
@@ -95,6 +96,15 @@ namespace Career.Api.Controllers
             _logger.LogInformation($"Company updated: {request.CompanyId}");
 
             return Ok(result);
+        }
+
+        [Authorize(Policy = "OnlyOwner")]
+        [HttpDelete("{companyId}/staffs/{staffId}")]
+        public async Task<IActionResult> FireStaffFromCompany([FromRoute]Guid companyId, [FromRoute]Guid staffId, [FromQuery]string reason)
+        {
+            await _companyService.FireStaffFromCompany(companyId, staffId, reason);
+
+            return Ok();
         }
     }
 }

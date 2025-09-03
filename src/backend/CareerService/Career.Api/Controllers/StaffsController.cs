@@ -1,6 +1,7 @@
 ﻿using Career.Api.Filters;
 using Career.Application.Requests;
 using Career.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
