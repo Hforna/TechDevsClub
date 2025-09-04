@@ -1,4 +1,6 @@
-﻿using Career.Domain.Repositories;
+﻿using Career.Domain.Entities;
+using Career.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,13 @@ namespace Career.Infrastructure.Persistence
         public async Task Add<T>(T entity) where T : class
         {
             await _context.Set<T>().AddAsync(entity);
+        }
+
+        public async Task<T?> GetById<T>(Guid id, bool tracking = true) where T : class, IEntity
+        {
+            return tracking 
+                ? await _context.Set<T>().SingleOrDefaultAsync(d => d.Id == id) 
+                : await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(d => d.Id == id);
         }
 
         public void Remove<T>(T entity) where T : class

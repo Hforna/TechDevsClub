@@ -151,6 +151,24 @@ namespace Career.Domain.Exceptions {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Notification not exists.
+        /// </summary>
+        public static string NOTIFICATION_NOT_EXISTS {
+            get {
+                return ResourceManager.GetString("NOTIFICATION_NOT_EXISTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Notification got is not of user.
+        /// </summary>
+        public static string NOTIFICATION_NOT_OF_USER {
+            get {
+                return ResourceManager.GetString("NOTIFICATION_NOT_OF_USER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Company owner set show staffs as private, you does not have permission to access this.
         /// </summary>
         public static string SHOW_STAFFS_PRIVATE {

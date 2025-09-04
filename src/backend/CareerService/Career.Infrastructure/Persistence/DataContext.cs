@@ -44,6 +44,11 @@ namespace Career.Infrastructure.Persistence
                 .WithOne(d => d.Job)
                 .HasForeignKey(d => d.JobId);
 
+            modelBuilder.Entity<Company>()
+                .HasOne(d => d.CompanyConfiguration)
+                .WithOne(d => d.Company)
+                .HasForeignKey<CompanyConfiguration>(d => d.CompanyId);
+
             modelBuilder.Owned<Location>();
             modelBuilder.Owned<Salary>();
 

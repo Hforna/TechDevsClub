@@ -43,6 +43,7 @@ namespace Career.Infrastructure
             services.AddScoped<IGenericRepository, GenericRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IStaffRepository, StaffRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 

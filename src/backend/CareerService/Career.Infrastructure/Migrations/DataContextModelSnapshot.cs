@@ -28,6 +28,9 @@ namespace Career.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CompanyConfigurationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -58,6 +61,70 @@ namespace Career.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("companies");
+                });
+
+            modelBuilder.Entity("Career.Domain.Aggregates.CompanyRoot.CompanyConfiguration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("HighlightVerifiedStatus")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("NotifyStaffsOnJobApplicationUpdate")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("NotifyStaffsOnNewJobApplication")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("NotifyStaffsOnNewReview")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ShowStaffs")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId")
+                        .IsUnique();
+
+                    b.ToTable("companies_configurations");
+                });
+
+            modelBuilder.Entity("Career.Domain.Aggregates.CompanyRoot.RequestStaff", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RequesterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("requests_staffs");
                 });
 
             modelBuilder.Entity("Career.Domain.Aggregates.CompanyRoot.Review", b =>
@@ -217,6 +284,42 @@ namespace Career.Infrastructure.Migrations
                     b.ToTable("job_requirements");
                 });
 
+            modelBuilder.Entity("Career.Domain.Entities.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("notifications");
+                });
+
             modelBuilder.Entity("Career.Domain.Aggregates.CompanyRoot.Company", b =>
                 {
                     b.OwnsOne("Career.Domain.ValueObjects.Location", "Location", b1 =>
@@ -245,6 +348,17 @@ namespace Career.Infrastructure.Migrations
 
                     b.Navigation("Location")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Career.Domain.Aggregates.CompanyRoot.CompanyConfiguration", b =>
+                {
+                    b.HasOne("Career.Domain.Aggregates.CompanyRoot.Company", "Company")
+                        .WithOne("CompanyConfiguration")
+                        .HasForeignKey("Career.Domain.Aggregates.CompanyRoot.CompanyConfiguration", "CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Career.Domain.Aggregates.CompanyRoot.Review", b =>
@@ -329,6 +443,9 @@ namespace Career.Infrastructure.Migrations
 
             modelBuilder.Entity("Career.Domain.Aggregates.CompanyRoot.Company", b =>
                 {
+                    b.Navigation("CompanyConfiguration")
+                        .IsRequired();
+
                     b.Navigation("Reviews");
 
                     b.Navigation("Staffs");

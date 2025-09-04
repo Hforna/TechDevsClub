@@ -3,6 +3,7 @@ using Career.Application.Requests.Company;
 using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.Dtos;
+using Career.Domain.Entities;
 using Career.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,10 @@ namespace Career.Application
             CreateMap<RequestStaff, StaffRequestResponse>();
 
             CreateMap<CompaniesFilterRequest, CompanyFilterDto>();
+
+            CreateMap<Notification, NotificationResponse>();
+
+            CreateMap<Notification, ShortNotificationResponse>();
         }
     }
 }

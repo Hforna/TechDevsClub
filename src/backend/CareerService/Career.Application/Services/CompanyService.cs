@@ -94,9 +94,10 @@ namespace Career.Application.Services
             {
                 UserId = staff.UserId,
                 Type = Domain.Enums.ENotificationType.Information,
-                IsRead = true,
+                IsRead = false,
                 Title = ResourceNotificationMessages.USER_WERE_FIRED,
-                Message = reason
+                Message = reason,
+                SenderId = userInfos.id
             };
             await _uow.GenericRepository.Add<Notification>(notification);
 
