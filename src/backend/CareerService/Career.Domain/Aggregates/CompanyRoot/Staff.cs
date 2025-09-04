@@ -1,4 +1,5 @@
-﻿using Career.Domain.Enums;
+﻿using Career.Domain.Entities;
+using Career.Domain.Enums;
 using Career.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace Career.Domain.Aggregates.CompanyRoot
 {
     [Table("Staffs")]
-    public class Staff
+    public class Staff : IEntity
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }
@@ -19,7 +20,7 @@ namespace Career.Domain.Aggregates.CompanyRoot
     }
 
     [Table("staff_roles")]
-    public class StaffRole
+    public class StaffRole : IEntity
     {
         public Guid Id { get; set; }
         public Guid StaffId { get; set; }
@@ -28,7 +29,7 @@ namespace Career.Domain.Aggregates.CompanyRoot
     }
 
     [Table("requests_staffs")]
-    public class RequestStaff
+    public class RequestStaff : IEntity
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }

@@ -195,4 +195,10 @@
   <data name="STAFF_NOT_IN_COMPANY" xml:space="preserve">
     <value>Staff is not in company</value>
   </data>
+  <data name="NOTIFICATION_NOT_EXISTS" xml:space="preserve">
+    <value>Notification not exists</value>
+  </data>
+  <data name="NOTIFICATION_NOT_OF_USER" xml:space="preserve">
+    <value>Notification got is not of user</value>
+  </data>
 </root>

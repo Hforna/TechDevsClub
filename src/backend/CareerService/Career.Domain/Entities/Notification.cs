@@ -11,9 +11,11 @@ using System.Threading.Tasks;
 namespace Career.Domain.Entities
 {
     [Table("notifications")]
-    public class Notification
+    public class Notification : IEntity
     {
+        public Guid Id { get; set; }
         public string UserId { get; set; }
+        public string SenderId { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
         public ENotificationType Type { get; set; }

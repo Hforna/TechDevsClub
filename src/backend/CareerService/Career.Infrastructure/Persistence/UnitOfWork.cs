@@ -12,15 +12,18 @@ namespace Career.Infrastructure.Persistence
         public ICompanyRepository CompanyRepository { get; set; }
         public IGenericRepository GenericRepository { get; set; }
         public IStaffRepository StaffRepository { get; set; }
+        public INotificationRepository NotificationRepository { get; set; }
 
         private readonly DataContext _context;
 
-        public UnitOfWork(ICompanyRepository companyRepository, IGenericRepository genericRepository, IStaffRepository staffRepository, DataContext context)
+        public UnitOfWork(ICompanyRepository companyRepository, IGenericRepository genericRepository,
+            IStaffRepository staffRepository, INotificationRepository notificationRepository, DataContext dataContext)
         {
+            _context = dataContext;
             CompanyRepository = companyRepository;
             GenericRepository = genericRepository;
             StaffRepository = staffRepository;
-            _context = context;
+            NotificationRepository = notificationRepository;
         }
 
         public async Task Commit()

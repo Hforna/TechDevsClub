@@ -1,4 +1,5 @@
-﻿using Career.Domain.Enums;
+﻿using Career.Domain.Entities;
+using Career.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace Career.Domain.Aggregates.CompanyRoot
 {
     [Table("reviews")]
-    public class Review
+    public class Review : IEntity
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }

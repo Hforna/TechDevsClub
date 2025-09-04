@@ -1,4 +1,5 @@
-﻿using Career.Domain.Enums;
+﻿using Career.Domain.Entities;
+using Career.Domain.Enums;
 using Career.Domain.Exceptions;
 using Career.Domain.ValueObjects;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 namespace Career.Domain.Aggregates.CompanyRoot
 {
     [Table("companies")]
-    public class Company
+    public class Company : IEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -41,7 +42,7 @@ namespace Career.Domain.Aggregates.CompanyRoot
     }
 
     [Table("companies_configurations")]
-    public class CompanyConfiguration
+    public class CompanyConfiguration : IEntity
     {
         public Guid Id { get; set; }
         public Guid CompanyId { get; set; }
