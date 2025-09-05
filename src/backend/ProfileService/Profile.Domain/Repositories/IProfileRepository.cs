@@ -1,4 +1,5 @@
 ﻿using Profile.Domain.Aggregates;
+using Profile.Domain.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace Profile.Domain.Repositories
         public Task<List<ProfileEntity>?> GetProfilesWithGithub();
         public Task<IPagedList<ProfileEntity>?> ProfilesBySkills(List<string> skills, int page, int perPage);
         public Task<ProfileEntity?> ProfileByUsername(string name);
+        public IPagedList<ProfileEntity> GetProfilePaginated(FilterProfilesDto dto);
     }
 }

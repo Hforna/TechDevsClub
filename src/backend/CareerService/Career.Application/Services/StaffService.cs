@@ -157,6 +157,7 @@ namespace Career.Application.Services
                 Title = "",
                 Type = Domain.Enums.ENotificationType.StaffRequest,
                 UserId = userToStaff.id,
+                SenderId = userInfos.id
             };
 
             await _uow.GenericRepository.Add<Notification>(notification);

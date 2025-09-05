@@ -33,12 +33,21 @@ namespace Profile.Api.Endpoints
                 .WithSummary("Get profiles paginated based on user recent profile visit skills")
                 .RequireRateLimiting("PerfilPolicy");
 
+            app.MapPost("filter", GetProfilesPaginated);
+
             return app;
         }
 
         static async Task<IResult> UpdateProfile([FromBody]UpdateProfileRequest request, [FromServices]IProfileService service, HttpContext context)
         {
             var result = await service.UpdateProfile(request);
+
+            return Results.Ok(result);
+        }
+
+        static IResult GetProfilesPaginated([FromBody]ProfileFilterRequest request, [FromServices]IProfileService service)
+        {
+            var result = service.GetProfilesPaginated(request);
 
             return Results.Ok(result);
         }

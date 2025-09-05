@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Profile.Domain.Aggregates;
+using Profile.Domain.Dtos;
 using Profile.Domain.Entities;
 using Profile.Domain.Repositories;
 using Profile.Infrastructure.Data;
@@ -21,6 +22,16 @@ namespace Profile.Infrastructure.Repositories.Relational
         public ProfileRepository(DataContext context)
         {
             _context = context;
+        }
+
+        public IPagedList<ProfileEntity> GetProfilePaginated(FilterProfilesDto dto)
+        {
+            var profiles = _context.Profiles.AsNoTracking();
+
+            if (!string.IsNullOrEmpty(dto.UserName))
+                profiles = profiles.Where(d => d.User.UserName!.Contains(dto.UserName));
+
+            return profiles.ToPagedList(dto.Page, dto.PerPage);
         }
 
         public async Task<List<ProfileEntity>?> GetProfilesWithGithub()

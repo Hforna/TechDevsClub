@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Profile.Application.Requests;
 using Profile.Application.Responses;
 using Profile.Domain.Aggregates;
+using Profile.Domain.Dtos;
 using Profile.Domain.Exceptions;
 using Profile.Domain.Repositories;
 using Profile.Domain.Services;
@@ -24,6 +25,7 @@ namespace Profile.Application.ApplicationServices
         public Task<ProfileResponse> UpdateProfile(UpdateProfileRequest request);
         public Task<ProfileResponse> GetProfile(long id);
         public Task<PaginationProfilesResponse?> GetProfileRecommendedByProfileVisits(int page, int perPage);
+        public PaginationProfilesResponse GetProfilesPaginated(ProfileFilterRequest request);  
     }
 
     public class ProfileService : IProfileService
@@ -108,6 +110,26 @@ namespace Profile.Application.ApplicationServices
                 .ToList();
 
             var profiles = await _uof.ProfileRepository.ProfilesBySkills(skillsCount, page, perPage);
+
+            var response = new PaginationProfilesResponse()
+            {
+                HasPreviousPage = profiles.HasPreviousPage,
+                HasNextPage = profiles.HasNextPage,
+                Count = profiles.Count,
+                IsFirstPage = profiles.IsFirstPage,
+                IsLastPage = profiles.IsLastPage,
+                PageNumber = profiles.PageNumber
+            };
+            response.Profiles = profiles.Select(profile => _mapper.Map<ShortProfileResponse>(profile)).ToList();
+
+            return response;
+        }
+
+        public PaginationProfilesResponse GetProfilesPaginated(ProfileFilterRequest request)
+        {
+            var dto = _mapper.Map<FilterProfilesDto>(request);
+
+            var profiles = _uof.ProfileRepository.GetProfilePaginated(dto);
 
             var response = new PaginationProfilesResponse()
             {
