@@ -25,7 +25,8 @@ namespace Profile.Application.ApplicationServices
         public Task<ProfileResponse> UpdateProfile(UpdateProfileRequest request);
         public Task<ProfileResponse> GetProfile(long id);
         public Task<PaginationProfilesResponse?> GetProfileRecommendedByProfileVisits(int page, int perPage);
-        public PaginationProfilesResponse GetProfilesPaginated(ProfileFilterRequest request);  
+        public PaginationProfilesResponse GetProfilesPaginated(ProfileFilterRequest request);
+        public Task<ProfileResponse> GetUserAuthenticatedProfile();
     }
 
     public class ProfileService : IProfileService
@@ -143,6 +144,16 @@ namespace Profile.Application.ApplicationServices
             response.Profiles = profiles.Select(profile => _mapper.Map<ShortProfileResponse>(profile)).ToList();
 
             return response;
+        }
+
+        public async Task<ProfileResponse> GetUserAuthenticatedProfile()
+        {
+            var user = await _tokenService.GetUserByToken();
+
+            var profile = await _uof.ProfileRepository.ProfileByUser(user)
+                ?? throw new ContextException(ResourceExceptMessages.PROFILE_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
+
+            return _mapper.Map<ProfileResponse>(profile);
         }
 
         public async Task<ProfileResponse> UpdateProfile(UpdateProfileRequest request)

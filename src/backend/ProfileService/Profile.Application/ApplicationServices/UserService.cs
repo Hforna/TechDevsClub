@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Commons;
@@ -85,6 +86,7 @@ namespace Profile.Application.Services
             }
 
             var user = _mapper.Map<User>(request);
+            user.NormalizedUserName = request.UserName.ToUpper();
             user.PasswordHash = _passwordEncrypt.Encrypt(request.Password);
             user.SecurityStamp = Guid.NewGuid().ToString();
 
@@ -95,7 +97,8 @@ namespace Profile.Application.Services
             await _userManager.AddToRoleAsync(user, userRole);
 
             var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var encodedToken = WebUtility.UrlEncode(confirmationToken);
+            
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(confirmationToken));
             await _emailService.SendEmail(user.Email, user.UserName,
                 $"Hello {user.UserName} confirm your email clicking on this link"
                 , _emailService.EmailConfirmation($"{uri}api/users/confirm-email?email={user.Email}&token={encodedToken}"));
@@ -113,9 +116,9 @@ namespace Profile.Application.Services
             if (userByEmail is null)
                 throw new ContextException(ResourceExceptMessages.EMAIL_NOT_EXISTS, System.Net.HttpStatusCode.NotFound);
 
-            var fixedToken = token.Replace(" ", "+");
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
 
-            var tokenIsValid = await _userManager.ConfirmEmailAsync(userByEmail, fixedToken);
+            var tokenIsValid = await _userManager.ConfirmEmailAsync(userByEmail, decodedToken);
 
             if (!tokenIsValid.Succeeded)
             {

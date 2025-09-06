@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Update;
 using Microsoft.Identity.Client;
 using MimeKit.Tnef;
 using Profile.Api.Binders;
+using Profile.Api.Filters;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Requests;
 using Profile.Domain.Exceptions;
@@ -23,12 +24,15 @@ namespace Profile.Api.Endpoints
                 .WithSummary("Update an user profile and consult their github profile to get github infos for profile")
                 .RequireAuthorization("NormalUser");
 
+            app.MapGet("me", GetUserAuthenticatedProfile)
+                .AddEndpointFilter<AuthenticationUserEndpointFilter>();
+
             app.MapGet("{id}", GetProfile)
                 .WithName("GetProfileById")
                 .WithSummary("Get a profile by id if it is not private")
                 .RequireRateLimiting("PerfilPolicy");
 
-            app.MapGet("profiles-recommended", GetProfilesRecommendedByUserProfileVisits)
+            app.MapGet("recommended", GetProfilesRecommendedByUserProfileVisits)
                 .WithName("ProfileRecommendedBasedOnUserVisits")
                 .WithSummary("Get profiles paginated based on user recent profile visit skills")
                 .RequireRateLimiting("PerfilPolicy");
@@ -36,6 +40,13 @@ namespace Profile.Api.Endpoints
             app.MapPost("filter", GetProfilesPaginated);
 
             return app;
+        }
+
+        static async Task<IResult> GetUserAuthenticatedProfile([FromServices]IProfileService service)
+        {
+            var result = await service.GetUserAuthenticatedProfile();
+
+            return Results.Ok(result);
         }
 
         static async Task<IResult> UpdateProfile([FromBody]UpdateProfileRequest request, [FromServices]IProfileService service, HttpContext context)

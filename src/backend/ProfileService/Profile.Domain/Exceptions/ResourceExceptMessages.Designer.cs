@@ -348,5 +348,14 @@ namespace Profile.Domain.Exceptions {
                 return ResourceManager.GetString("USER_WITH_EMAIL_NOT_EXISTS", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a User name cannot contains spaces.
+        /// </summary>
+        public static string USERNAME_NOT_SPACES {
+            get {
+                return ResourceManager.GetString("USERNAME_NOT_SPACES", resourceCulture);
+            }
+        }
     }
 }

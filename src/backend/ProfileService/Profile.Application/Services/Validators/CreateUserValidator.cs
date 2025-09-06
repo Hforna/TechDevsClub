@@ -15,6 +15,7 @@ namespace Profile.Application.Services.Validators
         {
             RuleFor(d => d.Email).EmailAddress().WithMessage(ResourceExceptMessages.EMAIL_FORMAT);
             RuleFor(d => d.Password.Length).GreaterThanOrEqualTo(8).WithMessage(ResourceExceptMessages.PASSWORD_LENGTH);
+            RuleFor(d => d.UserName).Must(d => d.Contains(" ") == false).WithMessage(ResourceExceptMessages.USERNAME_NOT_SPACES);
         }
     }
 }

@@ -214,4 +214,7 @@
   <data name="TOKEN_IS_NULL" xml:space="preserve">
     <value>Access token is null</value>
   </data>
+  <data name="USERNAME_NOT_SPACES" xml:space="preserve">
+    <value>User name cannot contains spaces</value>
+  </data>
 </root>

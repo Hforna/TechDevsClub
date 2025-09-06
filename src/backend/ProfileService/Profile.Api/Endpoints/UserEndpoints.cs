@@ -56,7 +56,7 @@ namespace Profile.Api.Endpoints
             app.MapGet("roles", GetUserRoles)
                 .RequireCors("OnlyServices");
 
-            app.MapGet("", GetUserInfos)
+            app.MapGet("me", GetUserInfos)
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
             app.MapGet("{userId}", GetUserInfosById).RequireCors("OnlyServices");
