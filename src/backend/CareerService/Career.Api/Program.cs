@@ -5,6 +5,8 @@ using Career.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Career.Api.Hubs;
+using Career.Domain.Services;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,31 +25,16 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddDomain();
 
+builder.Services.AddScoped<IRealTimeNotifier, NotificationHub>();
+
 builder.Services.AddAuthorization(d =>
 {
     d.AddPolicy("OnlyOwner", d => d.RequireRole("owner"));
 });
 
-var jwtSettings = builder.Configuration.GetSection("jwt");
+builder.Services.AddSingleton<IUserIdProvider, CustomUserProvider>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidateAudience = true,
-            ValidAudience = jwtSettings["Audience"],
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Convert.FromBase64String(jwtSettings["SignKey"]!)),
-            ValidateIssuerSigningKey = true
-        };
-    });
-
-builder.Services.AddSignalRCore();
+builder.Services.AddSignalR();
 
 builder.Services.AddAuthorization();
 
@@ -70,7 +57,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapHub<NotificationHub>("hub/notification");
+app.MapHub<NotificationHub>("/hub/notification");
 
 app.UseHttpsRedirection();
 

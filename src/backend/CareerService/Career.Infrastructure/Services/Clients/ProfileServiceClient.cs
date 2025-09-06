@@ -31,7 +31,7 @@ namespace Career.Infrastructure.Services.Clients
             using var client = _httpClient.CreateClient("profile.api");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-            var response = await client.GetAsync("api/users");
+            var response = await client.GetAsync("api/users/me");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

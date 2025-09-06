@@ -28,6 +28,8 @@ namespace Career.Application
             CreateMap<Company, CompanyResponse>()
                 .ForMember(d => d.StaffsNumber, f => f.MapFrom(d => d.Staffs.Count));
 
+            CreateMap<Notification, SendNotificationDto>();
+
             CreateMap<CompanyResponseDto, CompanyResponse>();
 
             CreateMap<RequestStaff, StaffRequestResponse>();

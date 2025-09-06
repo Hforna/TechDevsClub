@@ -7,6 +7,7 @@ using Career.Domain.Dtos;
 using Career.Domain.Entities;
 using Career.Domain.Exceptions;
 using Career.Domain.Repositories;
+using Career.Domain.Services;
 using Career.Domain.Services.Clients;
 using Microsoft.Extensions.Logging;
 using System;
@@ -40,12 +41,15 @@ namespace Career.Application.Services
         private readonly IMapper _mapper;
         private readonly string? _accessToken;
         private readonly ICompanyDomainService _companyDomain;
+        private readonly IRealTimeNotifier _realTimeNotifier;
 
         public CompanyService(IUnitOfWork uow, ILogger<CompanyService> logger, 
             IProfileServiceClient profileService, 
-            IRequestService requestService, IMapper mapper, ICompanyDomainService companyDomain)
+            IRequestService requestService, IMapper mapper, 
+            ICompanyDomainService companyDomain, IRealTimeNotifier realTimeNotifier)
         {
             _uow = uow;
+            _realTimeNotifier = realTimeNotifier;
             _companyDomain = companyDomain;
             _logger = logger;
             _profileService = profileService;
@@ -99,8 +103,10 @@ namespace Career.Application.Services
                 Message = reason,
                 SenderId = userInfos.id
             };
-            await _uow.GenericRepository.Add<Notification>(notification);
 
+            await _realTimeNotifier.SendNotification(_mapper.Map<SendNotificationDto>(notification));
+
+            await _uow.GenericRepository.Add<Notification>(notification);
             await _uow.Commit();
         }
 
