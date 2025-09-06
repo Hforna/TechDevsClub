@@ -17,55 +17,37 @@ namespace Career.Api.Filters
 
     public class UserAuthenticatedFilter : IAsyncAuthorizationFilter
     {
-        private readonly IConfiguration _configuration;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<UserAuthenticatedFilter> _logger;
 
-
-        public UserAuthenticatedFilter(IConfiguration configuration, 
+        public UserAuthenticatedFilter(IServiceProvider serviceProvider, 
             ILogger<UserAuthenticatedFilter> logger)
         {
             _logger = logger;
-            _configuration = configuration;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var token = context.HttpContext.Request.Headers.Authorization.ToString();
-            var jwtSettings = _configuration.GetSection("jwt");
 
             if (string.IsNullOrEmpty(token))
                 throw new RequestException(ResourceExceptMessages.USER_NOT_AUTHENTICATED);
 
-            var handler = new JwtSecurityTokenHandler();
-
             try
             {
-                var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings["SignKey"]!));
-
-                handler.ValidateToken(token, new TokenValidationParameters
+                using(var scope = _serviceProvider.CreateScope())
                 {
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtSettings["Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = jwtSettings["Audience"],
-                    ValidateLifetime = true,
-                    IssuerSigningKey = key,
-                    ValidateIssuerSigningKey = true,
-                    ClockSkew = TimeSpan.Zero
-                }, out _);
-            }
-            catch (SecurityTokenExpiredException ex)
-            {
-                _logger.LogError(ex, $"Request bearer token expired: {ex.Message}");
+                    var profileService = scope.ServiceProvider.GetRequiredService<IProfileServiceClient>();
 
-                throw new RequestException(ResourceExceptMessages.TOKEN_EXPIRED);
+                    var userInfos = await profileService.GetUserInfos(token["Bearer ".Length..].Trim());
+                }
             }
-            catch (SecurityTokenInvalidTypeException ex)
+            catch(ClientException ex)
             {
-                _logger.LogError(ex, $"Invalid format token: {token}");
+                _logger.LogError(ex, $"Error while trying to request profile service: {ex.Message}");
 
-                throw new RequestException(ResourceExceptMessages.INVALID_TOKEN_FORMAT);
+                throw;
             }
             catch (Exception ex)
             {

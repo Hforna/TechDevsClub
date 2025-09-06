@@ -73,6 +73,13 @@ namespace Career.Application.Services
             await _uow.GenericRepository.Add<Company>(company);
             await _uow.Commit();
 
+            var companyConfiguration = new CompanyConfiguration()
+            {
+                CompanyId = company.Id,
+            };
+
+            await _uow.GenericRepository.Add<CompanyConfiguration>(companyConfiguration);
+            await _uow.Commit();
             _logger.LogInformation($"New company created by user: {userInfos.userName}, " +
                 $"company details: id: {company.Id}, name: {company.Name}, website: {company.Website}");
 

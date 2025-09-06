@@ -141,7 +141,13 @@ namespace Profile.Application.ApplicationServices
                 IsLastPage = profiles.IsLastPage,
                 PageNumber = profiles.PageNumber
             };
-            response.Profiles = profiles.Select(profile => _mapper.Map<ShortProfileResponse>(profile)).ToList();
+            response.Profiles = profiles.Select(profile => {
+                var shortMap = _mapper.Map<ShortProfileResponse>(profile);
+                shortMap.UserName = profile.User.UserName!;
+
+                return shortMap;
+            }
+            ).ToList();
 
             return response;
         }

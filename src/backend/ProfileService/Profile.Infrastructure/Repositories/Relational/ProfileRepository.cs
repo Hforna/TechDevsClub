@@ -26,7 +26,7 @@ namespace Profile.Infrastructure.Repositories.Relational
 
         public IPagedList<ProfileEntity> GetProfilePaginated(FilterProfilesDto dto)
         {
-            var profiles = _context.Profiles.AsNoTracking();
+            var profiles = _context.Profiles.Include(d => d.User).AsNoTracking();
 
             if (!string.IsNullOrEmpty(dto.UserName))
                 profiles = profiles.Where(d => d.User.UserName!.Contains(dto.UserName));

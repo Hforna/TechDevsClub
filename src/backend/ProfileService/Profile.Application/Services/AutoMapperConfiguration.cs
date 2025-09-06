@@ -39,6 +39,8 @@ namespace Profile.Application.Services
 
             CreateMap<ProfileFilterRequest, FilterProfilesDto>();
 
+            CreateMap<User, UserInfosWithRolesResponse>();
+
             CreateMap<User, UserInfosResponse>()
                 .ForMember(d => d.Id, f => f.MapFrom(d => sqids.Encode(d.Id)));
 

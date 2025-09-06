@@ -3,6 +3,7 @@ using Career.Application.Requests;
 using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.DomainServices;
+using Career.Domain.Dtos;
 using Career.Domain.Entities;
 using Career.Domain.Exceptions;
 using Career.Domain.Repositories;
@@ -35,14 +36,16 @@ namespace Career.Application.Services
         private readonly IRequestService _requestService;
         private readonly ICompanyDomainService _companyDomain;
         private readonly IEmailService _emailService;
+        private readonly IRealTimeNotifier _realTimeNotifier;
         private string _accessToken;
 
         public StaffService(IProfileServiceClient profileService, IUnitOfWork uow, 
             ILogger<StaffService> logger, IMapper mapper, 
             IRequestService requestService, 
-            ICompanyDomainService companyDomain, IEmailService emailService)
+            ICompanyDomainService companyDomain, IEmailService emailService, IRealTimeNotifier realTimeNotifier)
         {
             _profileService = profileService;
+            _realTimeNotifier = realTimeNotifier;
             _uow = uow;
             _emailService = emailService;
             _logger = logger;
@@ -159,11 +162,12 @@ namespace Career.Application.Services
                 UserId = userToStaff.id,
                 SenderId = userInfos.id
             };
-
             await _uow.GenericRepository.Add<Notification>(notification);
             await _uow.GenericRepository.Add<RequestStaff>(requestStaff);
-
             await _uow.Commit();
+
+            var sendNotificationDto = _mapper.Map<SendNotificationDto>(notification);
+            await _realTimeNotifier.SendNotification(sendNotificationDto);
 
             return _mapper.Map<StaffRequestResponse>(requestStaff);
         }

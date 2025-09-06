@@ -29,7 +29,7 @@ namespace Career.Api.Controllers
         /// company id that staff wanna invite the user and the role that user will have if they accept the request</param>
         /// <returns>return infos about the staff request with a status</returns>
         [UserAuthenticated]
-        [HttpPost("requests/staff-to-company")]
+        [HttpPost("requests")]
         public async Task<IActionResult> RequestAStaffToCompany([FromBody]PutStaffOnCompanyRequest request)
         {
             try

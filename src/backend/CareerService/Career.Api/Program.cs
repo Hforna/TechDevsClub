@@ -25,7 +25,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddDomain();
 
-builder.Services.AddScoped<IRealTimeNotifier, NotificationHub>();
+builder.Services.AddScoped<IRealTimeNotifier, NotificationHubService>();
 
 builder.Services.AddAuthorization(d =>
 {

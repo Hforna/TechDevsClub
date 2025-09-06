@@ -53,7 +53,7 @@ namespace Career.Infrastructure.Persistence
             if (dto.Verified is not null)
                 companies = companies.Where(d => d.Verified == dto.Verified);
             if (dto.Rate is not null)
-                companies = companies.Where(d => d.Rate >= (int)dto.Rate.Value);
+                companies = companies.Where(d => d.Rate >= (int)dto.Rate);
 
             return companies.OrderByDescending(d => d.CreatedAt).ToPagedList(dto.Page, dto.PerPage);
         }

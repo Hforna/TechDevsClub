@@ -19,7 +19,7 @@ namespace Career.Domain.Dtos
         public string id { get; set; }
         public string userName { get; set; }
         public string email { get; set; }
-        public List<UserRolesDto> userRoles { get; set; }
+        public UserRolesDto userRoles { get; set; }
         public DateTime createdAt { get; set; }
     }
 }
