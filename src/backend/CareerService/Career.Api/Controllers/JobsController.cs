@@ -1,11 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Career.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class JobsController : BaseController
     {
+        //private readonly 
+        //
+        //[Authorize(Policy = "ManageJobs")]
+        //[HttpPost]
+        //public async Task<IActionResult> CreateNewJob()
+        //{
+        //
+        //}
     }
 }

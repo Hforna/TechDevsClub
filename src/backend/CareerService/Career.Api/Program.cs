@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using Career.Api.Hubs;
 using Career.Domain.Services;
 using Microsoft.AspNetCore.SignalR;
+using Career.Domain.Dtos;
+using Career.Infrastructure.Messaging.Rabbitmq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +32,10 @@ builder.Services.AddScoped<IRealTimeNotifier, NotificationHubService>();
 builder.Services.AddAuthorization(d =>
 {
     d.AddPolicy("OnlyOwner", d => d.RequireRole("owner"));
+    d.AddPolicy("ManageJobs", d => d.RequireRole("owner"));
 });
+
+builder.Services.Configure<BaseRabbitMqConnectionDto>(cfg => builder.Configuration.GetSection("services:rabbitmq"));
 
 builder.Services.AddSingleton<IUserIdProvider, CustomUserProvider>();
 

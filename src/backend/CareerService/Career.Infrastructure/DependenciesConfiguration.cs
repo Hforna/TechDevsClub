@@ -1,6 +1,8 @@
 ﻿using Career.Domain.Repositories;
 using Career.Domain.Services;
 using Career.Domain.Services.Clients;
+using Career.Domain.Services.Messaging;
+using Career.Infrastructure.Messaging.Rabbitmq.Producers;
 using Career.Infrastructure.Persistence;
 using Career.Infrastructure.Services;
 using Career.Infrastructure.Services.Clients;
@@ -24,6 +26,7 @@ namespace Career.Infrastructure
             AddServices(services, configuration);
             AddStorage(services, configuration);
             WebSocketsConnection(services);
+            AddMessagingService(services);
         }
 
         static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -31,6 +34,11 @@ namespace Career.Infrastructure
             var connectionString = configuration.GetConnectionString("sqlserver");
 
             services.AddDbContext<DataContext>(opt => opt.UseSqlServer(connectionString));
+        }
+
+        static void AddMessagingService(IServiceCollection services)
+        {
+            services.AddScoped<IStaffServiceProducer, StaffServiceProducer>();
         }
 
         static void WebSocketsConnection(IServiceCollection services)

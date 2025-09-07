@@ -13,7 +13,7 @@ namespace Career.Domain.DomainServices
 {
     public interface ICompanyDomainService
     {
-        public Task AddStaffToCompany(Company company, string userId);
+        public Task<Staff> AddStaffToCompany(Company company, string userId);
         public CompanyResponseDto GetCompanyResponseByConfigurations(
             CompanyConfiguration configuration, 
             Company company);
@@ -28,7 +28,7 @@ namespace Career.Domain.DomainServices
             _uow = uow;
         }
 
-        public async Task AddStaffToCompany(Company company, string userId)
+        public async Task<Staff> AddStaffToCompany(Company company, string userId)
         {
             var contains = await _uow.CompanyRepository.CompanyContainsStaff(company.Id, userId);
 
@@ -38,6 +38,8 @@ namespace Career.Domain.DomainServices
             var staff = new Staff() { CompanyId = company.Id, UserId = userId };
 
             company.Staffs.Add(staff);
+
+            return staff;
         }
 
         public CompanyResponseDto GetCompanyResponseByConfigurations(

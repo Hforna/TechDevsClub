@@ -1,4 +1,5 @@
 ﻿using Career.Domain.DomainServices;
+using Career.Domain.Services.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

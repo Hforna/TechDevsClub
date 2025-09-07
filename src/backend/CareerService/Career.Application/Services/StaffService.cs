@@ -69,10 +69,19 @@ namespace Career.Application.Services
             staffRequest.AcceptRequest();
 
             var company = await _uow.CompanyRepository.CompanyById(staffRequest.CompanyId);
-            await _companyDomain.AddStaffToCompany(company!, userInfos.id);
+            var staff = await _companyDomain.AddStaffToCompany(company!, userInfos.id);
 
             _uow.GenericRepository.Update<RequestStaff>(staffRequest);
             _uow.GenericRepository.Update<Company>(company!);
+
+            await _uow.Commit();
+
+            var staffRole = new StaffRole()
+            {
+                CompanyId = company.Id,
+                Role = staffRequest.Role,
+                StaffId = staff.Id
+            };
 
             await _uow.Commit();
 
@@ -103,7 +112,7 @@ namespace Career.Application.Services
 
             request.RejectRequest();
 
-            _uow.GenericRepository.Update<RequestStaff>(request);
+            _uow.GenericRepository.Remove<RequestStaff>(request);
             await _uow.Commit();
 
             return _mapper.Map<StaffRequestResponse>(request);

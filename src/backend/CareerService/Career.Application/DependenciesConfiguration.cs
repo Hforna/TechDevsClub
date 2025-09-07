@@ -22,6 +22,7 @@ namespace Career.Application
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IStaffService, StaffService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IJobService, JobService>();
         }
 
         static void AddAutoMapper(IServiceCollection services)
