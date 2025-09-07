@@ -65,7 +65,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddAuthorization(cfg =>
 {
-    cfg.AddPolicy("NormalUser", p => p.RequireRole("normal", "admin", "recruiter", "hiring_manager"));
+    cfg.AddPolicy("NormalUser", p => p.RequireRole("normal", "admin", "staff"));
 });
 
 builder.Services.AddCors(cfg =>

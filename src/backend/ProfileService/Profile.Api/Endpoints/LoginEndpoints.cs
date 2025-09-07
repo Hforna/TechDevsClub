@@ -58,7 +58,7 @@ namespace Profile.Api.Endpoints
                 var user = await service.AuthenticateUserByOAuth(email.Value, result.Principal.Claims.ToList());
 
                 return Results.Ok(user);
-            } catch(ContextException cx)
+            } catch(ContextException)
             {
                 await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 throw;

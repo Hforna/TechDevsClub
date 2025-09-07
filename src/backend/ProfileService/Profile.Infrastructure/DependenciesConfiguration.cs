@@ -19,6 +19,7 @@ using Profile.Infrastructure.Repositories;
 using Profile.Infrastructure.Repositories.Relational;
 using Profile.Infrastructure.Services;
 using Profile.Infrastructure.Services.External;
+using Profile.Infrastructure.Services.Rabbitmq.Consumers;
 using Profile.Infrastructure.Services.Security;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,12 @@ namespace Profile.Infrastructure
             AddServices(services);
             ConfigureRedis(services, configuration);
             ConfigureLocationService(services, configuration);
+            AddConsumers(services);
+        }
+
+        static void AddConsumers(IServiceCollection services)
+        {
+            services.AddHostedService<CareerServiceConsumer>();
         }
 
         static void AddData(IServiceCollection services, IConfiguration configuration)
