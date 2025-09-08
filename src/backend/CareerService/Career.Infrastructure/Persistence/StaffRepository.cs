@@ -58,7 +58,7 @@ namespace Career.Infrastructure.Persistence
         {
             return _context.RequestsStaffs
                 .AsNoTracking()
-                .Where(d => d.RequesterId == userId)
+                .Where(d => d.UserId == userId)
                 .ToPagedList(page, perPage);
         }
     }

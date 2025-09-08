@@ -19,13 +19,11 @@ namespace Career.Infrastructure.Messaging.Rabbitmq.Producers
         private readonly BaseRabbitMqConnectionDto _baseConnection;
         private IChannel _channel;
 
-        public StaffServiceProducer(IConnection connection, ILogger<StaffServiceProducer> logger, 
-            IOptions<BaseRabbitMqConnectionDto> baseConnection, IChannel channel)
+        public StaffServiceProducer(ILogger<StaffServiceProducer> logger, 
+            IOptions<BaseRabbitMqConnectionDto> baseConnection)
         {
-            _connection = connection;
             _logger = logger;
             _baseConnection = baseConnection.Value;
-            _channel = channel;
         }
 
         public async Task StaffAcceptJoinedCompany(StaffJoinedDto dto)

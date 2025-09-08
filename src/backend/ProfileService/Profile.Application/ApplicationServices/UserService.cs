@@ -337,6 +337,7 @@ namespace Profile.Application.Services
             var encodeUserId = _sqids.Encode(user.Id);
 
             var response = _mapper.Map<UserInfosWithRolesResponse>(user);
+            response.Id = encodeUserId;
             response.UserRoles = new UserRolesResponse()
             {
                 UserId = encodeUserId,

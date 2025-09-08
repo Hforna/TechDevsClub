@@ -8,6 +8,7 @@ using Profile.Domain.Exceptions;
 using Profile.Domain.Repositories;
 using Profile.Domain.Services;
 using Profile.Domain.Services.Security;
+using Sqids;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,12 +29,14 @@ namespace Profile.Application.ApplicationServices
         private readonly IUnitOfWork _uof;
         private readonly IRequestService _requestService;
         private readonly ILogger<TokenAppService> _logger;
+        private readonly SqidsEncoder<long> _sqidsEncoder;
 
         public TokenAppService(ITokenService tokenService, UserManager<User> userManager, 
             IUnitOfWork uof, 
-            IRequestService requestService, ILogger<TokenAppService> logger)
+            IRequestService requestService, ILogger<TokenAppService> logger, SqidsEncoder<long> sqidsEncoder)
         {
             _tokenService = tokenService;
+            _sqidsEncoder = sqidsEncoder;
             _userManager = userManager;
             _uof = uof;
             _requestService = requestService;
@@ -68,7 +71,7 @@ namespace Profile.Application.ApplicationServices
 
             var claims = _tokenService.GetTokenClaims(requestToken!);
 
-            var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier);
+            var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier, _sqidsEncoder.Encode(user.Id));
 
             return new LoginResponse()
             {

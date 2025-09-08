@@ -49,6 +49,7 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
             _channel = await _connection.CreateChannelAsync();
 
             await _channel.ExchangeDeclareAsync("from-career", "direct", true, false);
+            await _channel.QueueDeclareAsync("staff-joined", true, true, false);
             await _channel.QueueBindAsync("staff-joined", "from-career", "staff.joined");
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
@@ -75,14 +76,14 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
 
                         throw new ContextException("The by id user was not found", System.Net.HttpStatusCode.NotFound);
                     }
-                    var addToRole = await userManager.AddToRoleAsync(user, "STAFF");
+                    var addToRole = await userManager.AddToRoleAsync(user, "staff");
                     if (!addToRole.Succeeded)
                         throw new ContextException("Couldn't assign user to role staff", System.Net.HttpStatusCode.InternalServerError);
 
                     await _channel.BasicAckAsync(ea.DeliveryTag, false);
                 } catch (ContextException ex)
                 {
-                    _logger.LogError($"An error occured while trying to use context");
+                    _logger.LogError(ex, $"An error occured while trying to use context");
 
                     await _channel.BasicNackAsync(ea.DeliveryTag, false, true);
                 }catch(Exception ex)

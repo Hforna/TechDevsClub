@@ -9,6 +9,7 @@ using Profile.Domain.Services;
 using Profile.Domain.Services.External;
 using Profile.Domain.Services.Security;
 using Profile.Domain.ValueObjects;
+using Sqids;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,12 +35,14 @@ namespace Profile.Application.ApplicationServices
         private readonly IRequestService _requestService;
         private readonly IMapper _mapper;
         private readonly IGeoLocationService _geoLocation;
+        private readonly SqidsEncoder<long> _sqids;
 
         public LoginService(ITokenService tokenService, UserManager<User> userManager, IUnitOfWork uof, 
             IPasswordEncrypt passwordEncrypt, IRequestService requestService, 
-            IMapper mapper, IGeoLocationService geoLocation)
+            IMapper mapper, IGeoLocationService geoLocation, SqidsEncoder<long> sqids)
         {
             _tokenService = tokenService;
+            _sqids = sqids;
             _userManager = userManager;
             _uof = uof;
             _passwordEncrypt = passwordEncrypt;
@@ -102,7 +105,7 @@ namespace Profile.Application.ApplicationServices
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
             claims.Add(new Claim("device-id", device.Id.ToString()));
 
-            var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier);
+            var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier, _sqids.Encode(user.Id));
             var accessExpiresAt = _tokenService.GenerateTimeForAccessTokenExpires();
 
             return new LoginResponse()
@@ -172,7 +175,7 @@ namespace Profile.Application.ApplicationServices
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
             claims.Add(new Claim("device-id", device.Id.ToString()));
 
-            var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier);
+            var accessToken = _tokenService.GenerateToken(claims, user.UserIdentifier, _sqids.Encode(user.Id));
             var accessExpiresAt = _tokenService.GenerateTimeForAccessTokenExpires();
 
             return new LoginResponse()

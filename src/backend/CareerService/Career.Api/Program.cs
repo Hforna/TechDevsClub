@@ -35,7 +35,7 @@ builder.Services.AddAuthorization(d =>
     d.AddPolicy("ManageJobs", d => d.RequireRole("owner"));
 });
 
-builder.Services.Configure<BaseRabbitMqConnectionDto>(cfg => builder.Configuration.GetSection("services:rabbitmq"));
+builder.Services.Configure<BaseRabbitMqConnectionDto>(builder.Configuration.GetSection("rabbitMq"));
 
 builder.Services.AddSingleton<IUserIdProvider, CustomUserProvider>();
 

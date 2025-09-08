@@ -10,7 +10,7 @@ namespace Profile.Domain.Services.Security
 {
     public interface ITokenService
     {
-        public string GenerateToken(List<Claim> claims, Guid userIdentifier);
+        public string GenerateToken(List<Claim> claims, Guid userIdentifier, string userId);
         public Guid GetUserIdentifierByToken();
         public long GetDeviceId(string token);
         public Guid ValidateToken(string token);

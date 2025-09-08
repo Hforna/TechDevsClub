@@ -41,9 +41,10 @@ namespace Profile.Infrastructure.Services.Security
 
         public DateTime GenerateTimeForAccessTokenExpires() => DateTime.UtcNow.AddHours(_refreshHoursExpiration);
 
-        public string GenerateToken(List<Claim> claims, Guid userIdentifier)
+        public string GenerateToken(List<Claim> claims, Guid userIdentifier, string userId)
         {
             claims.Add(new Claim(ClaimTypes.Sid, userIdentifier.ToString()));
+            claims.Add(new Claim("userId", userId));
 
             var descriptor = new SecurityTokenDescriptor()
             {

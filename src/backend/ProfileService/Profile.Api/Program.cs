@@ -23,6 +23,7 @@ using Profile.Domain.Repositories;
 using Profile.Application.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Profile.Infrastructure.Services.Rabbitmq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,10 +37,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<CountGithubCommitsBackground>();
 
 builder.Services.Configure<SmptSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.Configure<BaseRabbitMqConnectionDto>(builder.Configuration.GetSection("rabbitMq"));
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
-
 
 builder.Services.AddHttpContextAccessor();
 

@@ -34,7 +34,7 @@ namespace Career.Api.Hubs
             var response = new NotificationSentResponse(dto.Id, dto.SenderId, dto.Title, dto.CreatedAt);
 
             _logger.LogInformation($"Message sent to user with id: {dto.UserId}");
-            await _context.Clients.User(dto.UserId).SendAsync("ReceiveMessagee", response);
+            await _context.Clients.User(dto.UserId).SendAsync("ReceiveMessage", response);
         }
     }
 }

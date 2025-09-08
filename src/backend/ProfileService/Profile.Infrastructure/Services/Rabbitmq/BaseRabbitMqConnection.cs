@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Profile.Infrastructure.Services.Rabbitmq
 {
-    public sealed record BaseRabbitMqConnectionDto
+    public class BaseRabbitMqConnectionDto
     {
         public string Host { get; set; }
         public string UserName { get; set; }
