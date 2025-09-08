@@ -14,34 +14,25 @@ namespace Profile.Api.Endpoints
         {
             var app = builder.MapGroup(MapGroup);
 
-            app.MapGet("create-connection/{profileId}", CreateConnectionWithProfile)
+            app.MapPut("{profileId}", CreateConnectionWithProfile)
                 .WithName("CreateConnectionWithProfile")
                 .WithDescription("User create a connection with a profile by it id")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>()
                 .RequireAuthorization("NormalUser");
 
-            app.MapGet("{id}/accept", AcceptConnection)
+            app.MapPut("{id}/accept", AcceptConnection)
                 .WithName("AcceptConnectionRequest")
                 .WithDescription("Accept a connection request by connection id")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>()
                 .RequireAuthorization("NormalUser");
 
-            app.MapGet("{id}/reject", AcceptConnection)
+            app.MapPut("{id}/reject", AcceptConnection)
                 .WithName("RejectConnectionRequest")
                 .WithDescription("Reject a connection request by connection id")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>()
                 .RequireAuthorization("NormalUser");
 
             return app;
-        }
-
-        static async Task<IResult> ProfileConnection([FromServices]IConnectionService service, HttpContext context, [FromQuery]int page, [FromQuery]int perPage)
-        {
-            var profileId = await BinderIdValidatorExtension.Validate(context, "profileId");
-
-            var result = await service.ProfileConnectionsPagination(profileId, page, perPage);
-
-            return Results.Ok(result);
         }
 
         [ProducesResponseType(typeof(ContextException), StatusCodes.Status401Unauthorized)]

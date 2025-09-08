@@ -51,7 +51,7 @@ namespace Career.Api.Controllers
         /// <param name="requestId">staff request for accept</param>
         /// <returns>return the staff request with status</returns>
         [UserAuthenticated]
-        [HttpGet("requests/{requestId}/accept")]
+        [HttpPut("requests/{requestId}/accept")]
         public async Task<IActionResult> AcceptRequestToBeStaff([FromRoute]Guid requestId)
         {
             var result = await _staffService.AcceptStaffRequest(requestId);
@@ -65,7 +65,7 @@ namespace Career.Api.Controllers
         /// <param name="requestId">staff request for accept</param>
         /// <returns>return the staff request with status</returns>
         [UserAuthenticated]
-        [HttpGet("requests/{requestId}/reject")]
+        [HttpPut("requests/{requestId}/reject")]
         public async Task<IActionResult> RejectStaffRequestToBeStaff([FromRoute]Guid requestId)
         {
             var result = await _staffService.RejectStaffRequest(requestId);

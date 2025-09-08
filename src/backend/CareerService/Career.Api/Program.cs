@@ -62,7 +62,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapHub<NotificationHub>("/hub/notification");
+app.MapHub<NotificationHub>("/hubs/notification");
 
 app.UseHttpsRedirection();
 

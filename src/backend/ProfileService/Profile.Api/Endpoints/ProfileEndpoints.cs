@@ -37,9 +37,20 @@ namespace Profile.Api.Endpoints
                 .WithSummary("Get profiles paginated based on user recent profile visit skills")
                 .RequireRateLimiting("PerfilPolicy");
 
+            app.MapGet("{id}/connections", ProfileConnections);
+
             app.MapPost("filter", GetProfilesPaginated);
 
             return app;
+        }
+
+        static async Task<IResult> ProfileConnections([FromServices] IConnectionService service, HttpContext context, [FromQuery] int page, [FromQuery] int perPage)
+        {
+            var profileId = await BinderIdValidatorExtension.Validate(context, "profileId");
+
+            var result = await service.ProfileConnectionsPagination(profileId, page, perPage);
+
+            return Results.Ok(result);
         }
 
         static async Task<IResult> GetUserAuthenticatedProfile([FromServices]IProfileService service)

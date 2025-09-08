@@ -39,7 +39,7 @@ namespace Profile.Infrastructure.Services.Security
             return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
         }
 
-        public DateTime GenerateTimeForAccessTokenExpires() => DateTime.UtcNow.AddHours(_refreshHoursExpiration);
+        public DateTime GenerateTimeForAccessTokenExpires() => DateTime.UtcNow.AddMinutes(_expiresOn);
 
         public string GenerateToken(List<Claim> claims, Guid userIdentifier, string userId)
         {

@@ -15,19 +15,19 @@ namespace Profile.Api.Endpoints
         {
             var app = builder.MapGroup(MapGroup);
 
-            app.MapPost("add-skills", SetUserSkills)
+            app.MapPost("", SetUserSkills)
                 .WithName("SetUserSkills")
                 .WithDescription("Add user skills by the request list")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>()
                 .RequireAuthorization("NormalUser");
 
-            app.MapGet("catalog", GetSkills)
+            app.MapGet("", GetSkills)
                 .WithName("GetAllSkills")
-                .WithDescription("Get all skills that user can set");
+                .WithDescription("Get all skills that user can get assign");
 
             app.MapDelete("", RemoveUserSkills)
                 .WithName("RemoveUserSkills")
-                .WithDescription("Remove skills that user has, by its names")
+                .WithDescription("Remove skills that user have, by its names")
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>()
                 .RequireAuthorization("NormalUser");
 

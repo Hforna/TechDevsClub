@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Career.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("[controller]")]
     [UserAuthenticated]
-    public class NotificationController : ControllerBase
+    public class NotificationController : BaseController
     {
         private readonly INotificationService _notificationService;
 
