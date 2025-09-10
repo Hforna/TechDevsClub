@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Career.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,6 +18,6 @@ namespace Career.Domain.Aggregates.JobRoot
         public Job Job { get; set; }
         public string SkillId { get; set; }
         public bool IsMandatory { get; set; }
-        public string ExperienceTime { get; set; }
+        public ExperienceLevel ExperienceTime { get; set; }
     }
 }
