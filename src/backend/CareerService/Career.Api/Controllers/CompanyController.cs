@@ -21,34 +21,38 @@ namespace Career.Api.Controllers
             _companyService = companyService;
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetCompany([FromRoute]Guid id)
+        /// <summary>
+        /// Retrieves a company by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique ID of the company.</param>
+        /// <returns>The company details.</returns>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCompany(Guid id)
         {
             var result = await _companyService.GetCompany(id);
-
             return Ok(result);
         }
-
-        [HttpPost("filter")]
-        public async Task<IActionResult> GetCompaniesPaginated([FromBody]CompaniesFilterRequest request)
-        {
-            var result = await _companyService.GetCompanyFiltered(request);
-
-            return Ok(result);
-        }
-
 
         /// <summary>
-        /// Get all staffs from a company, 
-        /// it only will be accepted if user is owner or staff of this company, 
-        /// otherwise company owner must set staffs as public in company configurations
+        /// Retrieves a paginated list of companies based on filter criteria.
         /// </summary>
-        /// <param name="perPage">staffs count in response</param>
-        /// <param name="page">page number of staffs</param>
-        /// <returns>return short data of staffs and infos about the page</returns>
+        /// <param name="request">Filter request containing search criteria and pagination info.</param>
+        /// <returns>Paginated list of companies.</returns>
+        [HttpPost("filter")]
+        public async Task<IActionResult> GetCompaniesPaginated([FromBody] CompaniesFilterRequest request)
+        {
+            var result = await _companyService.GetCompanyFiltered(request);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Gets all staff from a company. Accessible only if the user is owner or staff, 
+        /// otherwise public staff visibility is required.
+        /// </summary>
+        /// <param name="companyId">ID of the company.</param>
+        /// <returns>Short data of staff with pagination info or NoContent if none.</returns>
         [HttpGet("{companyId}/staffs")]
-        public async Task<IActionResult> GetAllCompanyStaffs([FromRoute]Guid companyId)
+        public async Task<IActionResult> GetAllCompanyStaffs(Guid companyId)
         {
             var result = await _companyService.GetCompanyStaffs(companyId);
 
@@ -58,52 +62,73 @@ namespace Career.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Updates the company's configurations. Requires authenticated user.
+        /// </summary>
+        /// <param name="companyId">ID of the company.</param>
+        /// <param name="request">Configuration data to update.</param>
+        /// <returns>Updated configuration info.</returns>
         [UserAuthenticated]
         [HttpPut("{companyId}/configurations")]
-        public async Task<IActionResult> UpdateCompanyConfigurations([FromRoute]Guid companyId, 
-            [FromBody]CompanyConfigurationRequest request)
+        public async Task<IActionResult> UpdateCompanyConfigurations(Guid companyId, [FromBody] CompanyConfigurationRequest request)
         {
             var result = await _companyService.UpdateCompanyConfiguration(companyId, request);
-
             return Ok();
         }
 
+        /// <summary>
+        /// Retrieves company configuration info. Requires authenticated owner.
+        /// </summary>
+        /// <param name="companyId">ID of the company.</param>
+        /// <returns>Company configuration details.</returns>
         [UserAuthenticated]
         [HttpGet("{companyId}/configurations")]
         [Authorize("OnlyOwner")]
-        public async Task<IActionResult> GetCompanyConfigurations([FromRoute]Guid companyId)
+        public async Task<IActionResult> GetCompanyConfigurations(Guid companyId)
         {
             var result = await _companyService.GetCompanyConfigurationInfos(companyId);
-
             return Ok(result);
         }
 
+        /// <summary>
+        /// Creates a new company. Requires authenticated user.
+        /// </summary>
+        /// <param name="request">Data to create the company.</param>
+        /// <returns>Created company details.</returns>
         [UserAuthenticated]
         [HttpPost]
-        public async Task<IActionResult> CreateCompany([FromBody]CreateCompanyRequest request)
+        public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyRequest request)
         {
             var result = await _companyService.CreateCompany(request);
-
             return Created(string.Empty, result);
         }
 
+        /// <summary>
+        /// Updates an existing company. Requires authenticated user.
+        /// </summary>
+        /// <param name="request">Data to update the company.</param>
+        /// <returns>Updated company details.</returns>
         [UserAuthenticated]
         [HttpPut]
-        public async Task<IActionResult> UpdateCompany([FromForm]UpdateCompanyRequest request)
+        public async Task<IActionResult> UpdateCompany([FromForm] UpdateCompanyRequest request)
         {
             var result = await _companyService.UpdateCompany(request);
-
             _logger.LogInformation($"Company updated: {request.CompanyId}");
-
             return Ok(result);
         }
 
+        /// <summary>
+        /// Removes a staff member from a company. Requires owner authorization.
+        /// </summary>
+        /// <param name="companyId">ID of the company.</param>
+        /// <param name="staffId">ID of the staff to remove.</param>
+        /// <param name="reason">Reason for removal.</param>
+        /// <returns>Success status.</returns>
         [Authorize(Policy = "OnlyOwner")]
         [HttpDelete("{companyId}/staffs/{staffId}")]
-        public async Task<IActionResult> FireStaffFromCompany([FromRoute]Guid companyId, [FromRoute]Guid staffId, [FromQuery]string reason)
+        public async Task<IActionResult> FireStaffFromCompany(Guid companyId, Guid staffId, string reason)
         {
             await _companyService.FireStaffFromCompany(companyId, staffId, reason);
-
             return Ok();
         }
     }
