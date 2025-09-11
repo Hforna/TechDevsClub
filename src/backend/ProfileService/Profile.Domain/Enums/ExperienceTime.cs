@@ -1,21 +1,13 @@
-﻿using Profile.Domain.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Profile.Application.Requests
+namespace Profile.Domain.Enums
 {
-    public class CreateUserSkillRequest
-    {
-        public string Name { get; set; }
-        public LevelsEnum Level { get; set; }
-        public ExperienceTimeRequest ExperienceTime { get; set; }
-    }
-
-    public enum ExperienceTimeRequest
+    public enum ExperienceTime
     {
         [Display(Name = "No experience")]
         NoExperience,

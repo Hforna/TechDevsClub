@@ -32,7 +32,7 @@ builder.Services.AddScoped<IRealTimeNotifier, NotificationHubService>();
 builder.Services.AddAuthorization(d =>
 {
     d.AddPolicy("OnlyOwner", d => d.RequireRole("owner"));
-    d.AddPolicy("ManageJobs", d => d.RequireRole("owner"));
+    d.AddPolicy("ManageJobs", d => d.RequireRole("staff"));
 });
 
 builder.Services.Configure<BaseRabbitMqConnectionDto>(builder.Configuration.GetSection("rabbitMq"));

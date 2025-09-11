@@ -8,13 +8,12 @@ namespace Career.Api.Controllers
     [ApiController]
     public class JobsController : BaseController
     {
-        //private readonly 
-        //
-        //[Authorize(Policy = "ManageJobs")]
-        //[HttpPost]
-        //public async Task<IActionResult> CreateNewJob()
-        //{
-        //
-        //}
+        
+        [Authorize(Policy = "ManageJobs")]
+        [HttpPost]
+        public async Task<IActionResult> CreateNewJob()
+        {
+        
+        }
     }
 }
