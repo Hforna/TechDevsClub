@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Career.Domain.Dtos
 {
-    public class UserRolesDto
+    public sealed record UserRolesDto
     {
         public string userId { get; set; }
         public List<UserRoleDto> roles { get; set; }

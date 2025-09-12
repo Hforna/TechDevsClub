@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Profile.Domain.Dtos
 {
-    public class LocationInfoDto
+    public sealed record LocationInfoDto
     {
         public CountryDto Country { get; set; }
         public string City { get; set; }
@@ -17,7 +17,7 @@ namespace Profile.Domain.Dtos
     }
 
 
-    public class CountryDto
+    public sealed record CountryDto
     {
         public string IsoCode { get; set; }
         public string Name { get; set; }

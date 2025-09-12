@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Career.Domain.Dtos
 {
-    public class CompanyResponseDto
+    public sealed record CompanyResponseDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

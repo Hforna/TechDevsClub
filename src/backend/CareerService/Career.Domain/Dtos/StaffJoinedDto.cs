@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Career.Domain.Dtos
 {
-    public class StaffJoinedDto
+    public sealed record StaffJoinedDto
     {
         public Guid StaffId { get; set; }
         public string UserId { get; set; }

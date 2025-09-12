@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Career.Domain.Dtos
 {
-    public class CompanyFilterDto
+    public sealed record CompanyFilterDto
     {
         public string? Name { get; set; }
         public bool? Verified { get; set; }

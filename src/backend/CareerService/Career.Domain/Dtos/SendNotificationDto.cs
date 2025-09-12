@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Career.Domain.Dtos
 {
-    public class SendNotificationDto
+    public sealed record SendNotificationDto
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }

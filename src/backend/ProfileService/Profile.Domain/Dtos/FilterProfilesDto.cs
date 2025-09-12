@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Profile.Domain.Dtos
 {
-    public class FilterProfilesDto
+    public sealed record FilterProfilesDto
     {
         public int Page { get; set; }
         public int PerPage { get; set; }
