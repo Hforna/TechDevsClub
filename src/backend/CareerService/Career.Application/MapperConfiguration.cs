@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Career.Application.Requests.Company;
+using Career.Application.Requests.Jobs;
 using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
+using Career.Domain.Aggregates.JobRoot;
 using Career.Domain.Dtos;
 using Career.Domain.Entities;
 using Career.Domain.ValueObjects;
@@ -27,6 +29,18 @@ namespace Career.Application
 
             CreateMap<Company, CompanyResponse>()
                 .ForMember(d => d.StaffsNumber, f => f.MapFrom(d => d.Staffs.Count));
+
+            CreateMap<SalaryRequest, Salary>();
+
+            CreateMap<JobRequirementRequest, JobRequirement>();
+
+            CreateMap<CreateJobRequest, Job>().ForMember(d => d.JobRequirements.ToList(), f => f.MapFrom(d => d.JobRequirements));
+
+            CreateMap<Job, JobResponse>();
+
+            CreateMap<JobRequirement, JobRequirementResponse>();
+
+            CreateMap<Salary,  SalaryResponse>();
 
             CreateMap<Notification, SendNotificationDto>();
 

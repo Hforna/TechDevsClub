@@ -13,11 +13,11 @@ namespace Career.Application.Requests.Jobs
         public string Title { get; set; }
         public string Description { get; set; }
         public SalaryRequest? Salary { get; set; }
-        public List<JobRequirement> JobRequirements { get; set; }
+        public List<JobRequirementRequest> JobRequirements { get; set; }
         public ExperienceLevel Experience { get; set; }
     }
 
-    public class JobRequirement
+    public class JobRequirementRequest
     {
         public string SkillId { get; set; }
         public bool IsMandatory { get; set; }
