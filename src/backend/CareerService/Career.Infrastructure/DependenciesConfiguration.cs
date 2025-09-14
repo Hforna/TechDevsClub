@@ -39,6 +39,7 @@ namespace Career.Infrastructure
         static void AddMessagingService(IServiceCollection services)
         {
             services.AddScoped<IStaffServiceProducer, StaffServiceProducer>();
+            services.AddScoped<IJobServiceProducer, JobServiceProducer>();
         }
 
         static void WebSocketsConnection(IServiceCollection services)

@@ -12,37 +12,39 @@ using System.Threading.Tasks;
 
 namespace Career.Infrastructure.Messaging.Rabbitmq.Producers
 {
-    public class StaffServiceProducer : IDisposable, IStaffServiceProducer
-    { 
+    public class JobServiceProducer : IJobServiceProducer, IDisposable
+    {
         private IConnection _connection;
-        private readonly ILogger<StaffServiceProducer> _logger;
-        private readonly BaseRabbitMqConnectionDto _baseConnection;
         private IChannel _channel;
+        private readonly BaseRabbitMqConnectionDto _connectionDto;
+        private readonly ILogger<JobServiceProducer> _logger;
 
-        public StaffServiceProducer(ILogger<StaffServiceProducer> logger, 
-            IOptions<BaseRabbitMqConnectionDto> baseConnection)
+        public JobServiceProducer(IConnection connection, IChannel channel, 
+            IOptions<BaseRabbitMqConnectionDto> connectionDto, ILogger<JobServiceProducer> logger)
         {
+            _connection = connection;
+            _channel = channel;
+            _connectionDto = connectionDto.Value;
             _logger = logger;
-            _baseConnection = baseConnection.Value;
         }
 
-        public async Task StaffAcceptJoinedCompany(StaffJoinedDto dto)
+        public async Task SendJobCreated(JobCreatedDto dto)
         {
             _connection = await new ConnectionFactory()
             {
-                Port = _baseConnection.Port,
-                HostName = _baseConnection.Host,
-                Password = _baseConnection.Password,
-                UserName = _baseConnection.UserName
+                Port = _connectionDto.Port,
+                HostName = _connectionDto.Host,
+                Password = _connectionDto.Password,
+                UserName = _connectionDto.UserName
             }.CreateConnectionAsync();
 
             _channel = await _connection.CreateChannelAsync();
 
             await _channel.ExchangeDeclareAsync("from-career", "direct", true, false);
 
-            var serialize = JsonSerializer.Serialize(dto);
-            var body = Encoding.UTF8.GetBytes(serialize);
-            await _channel.BasicPublishAsync("from-career", "staff.joined", body);
+            var body = JsonSerializer.Serialize(dto);
+            var bodyBytes = Encoding.UTF8.GetBytes(body);
+            await _channel.BasicPublishAsync("from-career", "job.created", bodyBytes);
         }
 
         public void Dispose()

@@ -38,16 +38,19 @@ namespace Career.Infrastructure.Persistence
 
             modelBuilder.Entity<Review>().HasOne(d => d.Company)
                 .WithMany(d => d.Reviews)
-                .HasForeignKey(d => d.CompanyId);
+                .HasForeignKey(d => d.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Job>().HasMany(d => d.JobRequirements)
                 .WithOne(d => d.Job)
-                .HasForeignKey(d => d.JobId);
+                .HasForeignKey(d => d.JobId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Company>()
                 .HasOne(d => d.CompanyConfiguration)
                 .WithOne(d => d.Company)
-                .HasForeignKey<CompanyConfiguration>(d => d.CompanyId);
+                .HasForeignKey<CompanyConfiguration>(d => d.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Owned<Location>();
             modelBuilder.Owned<Salary>();
