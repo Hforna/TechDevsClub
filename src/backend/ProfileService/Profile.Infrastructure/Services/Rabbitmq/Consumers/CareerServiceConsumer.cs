@@ -61,24 +61,15 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
 
                 try
                 {
-                    using var scope = _serviceProvider.CreateScope();
                     var deserialize = JsonSerializer.Deserialize<StaffJoinedMessage>(message);
-
-                    var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                    var sqids = scope.ServiceProvider.GetRequiredService<SqidsEncoder<long>>();
-
-                    var userId = sqids.Decode(deserialize.UserId);
-                    var user = await uow.GenericRepository.GetById<User>(userId.Single());
-                    if (user is null)
+                    if (deserialize is null)
                     {
-                        _logger.LogError($"The user got by {userId} in staff joined class was not found in context");
+                        _logger.LogError(message, "Message received couldn't be deserialized");
 
-                        throw new ContextException("The by id user was not found", System.Net.HttpStatusCode.NotFound);
+                        throw new Exception("It was not possible deserializing the message received");
                     }
-                    var addToRole = await userManager.AddToRoleAsync(user, "staff");
-                    if (!addToRole.Succeeded)
-                        throw new ContextException("Couldn't assign user to role staff", System.Net.HttpStatusCode.InternalServerError);
+
+                    await ProcessMessage(deserialize!);
 
                     await _channel.BasicAckAsync(ea.DeliveryTag, false);
                 } catch (ContextException ex)
@@ -93,6 +84,27 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
                     throw;
                 }
             };
+        }
+
+        private async Task ProcessMessage(StaffJoinedMessage message)
+        {
+            using var scope = _serviceProvider.CreateScope();
+
+            var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            var sqids = scope.ServiceProvider.GetRequiredService<SqidsEncoder<long>>();
+
+            var userId = sqids.Decode(message.UserId);
+            var user = await uow.GenericRepository.GetById<User>(userId.Single());
+            if (user is null)
+            {
+                _logger.LogError($"The user got by {userId} in staff joined class was not found in context");
+
+                throw new ContextException("The by id user was not found", System.Net.HttpStatusCode.NotFound);
+            }
+            var addToRole = await userManager.AddToRoleAsync(user, "staff");
+            if (!addToRole.Succeeded)
+                throw new ContextException("Couldn't assign user to role staff", System.Net.HttpStatusCode.InternalServerError);
         }
     }
 }

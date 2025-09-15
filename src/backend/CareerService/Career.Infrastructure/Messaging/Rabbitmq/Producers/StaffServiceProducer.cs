@@ -48,8 +48,8 @@ namespace Career.Infrastructure.Messaging.Rabbitmq.Producers
         public void Dispose()
         {
             _channel.CloseAsync();
-            _connection.CloseAsync();
             _channel.Dispose();
+            _connection.CloseAsync();
             _connection.Dispose();
         }
     }
