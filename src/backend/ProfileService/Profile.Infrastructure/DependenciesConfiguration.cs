@@ -20,6 +20,7 @@ using Profile.Infrastructure.Repositories.Relational;
 using Profile.Infrastructure.Services;
 using Profile.Infrastructure.Services.External;
 using Profile.Infrastructure.Services.Rabbitmq.Consumers;
+using Profile.Infrastructure.Services.Rabbitmq.Producers;
 using Profile.Infrastructure.Services.Security;
 using System;
 using System.Collections.Generic;
@@ -40,11 +41,18 @@ namespace Profile.Infrastructure
             ConfigureRedis(services, configuration);
             ConfigureLocationService(services, configuration);
             AddConsumers(services);
+            AddProducers(services);
         }
 
         static void AddConsumers(IServiceCollection services)
         {
-            services.AddHostedService<CareerServiceConsumer>();
+            services.AddHostedService<StaffJoinedConsumer>();
+            services.AddHostedService<JobCreatedConsumer>();
+        }
+
+        static void AddProducers(IServiceCollection services)
+        {
+            services.AddScoped<IUserMatchedProducer, UserMatchedProducer>();
         }
 
         static void AddData(IServiceCollection services, IConfiguration configuration)

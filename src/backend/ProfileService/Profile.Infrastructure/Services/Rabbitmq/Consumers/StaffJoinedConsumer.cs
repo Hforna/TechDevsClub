@@ -20,16 +20,16 @@ using System.Threading.Tasks;
 
 namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
 {
-    public class CareerServiceConsumer : BackgroundService
+    public class StaffJoinedConsumer : BackgroundService
     {
         private readonly IServiceProvider _serviceProvider;
         private IConnection _connection;
         private IChannel _channel;
-        private readonly ILogger<CareerServiceConsumer> _logger;
+        private readonly ILogger<StaffJoinedConsumer> _logger;
         private readonly BaseRabbitMqConnectionDto _rabbitMqConnection;
 
-        public CareerServiceConsumer(IServiceProvider serviceProvider, 
-            ILogger<CareerServiceConsumer> logger, IOptions<BaseRabbitMqConnectionDto> rabbitMqConnection)
+        public StaffJoinedConsumer(IServiceProvider serviceProvider, 
+            ILogger<StaffJoinedConsumer> logger, IOptions<BaseRabbitMqConnectionDto> rabbitMqConnection)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;

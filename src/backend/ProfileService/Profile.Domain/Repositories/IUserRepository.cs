@@ -1,4 +1,5 @@
 ﻿using Profile.Domain.Aggregates;
+using Profile.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace Profile.Domain.Repositories
         public Task<User?> UserByEmail(string email);
         public Task<User?> UserByIdentifier(Guid uid);
         public Task<User?> UserByEmailNotConfirmed(string email);
+        public Task<List<User>?> GetUsersMatchedWithSkillsExperienceAndCountry(Dictionary<long, int> skills, string country);
     }
 }
