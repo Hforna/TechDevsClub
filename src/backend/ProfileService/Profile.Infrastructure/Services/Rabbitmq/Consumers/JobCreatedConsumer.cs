@@ -88,6 +88,7 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
                     throw;
                 }
             };
+            await _channel.BasicConsumeAsync("job-created", false, consumer);
         }
 
         private async Task ProcessMessage(JobCreatedMessage message)
@@ -103,12 +104,19 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
                 if (users is null)
                     await Task.CompletedTask;
 
-                var userMatchedMessage = new UsersMatchedToJobMessage()
-                {
-                    Users = users.Select(user => new UserMessage(sqids.Encode(user.Id), user.UserName, user.Email)).ToList()
-                };
+                var batches = users.Chunk(50);
 
-                await userMatchedProducer.SendMessage(userMatchedMessage);
+                foreach(var batch in batches)
+                {
+                    var userMatchedMessage = new UsersMatchedToJobMessage()
+                    {
+                        Users = batch.Select(user => new UserMessage(sqids.Encode(user.Id), user.UserName, user.Email)).ToList(),
+                        CompanyId = message.CompanyId,
+                        JobId = message.Id
+                    };
+
+                    await userMatchedProducer.SendMessage(userMatchedMessage);
+                }
             }
         }
 

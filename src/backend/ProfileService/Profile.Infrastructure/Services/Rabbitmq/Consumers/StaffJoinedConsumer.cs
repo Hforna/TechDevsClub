@@ -83,6 +83,7 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
 
                     throw;
                 }
+                await _channel.BasicConsumeAsync("staff-joined", false, consumer);
             };
         }
 

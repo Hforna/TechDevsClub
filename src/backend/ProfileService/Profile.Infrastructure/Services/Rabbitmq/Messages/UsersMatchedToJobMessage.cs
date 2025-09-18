@@ -8,6 +8,8 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Messages
 {
     public class UsersMatchedToJobMessage
     {
+        public Guid JobId { get; set; }
+        public Guid CompanyId { get; set; }
         public List<UserMessage> Users { get; set; } 
     }
 
