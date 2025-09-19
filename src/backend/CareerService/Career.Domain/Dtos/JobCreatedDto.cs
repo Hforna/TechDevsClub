@@ -1,5 +1,6 @@
 ﻿using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.Aggregates.JobRoot;
+using Career.Domain.Enums;
 using Career.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,9 @@ namespace Career.Domain.Dtos
         public string Description { get; set; }
         public DateTime PostedAt { get; set; }
         public bool IsActive { get; set; }
+        public string Country { get; set; }
         public Guid CompanyId { get; set; }
-        public Company Company { get; set; }
-        public Salary Salary { get; set; }
+        public ELocalType LocalType { get; set; }
         public ICollection<JobRequirement> JobRequirements { get; set; }
     }
 }

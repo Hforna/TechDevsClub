@@ -19,5 +19,10 @@ namespace Career.Domain.ValueObjects
         public string Country { get; private set; }
         public string State { get; private set; }
         public string? ZipCode { get; private set; }
+
+        public override string ToString()
+        {
+            return $"Country: {Country}, State: {State}, ZipCode: {ZipCode}";
+        }
     }
 }

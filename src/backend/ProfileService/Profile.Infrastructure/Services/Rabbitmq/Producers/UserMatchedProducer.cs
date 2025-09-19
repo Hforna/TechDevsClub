@@ -25,12 +25,10 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Producers
         private IServiceProvider _serviceProvider;
         private BaseRabbitMqConnectionDto? _rabbitMqConnection;
 
-        public UserMatchedProducer(ILogger<UserMatchedProducer> logger, IConnection connection,
-            IChannel channel, IServiceProvider serviceProvider, IOptions<BaseRabbitMqConnectionDto> rabbitMqConnection)
+        public UserMatchedProducer(ILogger<UserMatchedProducer> logger,
+            IServiceProvider serviceProvider, IOptions<BaseRabbitMqConnectionDto> rabbitMqConnection)
         {
             _logger = logger;
-            _connection = connection;
-            _channel = channel;
             _serviceProvider = serviceProvider;
             _rabbitMqConnection = rabbitMqConnection.Value;
         }

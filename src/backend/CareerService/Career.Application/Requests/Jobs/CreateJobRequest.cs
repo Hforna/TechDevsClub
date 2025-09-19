@@ -15,6 +15,7 @@ namespace Career.Application.Requests.Jobs
         public SalaryRequest? Salary { get; set; }
         public List<JobRequirementRequest> JobRequirements { get; set; }
         public ExperienceLevel Experience { get; set; }
+        public ELocalType LocalType { get; set; }
     }
 
     public class JobRequirementRequest

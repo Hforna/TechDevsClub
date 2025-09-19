@@ -28,12 +28,10 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
         private IServiceProvider _serviceProvider;
         private BaseRabbitMqConnectionDto _rabbitMqConnection;
 
-        public JobCreatedConsumer(ILogger<JobCreatedConsumer> logger, IConnection connection, 
-            IChannel channel, IServiceProvider serviceProvider, IOptions<BaseRabbitMqConnectionDto> rabbitMqConnection)
+        public JobCreatedConsumer(ILogger<JobCreatedConsumer> logger, 
+            IServiceProvider serviceProvider, IOptions<BaseRabbitMqConnectionDto> rabbitMqConnection)
         {
             _logger = logger;
-            _connection = connection;
-            _channel = channel;
             _serviceProvider = serviceProvider;
             _rabbitMqConnection = rabbitMqConnection.Value;
         }

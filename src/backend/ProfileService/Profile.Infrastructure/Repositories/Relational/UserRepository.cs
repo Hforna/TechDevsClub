@@ -17,7 +17,7 @@ namespace Profile.Infrastructure.Repositories.Relational
 
         public UserRepository(DataContext context) => _context = context;
 
-        public async Task<List<User>?> GetUsersMatchedWithSkillsAndExperience(Dictionary<long, int> skills, string country)
+        public async Task<List<User>?> GetUsersMatchedWithSkillsExperienceAndCountry(Dictionary<long, int> skills, string country)
         {
             var minExp = Math.Ceiling(skills.Count() * 0.3);
 

@@ -2,6 +2,7 @@
 using Career.Domain.Services;
 using Career.Domain.Services.Clients;
 using Career.Domain.Services.Messaging;
+using Career.Infrastructure.Messaging.Rabbitmq.Consumers;
 using Career.Infrastructure.Messaging.Rabbitmq.Producers;
 using Career.Infrastructure.Persistence;
 using Career.Infrastructure.Services;
@@ -9,6 +10,7 @@ using Career.Infrastructure.Services.Clients;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SendGrid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +42,8 @@ namespace Career.Infrastructure
         {
             services.AddScoped<IStaffServiceProducer, StaffServiceProducer>();
             services.AddScoped<IJobServiceProducer, JobServiceProducer>();
+
+            services.AddHostedService<UsersMatchedConsumer>();
         }
 
         static void WebSocketsConnection(IServiceCollection services)
@@ -61,6 +65,9 @@ namespace Career.Infrastructure
             services.AddScoped<IProfileServiceClient, ProfileServiceClient>();
 
             services.AddScoped<IRequestService, RequestService>();
+
+            var sendGridKey = configuration.GetValue<string>("services:twilio:sendGridKey");
+            services.AddSingleton<ISendGridClient, SendGridClient>(d => new SendGridClient(sendGridKey));
 
             services.AddSingleton<IEmailService, EmailService>();
 

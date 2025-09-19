@@ -20,6 +20,7 @@ namespace Career.Application.Responses
         public bool IsActive { get; set; }
         public Guid CompanyId { get; set; }
         public SalaryResponse Salary { get; set; }
+        public ELocalType LocalType { get; set; }
         public List<JobRequirementResponse> Requirements { get; set; }
     }
 

@@ -79,6 +79,7 @@ namespace Career.Application.Services
             await _uow.Commit();
 
             var producerDto = _mapper.Map<JobCreatedDto>(job);
+            producerDto.Country = company.Location.Country;
             await _jobProducer.SendJobCreated(producerDto);
             _logger.LogInformation($"Producer dto message sent to job producer service: {producerDto}");
 

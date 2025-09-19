@@ -1,4 +1,5 @@
 ﻿using Career.Domain.Aggregates.CompanyRoot;
+using Career.Domain.Entities;
 using Career.Domain.Enums;
 using Career.Domain.ValueObjects;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace Career.Domain.Aggregates.JobRoot
 {
     [Table("jobs")]
-    public class Job
+    public class Job : IEntity
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -21,6 +22,7 @@ namespace Career.Domain.Aggregates.JobRoot
         public Guid CompanyId { get; set; }
         [ForeignKey("CompanyId")]
         public Company Company { get; set; }
+        public ELocalType LocalType { get; set; }
         public Salary Salary { get; set; }
         public ICollection<JobRequirement> JobRequirements { get; set; }
     }
