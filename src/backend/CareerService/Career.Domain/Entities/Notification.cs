@@ -15,11 +15,15 @@ namespace Career.Domain.Entities
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }
-        public string SenderId { get; set; }
+        public string? SenderId { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
         public ENotificationType Type { get; set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        
+        /// <summary>
+        /// as true if the notification already was read
+        /// </summary>
         public bool IsRead { get; set; } = false;
     }
 }

@@ -12,5 +12,6 @@ namespace Career.Domain.Services.Clients
         public Task<UserInfosDto> GetUserInfos(string accessToken);
         public Task<UserRolesDto> GetUserRoles(string accessToken);
         public Task<UserInfosWithRolesDto> GetUserInfosById(string userId);
+        public Task<ProfileInfosDto> GetProfilesInfoByUser(string userId);
     }
 }

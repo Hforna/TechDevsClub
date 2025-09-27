@@ -3,7 +3,7 @@ using Career.Application.Requests;
 using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.DomainServices;
-using Career.Domain.Dtos;
+using Career.Domain.Dtos.Notifications;
 using Career.Domain.Entities;
 using Career.Domain.Exceptions;
 using Career.Domain.Repositories;
@@ -127,28 +127,12 @@ namespace Career.Application.Services
             if (company is null)
                 throw new NullEntityException(ResourceExceptMessages.COMPANY_NOT_EXISTS);
 
-            var userInCompany = await _uow.CompanyRepository.CompanyContainsStaff(company.Id, request.UserId);
+            var canHandleHiring = await _companyDomain.CanUserHandleHiringManagement(company, userInfos.id);
 
-            if (userInCompany)
-                throw new DomainException(ResourceExceptMessages.USER_ALREADY_IN_COMPANY);
-
-            if (company.OwnerId != userInfos.id)
-            {
-                var userStaff = await _uow.StaffRepository.GetStaffByUserIdAndCompany(userInfos.id, company.Id);
-
-                if (userStaff is null)
-                    throw new DomainException(ResourceExceptMessages.USER_NOT_BINDED_TO_COMPANY);
-
-                var staffRoles = await _uow.StaffRepository.GetStaffRolesInCompany(company.Id, userStaff.Id);
-
-                _logger.LogInformation($"User requester roles: {staffRoles!.Select(d => d.Role)}");
-
-                if (staffRoles!.Select(d => d.Role).Contains("hiring_manager") == false)
-                    throw new DomainException(ResourceExceptMessages.STAFF_DOESNT_HAVE_PERMISSION_FOR_HIRE);
-            }
+            if(!canHandleHiring)
+                throw new DomainException(ResourceExceptMessages.STAFF_DOESNT_HAVE_PERMISSION_FOR_HIRE);
 
             var userToStaff = await _profileService.GetUserInfosById(request.UserId);
-
             try
             {
                 await _emailService.SendEmailToUserBeStaff(userToStaff.userName, userToStaff.email, company.Name);

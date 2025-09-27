@@ -13,7 +13,7 @@ namespace Career.Domain.Aggregates.CompanyRoot
     public class Review : IEntity
     {
         public Guid Id { get; set; }
-        public string UserId { get; set; }
+        public string ProfileId { get; set; }
         public Guid CompanyId { get; set; }
         [ForeignKey("CompanyId")]
         public Company Company { get; set; }

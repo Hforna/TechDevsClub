@@ -12,6 +12,7 @@ namespace Career.Domain.Repositories
         public IStaffRepository StaffRepository { get; set; }
         public IGenericRepository GenericRepository { get; set; }
         public INotificationRepository NotificationRepository { get; set; }
+        public IJobRepository JobRepository { get; set; }
         public Task Commit();
     }
 }

@@ -1,4 +1,4 @@
-﻿using Career.Domain.Dtos;
+﻿using Career.Domain.Dtos.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +10,6 @@ namespace Career.Domain.Services
     public interface IRealTimeNotifier
     {
         public Task SendNotification(SendNotificationDto dto);
+        public Task SendInformationNotificationManyUsers(InformationNotificationManyUsersDto dto);
     }
 }

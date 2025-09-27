@@ -17,6 +17,8 @@ namespace Career.Domain.Aggregates.CompanyRoot
         public string UserId { get; set; }
         public Guid CompanyId { get; set; }
         public Company Company { get; set; }
+        public Guid StaffRoleId { get; set; }
+        public StaffRole StaffRole { get; set; }
     }
 
     [Table("staff_roles")]
@@ -24,8 +26,14 @@ namespace Career.Domain.Aggregates.CompanyRoot
     {
         public Guid Id { get; set; }
         public Guid StaffId { get; set; }
+        public Staff Staff { get; set; }
         public Guid CompanyId { get; set; }
         public string Role { get; set; }
+    }
+
+    public static class StaffRolesConsts
+    {
+        public const string HiringManagers = "hiring_managers";
     }
 
     [Table("requests_staffs")]

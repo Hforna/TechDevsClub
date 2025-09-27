@@ -17,9 +17,10 @@ namespace Career.Domain.Aggregates.JobRoot
         public Guid JobId { get; set; }
         [ForeignKey("JobId")]
         public Job Job { get; set; }
-        public Guid UserId { get; set; }
+        public string ProfileId { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
         public decimal? DesiredSalary { get; set; }
+        public string ResumeName { get; set; }
     }
 }
