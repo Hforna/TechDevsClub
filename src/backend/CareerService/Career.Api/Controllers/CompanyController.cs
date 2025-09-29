@@ -95,7 +95,7 @@ namespace Career.Api.Controllers
         /// </summary>
         /// <param name="request">Data to create the company.</param>
         /// <returns>Created company details.</returns>
-        [UserAuthenticated]
+        [Authorize(Policy = "OnlyOwner")]
         [HttpPost]
         public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyRequest request)
         {
@@ -108,7 +108,7 @@ namespace Career.Api.Controllers
         /// </summary>
         /// <param name="request">Data to update the company.</param>
         /// <returns>Updated company details.</returns>
-        [UserAuthenticated]
+        [Authorize(Policy = "OnlyOwner")]
         [HttpPut]
         public async Task<IActionResult> UpdateCompany([FromForm] UpdateCompanyRequest request)
         {

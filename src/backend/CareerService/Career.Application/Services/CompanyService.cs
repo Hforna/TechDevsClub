@@ -4,6 +4,7 @@ using Career.Application.Responses;
 using Career.Domain.Aggregates.CompanyRoot;
 using Career.Domain.DomainServices;
 using Career.Domain.Dtos;
+using Career.Domain.Dtos.Notifications;
 using Career.Domain.Entities;
 using Career.Domain.Exceptions;
 using Career.Domain.Repositories;
@@ -184,7 +185,7 @@ namespace Career.Application.Services
             {
                 var response = _companyDomain.GetCompanyResponseByConfigurations(company.CompanyConfiguration, company);
 
-                //get all companies logo from azure storage blob
+                //get all companies logo from storage service
 
                 return _mapper.Map<CompanyShortResponse>(response);
             });

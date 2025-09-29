@@ -9,6 +9,9 @@ using Career.Domain.Services;
 using Microsoft.AspNetCore.SignalR;
 using Career.Domain.Dtos;
 using Career.Infrastructure.Messaging.Rabbitmq;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Logs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,41 @@ builder.Services.Configure<SmptSettings>(builder.Configuration.GetSection("servi
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddDomain();
+
+builder.Logging.AddOpenTelemetry(x =>
+{
+    x.IncludeScopes = true;
+    x.IncludeFormattedMessage = true;
+});
+
+builder.Services.AddOpenTelemetry().WithMetrics(d =>
+{
+    d.AddRuntimeInstrumentation()
+        .AddMeter("Microsoft.AspNetCore.Hosting",
+        "Microsoft.AspNetCore.Server.Kestrel",
+        "System.Net.Http",
+        "Career.Api");
+}).WithTracing(x =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        x.SetSampler<AlwaysOnSampler>();
+    }
+
+    x.AddAspNetCoreInstrumentation()
+    .AddHttpClientInstrumentation();
+});
+
+var useOtlpExporter = !string.IsNullOrEmpty(builder.Configuration.GetValue<string>("logging:telemetry:otel_exporter"));
+
+if (useOtlpExporter)
+{
+    builder.Services.Configure<OpenTelemetryLoggerOptions>(lo => lo.AddOtlpExporter());
+    builder.Services.ConfigureOpenTelemetryMeterProvider(lo => lo.AddOtlpExporter());
+    builder.Services.ConfigureOpenTelemetryTracerProvider(lo => lo.AddOtlpExporter());
+}
+
+//builder.Services.AddOpenTelemetry().WithMetrics(d => d.AddPrometheus);
 
 builder.Services.AddScoped<IRealTimeNotifier, NotificationHubService>();
 
@@ -61,6 +99,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//app.MapPrometheusScrapingEndpoint();
 
 app.MapHub<NotificationHub>("/hubs/notification");
 

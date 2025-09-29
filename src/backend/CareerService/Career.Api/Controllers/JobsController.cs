@@ -1,4 +1,5 @@
-﻿using Career.Application.Requests.Jobs;
+﻿using Career.Api.Filters;
+using Career.Application.Requests.Jobs;
 using Career.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,6 +25,23 @@ namespace Career.Api.Controllers
             var result = await _jobService.CreateJob(request);
 
             return Created(string.Empty, result);
+        }
+
+        [HttpPost("{jobId}")]
+        public async Task<IActionResult> ApplyToJob([FromForm]ApplyToJobRequest request, [FromRoute]Guid jobId)
+        {
+            await _jobService.ApplyToJob(request, jobId);
+
+            return Ok();
+        }
+
+        [UserAuthenticated]
+        [HttpGet("{jobId}/applications")]
+        public async Task <IActionResult> GetJobApplications([FromRoute]Guid jobId, [FromQuery]int perPage, [FromQuery]int page)
+        {
+            var result = await _jobService.GetJobApplications(jobId, perPage, page);
+
+            return Ok(result);
         }
     }
 }

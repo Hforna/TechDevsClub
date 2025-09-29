@@ -3,9 +3,13 @@ using Career.Application.Requests.Jobs;
 using Career.Application.Responses;
 using Career.Application.Validators;
 using Career.Domain.Aggregates.JobRoot;
+using Career.Domain.DomainServices;
 using Career.Domain.Dtos;
+using Career.Domain.Dtos.Notifications;
+using Career.Domain.Entities;
 using Career.Domain.Exceptions;
 using Career.Domain.Repositories;
+using Career.Domain.Services;
 using Career.Domain.Services.Clients;
 using Career.Domain.Services.Messaging;
 using Microsoft.Extensions.Logging;
@@ -20,6 +24,8 @@ namespace Career.Application.Services
     public interface IJobService
     {
         public Task<JobResponse> CreateJob(CreateJobRequest request);
+        public Task<JobApplicationResponse> ApplyToJob(ApplyToJobRequest request, Guid jobId);
+        public Task<JobApplicationPaginatedResponse> GetJobApplications(Guid jobId, int perPage, int page);
     }
 
     public class JobService : IJobService
@@ -30,13 +36,22 @@ namespace Career.Application.Services
         private readonly IRequestService _requestService;
         private readonly IMapper _mapper;
         private readonly IJobServiceProducer _jobProducer;
+        private readonly IFileService _fileService;
+        private readonly IStorageService _storageService;
+        private readonly IRealTimeNotifier _realTimeNotifier;
+        private readonly ICompanyDomainService _companyDomain;
 
         public JobService(ILogger<IJobService> logger, IUnitOfWork uow, 
             IProfileServiceClient profileService, IRequestService requestService, 
-            IMapper mapper, IJobServiceProducer jobProducer)
+            IMapper mapper, IJobServiceProducer jobProducer, 
+            IFileService fileService, IStorageService storageService, IRealTimeNotifier realTime, ICompanyDomainService companyDomain)
         {
             _logger = logger;
             _uow = uow;
+            _companyDomain = companyDomain;
+            _realTimeNotifier = realTime;
+            _storageService = storageService;
+            _fileService = fileService;
             _profileService = profileService;
             _requestService = requestService;
             _mapper = mapper;
@@ -84,6 +99,95 @@ namespace Career.Application.Services
             _logger.LogInformation($"Producer dto message sent to job producer service: {producerDto}");
 
             return _mapper.Map<JobResponse>(request);
+        }
+
+        public async Task<JobApplicationResponse> ApplyToJob(ApplyToJobRequest request, Guid jobId)
+        {
+            var file = request.Resume.OpenReadStream();
+
+            var validateFile = _fileService.IsFileAsPdfOrTxt(file);
+            if (!validateFile.isValid)
+                throw new RequestException("Invalid file format, it must be txt or pdf type");
+
+            var user = await _profileService.GetUserInfos(_requestService.GetBearerToken()!);
+            var profile = await _profileService.GetProfilesInfoByUser(user.id);
+
+            var job = await _uow.JobRepository.GetJobById(jobId) ?? throw new NullEntityException("The job was not found");
+
+            var jobApplication = _mapper.Map<JobApplication>(request);
+            jobApplication.Id = Guid.NewGuid();
+            jobApplication.ProfileId = user.id;
+            jobApplication.ResumeName = $"{Guid.NewGuid()}{validateFile.ext}";
+            jobApplication.Status = Domain.Enums.EApplicationStatus.Applied;
+
+            var hiringManagers = await _uow.StaffRepository.GetHiringManagersFromCompany(job.CompanyId);
+
+            var notifications = hiringManagers.Select(hiringManager => new Notification()
+                {
+                    UserId = hiringManager.UserId,
+                    Title = $"Company {job.Company.Name} received a new job application",
+                    Message = $"New job application with id: {jobApplication.Id}",
+                    Type = Domain.Enums.ENotificationType.Information,
+                }
+            ).ToList();
+            notifications.Add(new Notification() {
+                Title = $"Company {job.Company.Name} received a new job application",
+                UserId = job.Company.OwnerId, 
+                Message = $"New job application with id: {jobApplication.Id}",
+                Type = Domain.Enums.ENotificationType.Information
+            });
+
+            await _uow.GenericRepository.Add<JobApplication>(jobApplication);
+            await _uow.GenericRepository.AddRange<Notification>(notifications);
+            await _uow.Commit();
+
+            await _storageService.UploadUserResumeFile(jobApplication.Id, jobApplication.ResumeName, file);
+
+            var notifyDto = new InformationNotificationManyUsersDto(_mapper.Map<List<SendNotificationDto>>(notifications));
+            await _realTimeNotifier.SendInformationNotificationManyUsers(notifyDto);
+
+            return _mapper.Map<JobApplicationResponse>(jobApplication);
+        }
+
+        public async Task<JobApplicationPaginatedResponse> GetJobApplications(Guid jobId, int perPage, int page)
+        {
+            var user = await _profileService.GetUserInfos(_requestService.GetBearerToken()!);
+
+            var job = await _uow.JobRepository.GetJobById(jobId) ?? throw new NullEntityException("Job was not found");
+
+            var hasPermission = await _companyDomain.CanUserHandleHiringManagement(job.Company, user.id);
+            if (!hasPermission)
+                throw new DomainException("User doesn't has permission for get job applications");
+
+            var applications = _uow.JobRepository.GetJobApplicationsPaginated(jobId, perPage, page);
+
+            var response = new JobApplicationPaginatedResponse()
+            {
+                IsFirstPage = applications.IsFirstPage,
+                IsLastPage = applications.IsLastPage,
+                HasPreviousPage = applications.HasPreviousPage,
+                HasNextPage = applications.HasNextPage,
+                Count = applications.Count,
+            };
+            response.JobApplications = applications.Select(app =>
+            {
+                var appResponse = _mapper.Map<JobApplicationResponse>(app);
+                switch(app.Status)
+                {
+                    case Domain.Enums.EApplicationStatus.Applied:
+                        response.TotalInterview++;
+                        break;
+                    case Domain.Enums.EApplicationStatus.Interview:
+                        response.TotalInterview++;
+                        break;
+                    case Domain.Enums.EApplicationStatus.Rejected:
+                        response.TotalInterview++; 
+                        break;
+                }
+                return appResponse;
+            }).ToList();
+
+            return response;
         }
     }
 }
