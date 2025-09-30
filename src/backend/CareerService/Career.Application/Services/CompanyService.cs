@@ -188,11 +188,11 @@ namespace Career.Application.Services
                 //get all companies logo from storage service
 
                 return _mapper.Map<CompanyShortResponse>(response);
-            });
+            }).ToList();
 
             return new CompanyPaginatedResponse()
             {
-                Companies = companiesResponse.ToList(),
+                Companies = companiesResponse,
                 Count = companies.Count,
                 HasNextPage = companies.HasNextPage,
                 HasPreviousPage = companies.HasPreviousPage,

@@ -17,7 +17,6 @@ namespace Career.Domain.Aggregates.CompanyRoot
         public string UserId { get; set; }
         public Guid CompanyId { get; set; }
         public Company Company { get; set; }
-        public Guid StaffRoleId { get; set; }
         public StaffRole StaffRole { get; set; }
     }
 

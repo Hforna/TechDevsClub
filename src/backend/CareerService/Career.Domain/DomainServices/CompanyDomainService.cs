@@ -65,7 +65,18 @@ namespace Career.Domain.DomainServices
             CompanyConfiguration configuration, 
             Company company)
         {
-            var companyResponse = new CompanyResponseDto();
+            var companyResponse = new CompanyResponseDto()
+            {
+                Description = company.Description,
+                CreatedAt = company.CreatedAt,
+                Id = company.Id,
+                Location = company.Location,
+                Name = company.Name,
+                Rate = company.Rate,
+                StaffsNumber = company.Staffs.Count(),
+                Verified = company.Verified,
+                Website = company.Website
+            };
 
             companyResponse.Verified = configuration.HighlightVerifiedStatus 
                 ? companyResponse.Verified 

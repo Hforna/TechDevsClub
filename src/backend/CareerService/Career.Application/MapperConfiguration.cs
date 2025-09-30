@@ -35,7 +35,7 @@ namespace Career.Application
 
             CreateMap<JobRequirementRequest, JobRequirement>();
 
-            CreateMap<CreateJobRequest, Job>().ForMember(d => d.JobRequirements.ToList(), f => f.MapFrom(d => d.JobRequirements));
+            CreateMap<CreateJobRequest, Job>().ForMember(d => d.JobRequirements, f => f.MapFrom(d => d.JobRequirements));
 
             CreateMap<ApplyToJobRequest, JobApplication>();
 
@@ -50,6 +50,8 @@ namespace Career.Application
             CreateMap<Notification, SendNotificationDto>();
 
             CreateMap<CompanyResponseDto, CompanyResponse>();
+
+            CreateMap<CompanyResponseDto, CompanyShortResponse>();
 
             CreateMap<RequestStaff, StaffRequestResponse>();
 
