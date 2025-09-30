@@ -1,17 +1,19 @@
-using Career.Infrastructure;
+using Career.Api.Hubs;
 using Career.Application;
 using Career.Domain;
-using Career.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Career.Api.Hubs;
-using Career.Domain.Services;
-using Microsoft.AspNetCore.SignalR;
 using Career.Domain.Dtos;
+using Career.Domain.Services;
+using Career.Infrastructure;
 using Career.Infrastructure.Messaging.Rabbitmq;
+using Career.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.IdentityModel.Tokens;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using OpenTelemetry.Logs;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,47 +32,33 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddDomain();
 
-builder.Logging.AddOpenTelemetry(x =>
-{
-    x.IncludeScopes = true;
-    x.IncludeFormattedMessage = true;
-});
-
-builder.Services.AddOpenTelemetry().WithMetrics(d =>
-{
-    d.AddRuntimeInstrumentation()
-        .AddMeter("Microsoft.AspNetCore.Hosting",
-        "Microsoft.AspNetCore.Server.Kestrel",
-        "System.Net.Http",
-        "Career.Api");
-}).WithTracing(x =>
-{
-    if (builder.Environment.IsDevelopment())
-    {
-        x.SetSampler<AlwaysOnSampler>();
-    }
-
-    x.AddAspNetCoreInstrumentation()
-    .AddHttpClientInstrumentation();
-});
-
-var useOtlpExporter = !string.IsNullOrEmpty(builder.Configuration.GetValue<string>("logging:telemetry:otel_exporter"));
-
-if (useOtlpExporter)
-{
-    builder.Services.Configure<OpenTelemetryLoggerOptions>(lo => lo.AddOtlpExporter());
-    builder.Services.ConfigureOpenTelemetryMeterProvider(lo => lo.AddOtlpExporter());
-    builder.Services.ConfigureOpenTelemetryTracerProvider(lo => lo.AddOtlpExporter());
-}
-
-//builder.Services.AddOpenTelemetry().WithMetrics(d => d.AddPrometheus);
-
 builder.Services.AddScoped<IRealTimeNotifier, NotificationHubService>();
 
 builder.Services.AddAuthorization(d =>
 {
     d.AddPolicy("OnlyOwner", d => d.RequireRole("owner"));
     d.AddPolicy("ManageJobs", d => d.RequireRole("staff"));
+});
+
+var tokenValidationParams = new TokenValidationParameters
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("services:jwt:signKey")!)),
+    ValidateIssuer = false,
+    ValidateAudience = false,
+    ValidateLifetime = true,
+    RequireExpirationTime = false,
+    ClockSkew = TimeSpan.Zero
+};
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(jwt => {
+    jwt.SaveToken = true;
+    jwt.TokenValidationParameters = tokenValidationParams;
 });
 
 builder.Services.Configure<BaseRabbitMqConnectionDto>(builder.Configuration.GetSection("rabbitMq"));
