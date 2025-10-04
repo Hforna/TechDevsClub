@@ -12,18 +12,15 @@ using System.Threading.Tasks;
 
 namespace Career.Infrastructure.Messaging.Rabbitmq.Producers
 {
-    public class JobServiceProducer : IJobServiceProducer, IDisposable
+    public class JobServiceProducer : IJobServiceProducer
     {
         private IConnection _connection;
         private IChannel _channel;
         private readonly BaseRabbitMqConnectionDto _connectionDto;
         private readonly ILogger<JobServiceProducer> _logger;
 
-        public JobServiceProducer(IConnection connection, IChannel channel, 
-            IOptions<BaseRabbitMqConnectionDto> connectionDto, ILogger<JobServiceProducer> logger)
+        public JobServiceProducer(IOptions<BaseRabbitMqConnectionDto> connectionDto, ILogger<JobServiceProducer> logger)
         {
-            _connection = connection;
-            _channel = channel;
             _connectionDto = connectionDto.Value;
             _logger = logger;
         }
@@ -45,14 +42,6 @@ namespace Career.Infrastructure.Messaging.Rabbitmq.Producers
             var body = JsonSerializer.Serialize(dto);
             var bodyBytes = Encoding.UTF8.GetBytes(body);
             await _channel.BasicPublishAsync("from-career", "job.created", bodyBytes);
-        }
-
-        public void Dispose()
-        {
-            _channel.CloseAsync();
-            _channel.Dispose();
-            _connection.CloseAsync();
-            _connection.Dispose();
         }
     }
 }

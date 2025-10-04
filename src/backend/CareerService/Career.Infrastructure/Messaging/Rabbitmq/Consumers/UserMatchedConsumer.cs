@@ -26,12 +26,10 @@ namespace Career.Infrastructure.Messaging.Rabbitmq.Consumers
         private readonly ILogger<UsersMatchedConsumer> _logger;
         private readonly BaseRabbitMqConnectionDto _baseRabbitMqConnection;
 
-        public UsersMatchedConsumer(IServiceProvider serviceProvider, IConnection connection, 
-            IChannel channel, ILogger<UsersMatchedConsumer> logger, IOptions<BaseRabbitMqConnectionDto> baseRabbitMqConnection)
+        public UsersMatchedConsumer(IServiceProvider serviceProvider, ILogger<UsersMatchedConsumer> logger, 
+            IOptions<BaseRabbitMqConnectionDto> baseRabbitMqConnection)
         {
             _serviceProvider = serviceProvider;
-            _connection = connection;
-            _channel = channel;
             _logger = logger;
             _baseRabbitMqConnection = baseRabbitMqConnection.Value;
         }
@@ -96,7 +94,7 @@ namespace Career.Infrastructure.Messaging.Rabbitmq.Consumers
                     $"localhost:8080/api/jobs/{job.Id}", 
                     job.Title);
 
-                await emailService.SendBatchEmails(message);
+                await emailService.SendBatchEmailWhenJobCreated(message);
             }
         }
 

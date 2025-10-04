@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Career.Infrastructure.Messaging.Rabbitmq.Producers
 {
-    public class StaffServiceProducer : IDisposable, IStaffServiceProducer
+    public class StaffServiceProducer : IStaffServiceProducer
     { 
         private IConnection _connection;
         private readonly ILogger<StaffServiceProducer> _logger;
@@ -43,14 +43,6 @@ namespace Career.Infrastructure.Messaging.Rabbitmq.Producers
             var serialize = JsonSerializer.Serialize(dto);
             var body = Encoding.UTF8.GetBytes(serialize);
             await _channel.BasicPublishAsync("from-career", "staff.joined", body);
-        }
-
-        public void Dispose()
-        {
-            _channel.CloseAsync();
-            _channel.Dispose();
-            _connection.CloseAsync();
-            _connection.Dispose();
         }
     }
 }

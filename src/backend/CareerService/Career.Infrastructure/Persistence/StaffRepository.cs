@@ -25,6 +25,14 @@ namespace Career.Infrastructure.Persistence
             return await _context.Staffs.Where(d => d.CompanyId == companyId).ToListAsync();
         }
 
+        public async Task<List<Staff>> GetHiringManagersFromCompany(Guid companyId)
+        {
+            return await _context.Staffs
+                .AsNoTracking()
+                .Where(d => d.StaffRole.Role == StaffRolesConsts.HiringManagers)
+                .ToListAsync();
+        }
+
         public async Task<RequestStaff?> GetRequestStaffById(Guid requestStaff)
         {
             return await _context.RequestsStaffs.SingleOrDefaultAsync(d => d.Id == requestStaff);

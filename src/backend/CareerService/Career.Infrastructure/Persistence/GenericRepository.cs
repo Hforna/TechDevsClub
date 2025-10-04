@@ -23,6 +23,11 @@ namespace Career.Infrastructure.Persistence
             await _context.Set<T>().AddAsync(entity);
         }
 
+        public async Task AddRange<T>(List<T>? entity) where T : class
+        {
+            await _context.AddRangeAsync(entity);
+        }
+
         public async Task<T?> GetById<T>(Guid id, bool tracking = true) where T : class, IEntity
         {
             return tracking 

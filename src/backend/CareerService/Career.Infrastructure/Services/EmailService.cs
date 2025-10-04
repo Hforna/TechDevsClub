@@ -128,7 +128,7 @@ namespace Career.Infrastructure.Services
             }
         }
 
-        public async Task SendBatchEmails(BatchEmailDto emailsInfos)
+        public async Task SendBatchEmailWhenJobCreated(BatchEmailDto emailsInfos)
         {
             if(emailsInfos.Emails is null || !emailsInfos.Emails.Any())
                 return;

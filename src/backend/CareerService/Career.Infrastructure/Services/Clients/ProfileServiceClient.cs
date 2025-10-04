@@ -26,6 +26,37 @@ namespace Career.Infrastructure.Services.Clients
             _logger = logger;
         }
 
+        public async Task<ProfileInfosDto> GetProfilesInfoByUser(string userId)
+        {
+            using var client = _httpClient.CreateClient("profile.api");
+
+            var response = await client.GetAsync($"api/users/{userId}/profile");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var deserialize = JsonSerializer.Deserialize<ProfileInfosDto>(content);
+
+                if (deserialize! is null)
+                    throw new SerializationException(ResourceExceptMessages.INVALID_SERIALIZER_TYPE);
+
+                return deserialize!;
+            }
+            catch (SerializationException ex)
+            {
+                _logger.LogError(ex, $"Error while trying to deserialize user infos response: {ex.Message}");
+
+                throw new ClientException(ResourceExceptMessages.INVALID_SERIALIZER_TYPE);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unexpectadly error occured {ex.Message}");
+
+                throw new ClientException(content);
+            }
+        }
+
         public async Task<UserInfosDto> GetUserInfos(string accessToken)
         {
             using var client = _httpClient.CreateClient("profile.api");

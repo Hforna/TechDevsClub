@@ -57,6 +57,7 @@ namespace Career.Infrastructure
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IStaffRepository, StaffRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IJobRepository, JobRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
@@ -76,8 +77,8 @@ namespace Career.Infrastructure
 
         static void AddStorage(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IStorageImageService>(d =>
-            new AzureStorageImageService(new Azure.Storage.Blobs.BlobServiceClient(configuration.GetValue<string>("services:azure:blobClient"))));
+            //services.AddSingleton<IStorageService>(d =>
+            //new AzureStorageService(new Azure.Storage.Blobs.BlobServiceClient(configuration.GetValue<string>("services:azure:blobClient"))));
         }
     }
 }

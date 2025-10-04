@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Career.Infrastructure.Services
 {
-    public class AzureStorageImageService : IStorageImageService
+    public class AzureStorageService : IStorageService
     {
         private readonly BlobServiceClient _blobClient;
 
-        public AzureStorageImageService(BlobServiceClient blobClient)
+        public AzureStorageService(BlobServiceClient blobClient)
         {
             _blobClient = blobClient;
         }
@@ -25,6 +25,16 @@ namespace Career.Infrastructure.Services
             var blob = container.GetBlobClient(imageName);
 
             await blob.UploadAsync(image, overwrite: true);
+        }
+
+        public async Task UploadUserResumeFile(Guid jobAppId, string resumeName, Stream resume)
+        {
+            var container = _blobClient.GetBlobContainerClient(jobAppId.ToString());
+            await container.CreateIfNotExistsAsync();
+
+            var blob = container.GetBlobClient(resumeName);
+
+            await blob.UploadAsync(resume, overwrite: true);
         }
     }
 }
