@@ -59,11 +59,22 @@ namespace Profile.Api.Endpoints
             app.MapGet("me", GetUserInfos)
                 .AddEndpointFilter<AuthenticationUserEndpointFilter>();
 
+            app.MapGet("{userId}/profile", GetProfileInfosByUser).RequireCors("OnlyServices");
+
             app.MapGet("{userId}", GetUserInfosById).RequireCors("OnlyServices");
 
             app.MapGet("handle-github-callback", HandleGitHubCallback);
 
             return app;
+        }
+
+        static async Task<IResult> GetProfileInfosByUser([FromRoute]string userId, [FromServices]IUserService service, HttpContext context)
+        {
+            var validateId = await BinderIdValidatorExtension.Validate(context, "userId");
+
+            var result = await service.GetProfileInfosByUser(validateId);
+
+            return Results.Ok(result);
         }
 
         static async Task<IResult> GetUserRoles([FromServices]IUserService service)

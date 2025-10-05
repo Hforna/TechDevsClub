@@ -68,10 +68,10 @@ namespace Profile.Infrastructure
                 options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = true;
             })
-            .AddRoles<Role>()
-            .AddEntityFrameworkStores<DataContext>()
-            .AddDefaultTokenProviders()
-            .AddUserManager<UserManager<User>>();
+             .AddRoles<Role>()
+             .AddEntityFrameworkStores<DataContext>()
+             .AddDefaultTokenProviders()
+             .AddUserManager<UserManager<User>>();
         }
 
         static void ConfigureLocationService(IServiceCollection service, IConfiguration configuration)

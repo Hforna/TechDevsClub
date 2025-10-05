@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using Profile.Application.ApplicationServices;
 using Profile.Application.Commons;
 using Profile.Application.Requests;
@@ -39,6 +40,7 @@ namespace Profile.Application.Services
         public Task<UserRolesResponse> GetUserRoles();
         public Task<UserInfosWithRolesResponse> UserInfosById(long userId);
         public Task ResetPassword(string email, string token, ResetPasswordRequest request);
+        public Task<ShortProfileResponse> GetProfileInfosByUser(long userId);
     }
 
     public class UserService : IUserService
@@ -77,7 +79,7 @@ namespace Profile.Application.Services
             RequestValidatorCommons.Validate<CreateUserRequest, CreateUserValidator>(request);
 
             var userEmail = await _uof.UserRepository.UserByEmail(request.Email);
-
+            
             if (userEmail is not null)
             {
                 var exception = new ValidationException(ResourceExceptMessages.EMAIL_EXISTS, System.Net.HttpStatusCode.BadRequest);
@@ -351,6 +353,17 @@ namespace Profile.Application.Services
             }).ToList()};
 
             return response;
+        }
+
+        public async Task<ShortProfileResponse> GetProfileInfosByUser(long userId)
+        {   
+            var user = await _uof.GenericRepository.GetById<User>(userId) 
+                ?? throw new ContextException(ResourceExceptMessages.USER_DOESNT_EXISTS, HttpStatusCode.NotFound);
+
+            var profile = await _uof.ProfileRepository.ProfileByUser(user) 
+                ?? throw new ContextException(ResourceExceptMessages.PROFILE_NOT_EXISTS, HttpStatusCode.NotFound);
+
+            return _mapper.Map<ShortProfileResponse>(profile);
         }
     }
 }

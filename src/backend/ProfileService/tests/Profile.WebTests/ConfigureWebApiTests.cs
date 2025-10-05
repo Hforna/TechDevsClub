@@ -17,6 +17,7 @@ using Profile.Domain.Repositories;
 using CommonUtilities.Fakers.Entities;
 using Profile.Domain.Services.Security;
 using System.Security.Claims;
+using Sqids;
 
 namespace Profile.WebTests
 {
@@ -70,10 +71,11 @@ namespace Profile.WebTests
             using var scope = this.Services.CreateScope();
             var tokenService = scope.ServiceProvider.GetRequiredService<ITokenService>();
             var userMng = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            var sqids = scope.ServiceProvider.GetRequiredService<SqidsEncoder<long>>();
             var roles = await userMng.GetRolesAsync(user);
             var claims = roles.Select(d => { return new Claim(ClaimTypes.Role, d); }).ToList();
 
-            var token = tokenService.GenerateToken(claims, user.UserIdentifier);
+            var token = tokenService.GenerateToken(claims, user.UserIdentifier, sqids.Encode(user.Id));
             var client = this.CreateClient();
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
                 "Bearer", 

@@ -24,8 +24,6 @@ namespace Profile.Api.Filters
         {
             var token = context.HttpContext.Request.Headers.Authorization.ToString();
 
-            var exception = new AuthenticationException(ResourceExceptMessages.USER_NOT_AUTHENTICATED, System.Net.HttpStatusCode.Unauthorized);
-
             if (string.IsNullOrEmpty(token))
             {
                 var result = await context.HttpContext.AuthenticateAsync("Cookies");
@@ -43,7 +41,7 @@ namespace Profile.Api.Filters
                 var user = await _uof.UserRepository.UserByIdentifier(validate);
 
                 if (user is null)
-                    throw exception;
+                    throw new AuthenticationException(ResourceExceptMessages.USER_NOT_AUTHENTICATED, System.Net.HttpStatusCode.Unauthorized); ;
 
                 return await next(context);
             }
