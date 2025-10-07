@@ -9,12 +9,14 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using Career.Domain.Aggregates.JobRoot;
 
 namespace Career.Domain.Aggregates.CompanyRoot
 {
     [Table("companies")]
-    public class Company : IEntity
+    public class Company : Entity, IEntity
     {
+        public bool IsActive { get; set; } = true;
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string OwnerId { get; set; }
@@ -35,14 +37,16 @@ namespace Career.Domain.Aggregates.CompanyRoot
                 _rate = value;
             }
         }
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public Guid CompanyConfigurationId { get; set; }
         public CompanyConfiguration CompanyConfiguration { get; set; }
+        public ICollection<Job> Jobs { get; set; } = [];
         public ICollection<Staff> Staffs { get; set; } = [];
         public ICollection<Review> Reviews { get; set; } = [];
     }
 
     [Table("companies_configurations")]
-    public class CompanyConfiguration : IEntity
+    public class CompanyConfiguration : Entity, IEntity
     {
         public Guid Id { get; set; }
         public Guid CompanyId { get; set; }

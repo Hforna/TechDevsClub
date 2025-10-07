@@ -1,4 +1,5 @@
-﻿using Career.Domain.Services;
+﻿using Azure.Storage.Blobs.Models;
+using Career.Domain.Services;
 using MailKit.Net.Smtp;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Logging;
@@ -15,42 +16,9 @@ using System.Xml.Linq;
 
 namespace Career.Infrastructure.Services
 {
-
-    public class EmailService : IEmailService
+    public class EmailTemplates
     {
-        private readonly SmptSettings _smptSettings;
-        private readonly ISendGridClient _gridClient;
-        private readonly ILogger<IEmailService> _logger;
-
-        public EmailService(IOptions<SmptSettings> smptSettings, ISendGridClient sendGridClient, ILogger<IEmailService> logger)
-        {
-            _smptSettings = smptSettings.Value;
-            _gridClient = sendGridClient;
-            _logger = logger;
-        }
-
-        private static string UserRequestToBeStaffSubject(string toUserName)
-        {
-            return $"Hi {toUserName} you recived a new request to be a staff from a company";
-        }
-
-        private static string UserRequestToBeStaffBody(string company)
-        {
-            var body = @$"<!DOCTYPE html>
-                <html>
-                <body style=""font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; margin: 0; padding: 20px;"">
-
-                    <div style=""max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"">
-                        <p style=""font-size: 16px;"">You recived a new request for be linked as staff on the company {company}, 
-                        look at you notifications for accept the request</p>
-                    </div>
-                </body>
-                </html>";
-
-            return body;
-        }
-
-        private static string JobToUserBody(string companyName, string jobTitle, string jobLocation, string jobUrl)
+        public static string JobToUserBody(string companyName, string jobTitle, string jobLocation, string jobUrl)
         {
             return $@"<!doctype html>
             <html>
@@ -85,7 +53,7 @@ namespace Career.Infrastructure.Services
             </html>
             ";
         }
-        private static string JobToUserPlainBody(string jobUrl, string jobTitle, string companyName, string location)
+        public static string JobToUserPlainBody(string jobUrl, string jobTitle, string companyName, string location)
         {
             return $@"Hi {{user_name}},
 
@@ -100,11 +68,73 @@ namespace Career.Infrastructure.Services
                 ";
         }
 
+        public static string UserRequestToBeStaffBody(string company)
+        {
+            var body = @$"<!DOCTYPE html>
+                <html>
+                <body style=""font-family: Arial, sans-serif; color: #333; background-color: #f4f4f4; margin: 0; padding: 20px;"">
+
+                    <div style=""max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"">
+                        <p style=""font-size: 16px;"">You recived a new request for be linked as staff on the company {company}, 
+                        look at you notifications for accept the request</p>
+                    </div>
+                </body>
+                </html>";
+
+            return body;
+        }
+
+        public static string UserRequestToBeStaffSubject(string toUserName)
+        {
+            return $"Hi {toUserName} you recived a new request to be a staff from a company";
+        }
+
+        public static string CompanyDeletedSubject(string userName,  string companyName)
+        {
+            return $"Hi {userName}, Your Company {companyName} Has Been Deactivated — 30 Days to Reactivate";
+        }
+        public static string CompanyDeletedBody(string userName, string companyName, string activateUrl, DateTime deactivateDate)
+        {
+            return $@"<tr>
+   <td style=""padding:0 28px 20px 28px;border-top:1px solid #eef2f7;"">
+      <p style=""margin:16px 0 8px 0;color:#344054;font-size:15px;line-height:1.5;""> Hello <strong>[User Name]</strong>, </p>
+      <p style=""margin:0 0 12px 0;color:#344054;font-size:15px;line-height:1.5;""> This is to inform you that your company <strong>{companyName}</strong> was deactivated on {deactivateDate}<strong></strong>. </p>
+      <p style=""margin:0 0 16px 0;color:#374151;font-size:15px;line-height:1.5;""> We will retain your company data and settings securely for <strong>30 days</strong>. During this retention period you may reactivate the company and restore full access. </p>
+      <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" style=""margin:20px 0;"">
+         <tr>
+            <td align=""center""> <a href=""{activateUrl}"" style=""display:inline-block;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:600;font-size:15px;background:#4f46e5;color:#ffffff;""> Reactivate Company </a> </td>
+         </tr>
+      </table>
+      <p style=""margin:0 0 8px 0;color:#475569;font-size:14px;line-height:1.5;""> If you do not reactivate within 30 days, your company and its associated data may be permanently deleted. </p>
+   </td>
+</tr>
+<tr>
+   <td style=""padding:16px 28px 20px 28px;border-top:1px solid #eef2f7;background:#fbfcfd;"">
+      <p style=""margin:0;color:#6b7280;font-size:13px;line-height:1.4;""> This message was sent because you or an administrator for <strong>{companyName}</strong> requested or triggered deactivation. If you believe this is an error, please contact support. </p>
+   </td>
+</tr>
+</table> </td> </tr> </table>";
+        }
+    }
+
+    public class EmailService : EmailTemplates, IEmailService
+    {
+        public readonly SmptSettings _smptSettings;
+        public readonly ISendGridClient _gridClient;
+        public readonly ILogger<IEmailService> _logger;
+
+        public EmailService(IOptions<SmptSettings> smptSettings, ISendGridClient sendGridClient, ILogger<IEmailService> logger)
+        {
+            _smptSettings = smptSettings.Value;
+            _gridClient = sendGridClient;
+            _logger = logger;
+        }
+
         public async Task SendEmailToUserBeStaff(string toUserName, string toEmail, string companyName)
         {
             var message = new MimeMessage();
 
-            var subject = UserRequestToBeStaffSubject(toUserName);
+            var subject = EmailTemplates.UserRequestToBeStaffSubject(toUserName);
             var body = UserRequestToBeStaffBody(companyName);
 
             message.From.Add(new MailboxAddress(_smptSettings.SenderName, _smptSettings.SenderEmail));
@@ -115,17 +145,7 @@ namespace Career.Infrastructure.Services
                 Text = body
             };
 
-            using (var client = new SmtpClient())
-            {
-                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-
-                await client.ConnectAsync(_smptSettings.Server, _smptSettings.Port, true);
-
-                await client.AuthenticateAsync(_smptSettings.SenderEmail, _smptSettings.Password);
-
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
-            }
+            await SendMessage(message);
         }
 
         public async Task SendBatchEmailWhenJobCreated(BatchEmailDto emailsInfos)
@@ -152,6 +172,39 @@ namespace Career.Infrastructure.Services
             });
 
             await Task.WhenAll(emailTasks);
+        }
+
+        public async Task SendEmailCompanyDeleted(string companyName, string toUserName, string toEmail, string activateUrl, DateTime deactivateDate)
+        {
+            var message = new MimeMessage();
+
+            var subject = CompanyDeletedSubject(toUserName, companyName);
+            var body = CompanyDeletedBody(toUserName, companyName, activateUrl, deactivateDate);
+
+            message.From.Add(new MailboxAddress(_smptSettings.SenderName, _smptSettings.SenderEmail));
+            message.To.Add(new MailboxAddress(toUserName, toEmail));
+            message.Subject = subject;
+            message.Body = new TextPart("html")
+            {
+                Text = body
+            };
+
+            await SendMessage(message);
+        }
+
+        private async Task SendMessage(MimeMessage message)
+        {
+            using (var client = new SmtpClient())
+            {
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+                await client.ConnectAsync(_smptSettings.Server, _smptSettings.Port, true);
+
+                await client.AuthenticateAsync(_smptSettings.SenderEmail, _smptSettings.Password);
+
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+            }
         }
     }
 

@@ -9,7 +9,8 @@ namespace Career.Domain.Services
     public interface IEmailService
     {
         public Task SendEmailToUserBeStaff(string toUserName, string toEmail, string companyName);
-        public Task SendBatchEmails(BatchEmailDto emails);
+        public Task SendEmailCompanyDeleted(string companyName, string toUserName, string toEmail, string activateUrl, DateTime deactivateDate);
+        public Task SendBatchEmailWhenJobCreated(BatchEmailDto emails);
     }
 
     public sealed record BatchEmailDto

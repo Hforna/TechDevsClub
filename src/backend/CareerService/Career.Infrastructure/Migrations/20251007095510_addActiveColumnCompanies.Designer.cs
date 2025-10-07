@@ -4,6 +4,7 @@ using Career.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Career.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251007095510_addActiveColumnCompanies")]
+    partial class addActiveColumnCompanies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,6 +31,9 @@ namespace Career.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("CompanyConfigurationId")
                         .HasColumnType("uniqueidentifier");
 
@@ -37,9 +43,6 @@ namespace Career.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Logo")
                         .HasColumnType("nvarchar(max)");
@@ -54,9 +57,6 @@ namespace Career.Infrastructure.Migrations
 
                     b.Property<decimal>("Rate")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Verified")
                         .HasColumnType("bit");
@@ -411,7 +411,7 @@ namespace Career.Infrastructure.Migrations
             modelBuilder.Entity("Career.Domain.Aggregates.JobRoot.Job", b =>
                 {
                     b.HasOne("Career.Domain.Aggregates.CompanyRoot.Company", "Company")
-                        .WithMany("Jobs")
+                        .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -470,8 +470,6 @@ namespace Career.Infrastructure.Migrations
                 {
                     b.Navigation("CompanyConfiguration")
                         .IsRequired();
-
-                    b.Navigation("Jobs");
 
                     b.Navigation("Reviews");
 

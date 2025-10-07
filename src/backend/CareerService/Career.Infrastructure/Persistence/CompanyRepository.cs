@@ -25,7 +25,22 @@ namespace Career.Infrastructure.Persistence
         public async Task<Company?> CompanyById(Guid companyId)
         {
             return await _context.Companies.Include(d => d.CompanyConfiguration)
+                .SingleOrDefaultAsync(d => d.Id == companyId && d.IsActive);
+        }
+
+        public async Task<Company?> CompanyByIdWithJobs(Guid companyId)
+        {
+            return await _context.Companies
+                .Include(d => d.Jobs)
                 .SingleOrDefaultAsync(d => d.Id == companyId);
+        }
+
+        public async Task<List<Company>?> GetAllDeactivatedCompanies()
+        {
+            return await _context.Companies
+                .Include(d => d.Jobs)
+                .Where(d => d.IsActive == false)
+                .ToListAsync();
         }
 
         public async Task<bool> CompanyContainsStaff(Guid companyId, string userId)
@@ -44,7 +59,10 @@ namespace Career.Infrastructure.Persistence
 
         public IPagedList<Company> GetCompaniesPaginated(CompanyFilterDto dto)
         {
-            var companies = _context.Companies.Include(d => d.CompanyConfiguration).AsNoTracking();
+            var companies = _context.Companies
+                .Include(d => d.CompanyConfiguration)
+                .AsNoTracking()
+                .Where(d => d.IsActive);
 
             if (string.IsNullOrEmpty(dto.Name) == false)
                 companies = companies.Where(d => d.Name.Contains(dto.Name, StringComparison.CurrentCultureIgnoreCase));

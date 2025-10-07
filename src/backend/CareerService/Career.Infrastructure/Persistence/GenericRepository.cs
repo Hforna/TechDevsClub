@@ -28,6 +28,11 @@ namespace Career.Infrastructure.Persistence
             await _context.AddRangeAsync(entity);
         }
 
+        public void DeleteRange<T>(List<T> entity) where T : class
+        {
+            _context.Set<T>().RemoveRange(entity);
+        }
+
         public async Task<T?> GetById<T>(Guid id, bool tracking = true) where T : class, IEntity
         {
             return tracking 

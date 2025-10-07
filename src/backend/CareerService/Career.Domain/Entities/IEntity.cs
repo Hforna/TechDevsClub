@@ -10,4 +10,9 @@ namespace Career.Domain.Entities
     {
         public Guid Id { get; set; }
     }
+
+    public abstract class Entity
+    {
+        
+    }
 }

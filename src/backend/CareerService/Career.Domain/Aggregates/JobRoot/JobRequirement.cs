@@ -1,4 +1,5 @@
-﻿using Career.Domain.Enums;
+﻿using Career.Domain.Entities;
+using Career.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace Career.Domain.Aggregates.JobRoot
 {
     [Table("job_requirements")]
-    public class JobRequirement
+    public class JobRequirement : Entity, IEntity
     {
         public Guid Id { get; set; }
         public Guid JobId { get; set; }

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Career.Domain.Aggregates.JobRoot
 {
     [Table("jobs")]
-    public class Job : IEntity
+    public class Job : Entity, IEntity
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

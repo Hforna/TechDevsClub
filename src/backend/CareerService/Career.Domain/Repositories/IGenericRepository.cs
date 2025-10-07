@@ -10,6 +10,7 @@ namespace Career.Domain.Repositories
     public interface IGenericRepository
     {
         public Task Add<T>(T entity) where T : class;
+        public void DeleteRange<T>(List<T> entity) where T : class;
         public Task AddRange<T>(List<T>? entity) where T : class;
         public void Update<T>(T entity) where T : class;
         public void Remove<T>(T entity) where T : class;

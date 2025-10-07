@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Career.Domain.Aggregates.CompanyRoot
 {
     [Table("Staffs")]
-    public class Staff : IEntity
+    public class Staff : Entity, IEntity
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }
@@ -21,7 +21,7 @@ namespace Career.Domain.Aggregates.CompanyRoot
     }
 
     [Table("staff_roles")]
-    public class StaffRole : IEntity
+    public class StaffRole : Entity,  IEntity
     {
         public Guid Id { get; set; }
         public Guid StaffId { get; set; }
@@ -36,7 +36,7 @@ namespace Career.Domain.Aggregates.CompanyRoot
     }
 
     [Table("requests_staffs")]
-    public class RequestStaff : IEntity
+    public class RequestStaff : Entity, IEntity
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }

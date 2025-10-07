@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Career.Domain.Aggregates.CompanyRoot
 {
     [Table("reviews")]
-    public class Review : IEntity
+    public class Review : Entity, IEntity
     {
         public Guid Id { get; set; }
         public string ProfileId { get; set; }

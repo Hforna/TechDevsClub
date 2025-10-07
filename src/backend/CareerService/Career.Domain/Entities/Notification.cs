@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Career.Domain.Entities
 {
     [Table("notifications")]
-    public class Notification : IEntity
+    public class Notification : Entity, IEntity
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }

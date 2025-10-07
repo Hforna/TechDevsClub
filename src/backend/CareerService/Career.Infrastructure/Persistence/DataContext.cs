@@ -34,16 +34,34 @@ namespace Career.Infrastructure.Persistence
 
             modelBuilder.Entity<Company>()
                 .HasMany(d => d.Staffs)
-                .WithOne(d => d.Company).HasForeignKey(d => d.CompanyId);
+                .WithOne(d => d.Company).HasForeignKey(d => d.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<Staff>()
+                .HasOne(d => d.StaffRole)
+                .WithOne(d => d.Staff).HasForeignKey<StaffRole>(d => d.StaffId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Review>().HasOne(d => d.Company)
                 .WithMany(d => d.Reviews)
                 .HasForeignKey(d => d.CompanyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Job>().HasMany(d => d.JobRequirements)
+            modelBuilder.Entity<Job>()
+                .HasMany(d => d.JobRequirements)
                 .WithOne(d => d.Job)
                 .HasForeignKey(d => d.JobId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<JobApplication>()
+                .HasOne(d => d.Job)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<Company>()
+                .HasMany(d => d.Jobs)
+                .WithOne(d => d.Company)    
+                .HasForeignKey(d => d.CompanyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Company>()
