@@ -36,5 +36,15 @@ namespace Career.Infrastructure.Services
 
             await blob.UploadAsync(resume, overwrite: true);
         }
+
+        public Task DeleteCompanyFiles(Guid companyId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteJobsFiles(List<Guid> jobsId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

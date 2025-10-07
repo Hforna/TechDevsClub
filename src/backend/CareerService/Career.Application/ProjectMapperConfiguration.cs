@@ -16,9 +16,9 @@ using System.Threading.Tasks;
 
 namespace Career.Application
 {
-    public class MapperConfiguration : Profile
+    public class ProjectMapperConfiguration : Profile
     {
-        public MapperConfiguration()
+        public ProjectMapperConfiguration()
         {
             CreateMap<CompanyLocationRequest, Location>();
 
@@ -42,6 +42,8 @@ namespace Career.Application
             CreateMap<JobApplication, JobApplicationResponse>();
 
             CreateMap<Job, JobResponse>();
+
+            CreateMap<Job, JobCreatedDto>();
 
             CreateMap<JobRequirement, JobRequirementResponse>();
 

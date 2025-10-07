@@ -27,15 +27,16 @@ namespace Career.Api.Controllers
             return Created(string.Empty, result);
         }
 
-        [HttpPost("{jobId}")]
+
+        [HttpPost("{jobId}/applications")]
         public async Task<IActionResult> ApplyToJob([FromForm]ApplyToJobRequest request, [FromRoute]Guid jobId)
         {
-            await _jobService.ApplyToJob(request, jobId);
+            var result = await _jobService.ApplyToJob(request, jobId);
 
-            return Ok();
+            return Ok(result);
         }
 
-        [UserAuthenticated]
+        [Authorize(Policy = "ManageJobs")]
         [HttpGet("{jobId}/applications")]
         public async Task <IActionResult> GetJobApplications([FromRoute]Guid jobId, [FromQuery]int perPage, [FromQuery]int page)
         {

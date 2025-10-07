@@ -1,21 +1,21 @@
-﻿using Career.Api.Filters;
+﻿using Career.Api.Extensions;
+using Career.Api.Filters;
 using Career.Application.Requests.Company;
 using Career.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 
 namespace Career.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class CompanyController : BaseController
+    public class CompaniesController : BaseController
     {
-        private readonly ILogger<CompanyController> _logger;
+        private readonly ILogger<CompaniesController> _logger;
         private readonly ICompanyService _companyService;
 
-        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService)
+        public CompaniesController(ILogger<CompaniesController> logger, ICompanyService companyService)
         {
             _logger = logger;
             _companyService = companyService;
@@ -77,7 +77,7 @@ namespace Career.Api.Controllers
         }
 
         /// <summary>
-        /// Retrieves company configuration info. Requires authenticated owner.
+        /// Retrieves company configuration info. It requires authenticated owner.
         /// </summary>
         /// <param name="companyId">ID of the company.</param>
         /// <returns>Company configuration details.</returns>
@@ -125,11 +125,22 @@ namespace Career.Api.Controllers
         /// <param name="reason">Reason for removal.</param>
         /// <returns>Success status.</returns>
         [Authorize(Policy = "OnlyOwner")]
-        [HttpDelete("{companyId}/staffs/{staffId}")]
+        [HttpDelete("{companyId}/staffs/{staffId:guid}")]
         public async Task<IActionResult> FireStaffFromCompany(Guid companyId, Guid staffId, string reason)
         {
             await _companyService.FireStaffFromCompany(companyId, staffId, reason);
             return Ok();
+        }
+
+        [Authorize(Policy = "OnlyOwner")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCompany([FromRoute]Guid companyId)
+        {
+            var uri = HttpContext.GetBaseUri();
+            
+            await _companyService.DeleteCompany(companyId, $"{uri}/companies/{companyId}/reactivate");
+
+            return NoContent();
         }
     }
 }

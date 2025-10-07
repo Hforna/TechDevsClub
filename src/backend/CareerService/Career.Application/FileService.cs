@@ -23,11 +23,6 @@ namespace Career.Application
         {
             (string ext, bool isValid) = ("", false);
 
-            var isRecognizableType = FileTypeValidator.IsTypeRecognizable(file);
-
-            if (!isRecognizableType)
-                return (ext, isValid);
-
             IFileType fileType = FileTypeValidator.GetFileType(file);
 
             if (fileType.Extension == "txt")

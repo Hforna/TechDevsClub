@@ -29,7 +29,7 @@ namespace Career.Application
 
         static void AddAutoMapper(IServiceCollection services)
         {
-            services.AddAutoMapper(d => d.AddProfile(new MapperConfiguration()));
+            services.AddAutoMapper(d => d.AddProfile(new ProjectMapperConfiguration()));
         }
     }
 }

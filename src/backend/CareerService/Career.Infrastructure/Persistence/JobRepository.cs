@@ -24,14 +24,14 @@ namespace Career.Infrastructure.Persistence
         {
             return await _context.Jobs
                 .Include(d => d.Company)
-                .SingleOrDefaultAsync(d => d.Id == id);
+                .SingleOrDefaultAsync(d => d.Id == id && d.IsActive);
         }
 
         public IPagedList<JobApplication> GetJobApplicationsPaginated(Guid jobId, int perPage, int page)
         {
             return _context.JobApplications
                 .AsNoTracking()
-                .Where(d => d.JobId == jobId)
+                .Where(d => d.JobId == jobId && d.Job.IsActive)
                 .ToPagedList(page, perPage);
         }
     }

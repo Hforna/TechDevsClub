@@ -11,5 +11,6 @@ namespace Career.Domain.Services.Messaging
     public interface IStaffServiceProducer
     {
         public Task StaffAcceptJoinedCompany(StaffJoinedDto dto);
+        public Task StaffsRemovedFromCompany(List<string> userIds);
     }
 }

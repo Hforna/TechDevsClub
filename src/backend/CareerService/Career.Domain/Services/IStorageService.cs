@@ -10,5 +10,7 @@ namespace Career.Domain.Services
     {
         public Task UploadCompanyImage(Guid companyId, string imageName, Stream image);
         public Task UploadUserResumeFile(Guid jobAppId, string resumeName, Stream resume);
+        public Task DeleteCompanyFiles(Guid companyId);
+        public Task DeleteJobsFiles(List<Guid> jobsId);
     }
 }

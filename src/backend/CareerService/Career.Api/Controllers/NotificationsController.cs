@@ -1,17 +1,16 @@
 ﻿using Career.Api.Filters;
 using Career.Application.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Career.Api.Controllers
 {
     [Route("[controller]")]
     [UserAuthenticated]
-    public class NotificationController : BaseController
+    public class NotificationsController : BaseController
     {
         private readonly INotificationService _notificationService;
 
-        public NotificationController(INotificationService notificationService)
+        public NotificationsController(INotificationService notificationService)
         {
             _notificationService = notificationService;
         }

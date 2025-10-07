@@ -14,6 +14,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using System.Text;
+using Career.Api.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,8 +37,8 @@ builder.Services.AddScoped<IRealTimeNotifier, NotificationHubService>();
 
 builder.Services.AddAuthorization(d =>
 {
-    d.AddPolicy("OnlyOwner", d => d.RequireRole("owner"));
-    d.AddPolicy("ManageJobs", d => d.RequireRole("staff"));
+    d.AddPolicy("OnlyOwner", d => d.RequireRole("company_owner"));
+    d.AddPolicy("ManageJobs", d => d.RequireRole("staff", "company_owner"));
 });
 
 var tokenValidationParams = new TokenValidationParameters
@@ -78,6 +79,8 @@ builder.Services.AddHttpClient("profile.api", cfg =>
 {
     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
 });
+
+builder.Services.AddHostedService<CompanyDeleted>();
 
 var app = builder.Build();
 

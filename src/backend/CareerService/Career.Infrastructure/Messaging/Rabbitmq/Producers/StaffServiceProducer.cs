@@ -44,5 +44,24 @@ namespace Career.Infrastructure.Messaging.Rabbitmq.Producers
             var body = Encoding.UTF8.GetBytes(serialize);
             await _channel.BasicPublishAsync("from-career", "staff.joined", body);
         }
+
+        public async Task StaffsRemovedFromCompany(List<string> userIds)
+        {
+            _connection = await new ConnectionFactory()
+            {
+                Port = _baseConnection.Port,
+                HostName = _baseConnection.Host,
+                Password = _baseConnection.Password,
+                UserName = _baseConnection.UserName
+            }.CreateConnectionAsync();
+            
+            _channel = await _connection.CreateChannelAsync();
+            
+            await _channel.ExchangeDeclareAsync("from-career", "direct", true, false);
+            var serialize = JsonSerializer.Serialize(userIds);
+            var body = Encoding.UTF8.GetBytes(serialize);
+            
+            await _channel.BasicPublishAsync("from-career", "staff.removed", body);
+        }
     }
 }

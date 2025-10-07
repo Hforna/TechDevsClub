@@ -31,6 +31,7 @@ namespace Career.Application.Services
         public Task<CompanyConfigurationResponse> UpdateCompanyConfiguration(
             Guid companyId, 
             CompanyConfigurationRequest request);
+        public Task DeleteCompany(Guid companyId, string reactivateUrl);
     }
 
     public class CompanyService : ICompanyService
@@ -43,11 +44,12 @@ namespace Career.Application.Services
         private readonly string? _accessToken;
         private readonly ICompanyDomainService _companyDomain;
         private readonly IRealTimeNotifier _realTimeNotifier;
+        private readonly IEmailService _emailService;
 
         public CompanyService(IUnitOfWork uow, ILogger<CompanyService> logger, 
             IProfileServiceClient profileService, 
             IRequestService requestService, IMapper mapper, 
-            ICompanyDomainService companyDomain, IRealTimeNotifier realTimeNotifier)
+            ICompanyDomainService companyDomain, IRealTimeNotifier realTimeNotifier, IEmailService emailService)
         {
             _uow = uow;
             _realTimeNotifier = realTimeNotifier;
@@ -85,6 +87,29 @@ namespace Career.Application.Services
                 $"company details: id: {company.Id}, name: {company.Name}, website: {company.Website}");
 
             return _mapper.Map<CompanyResponse>(company);
+        }
+
+        public async Task DeleteCompany(Guid companyId, string reactivateUrl)
+        {
+            var company = await _uow.CompanyRepository.CompanyByIdWithJobs(companyId)
+                ?? throw new NullEntityException("Company was not found");
+
+            var user = await _profileService.GetUserInfos(_accessToken!);
+
+            if (user.id != company.OwnerId)
+                throw new UnauthorizedException("User must be the company owner to delete this company");
+
+            company.Jobs = company.Jobs.Select(job =>
+            {
+                job.IsActive = false;
+
+                return job;
+            }).ToList();
+            company.IsActive = false;
+            _uow.GenericRepository.Update<Company>(company);
+            await _uow.Commit();
+
+            await _emailService.SendEmailCompanyDeleted(company.Name, user.userName, user.email, reactivateUrl, DateTime.UtcNow);
         }
 
         public async Task FireStaffFromCompany(Guid companyId, Guid staffId, string reason)
@@ -235,8 +260,7 @@ namespace Career.Application.Services
                 {
                     var response = _mapper.Map<StaffResponse>(staff);
                     response.Role = staffsRoles
-                    .Where(d => d.StaffId == staff.Id)
-                    .SingleOrDefault()!.Role;
+                        .SingleOrDefault(d => d.StaffId == staff.Id)!.Role;
 
                     return response;
                 }).ToList()

@@ -37,20 +37,20 @@ namespace Career.Application.Services
         private readonly IMapper _mapper;
         private readonly IJobServiceProducer _jobProducer;
         private readonly IFileService _fileService;
-        private readonly IStorageService _storageService;
+        //private readonly IStorageService _storageService;
         private readonly IRealTimeNotifier _realTimeNotifier;
         private readonly ICompanyDomainService _companyDomain;
 
         public JobService(ILogger<IJobService> logger, IUnitOfWork uow, 
             IProfileServiceClient profileService, IRequestService requestService, 
             IMapper mapper, IJobServiceProducer jobProducer, 
-            IFileService fileService, IStorageService storageService, IRealTimeNotifier realTime, ICompanyDomainService companyDomain)
+            IFileService fileService, IRealTimeNotifier realTime, ICompanyDomainService companyDomain)
         {
             _logger = logger;
             _uow = uow;
             _companyDomain = companyDomain;
             _realTimeNotifier = realTime;
-            _storageService = storageService;
+            //_storageService = storageService;
             _fileService = fileService;
             _profileService = profileService;
             _requestService = requestService;
@@ -98,12 +98,12 @@ namespace Career.Application.Services
             await _jobProducer.SendJobCreated(producerDto);
             _logger.LogInformation($"Producer dto message sent to job producer service: {producerDto}");
 
-            return _mapper.Map<JobResponse>(request);
+            return _mapper.Map<JobResponse>(job);
         }
 
         public async Task<JobApplicationResponse> ApplyToJob(ApplyToJobRequest request, Guid jobId)
         {
-            var file = request.Resume.OpenReadStream();
+            using var file = request.Resume.OpenReadStream();
 
             var validateFile = _fileService.IsFileAsPdfOrTxt(file);
             if (!validateFile.isValid)
@@ -119,6 +119,7 @@ namespace Career.Application.Services
             jobApplication.ProfileId = user.id;
             jobApplication.ResumeName = $"{Guid.NewGuid()}{validateFile.ext}";
             jobApplication.Status = Domain.Enums.EApplicationStatus.Applied;
+            jobApplication.JobId = jobId;
 
             var hiringManagers = await _uow.StaffRepository.GetHiringManagersFromCompany(job.CompanyId);
 
@@ -141,7 +142,7 @@ namespace Career.Application.Services
             await _uow.GenericRepository.AddRange<Notification>(notifications);
             await _uow.Commit();
 
-            await _storageService.UploadUserResumeFile(jobApplication.Id, jobApplication.ResumeName, file);
+            //await _storageService.UploadUserResumeFile(jobApplication.Id, jobApplication.ResumeName, file);
 
             var notifyDto = new InformationNotificationManyUsersDto(_mapper.Map<List<SendNotificationDto>>(notifications));
             await _realTimeNotifier.SendInformationNotificationManyUsers(notifyDto);
@@ -175,13 +176,13 @@ namespace Career.Application.Services
                 switch(app.Status)
                 {
                     case Domain.Enums.EApplicationStatus.Applied:
-                        response.TotalInterview++;
+                        response.TotalApplied++;
                         break;
                     case Domain.Enums.EApplicationStatus.Interview:
                         response.TotalInterview++;
                         break;
                     case Domain.Enums.EApplicationStatus.Rejected:
-                        response.TotalInterview++; 
+                        response.TotalRejected++; 
                         break;
                 }
                 return appResponse;

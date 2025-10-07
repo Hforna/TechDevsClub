@@ -12,6 +12,8 @@ namespace Career.Application.Validators
     {
         public JobRequestValidator()
         {
+            RuleFor(d => d.Title).NotEmpty().WithMessage("Title job must not be empty");
+            RuleFor(d => d.Description).NotEmpty().WithMessage("Description job must not be empty");
             RuleFor(d => d.JobRequirements.Select(d => d.SkillId)).Must(IsSkillsUnique).WithMessage("Skill ids must be unique in job requirements");
         }
 
