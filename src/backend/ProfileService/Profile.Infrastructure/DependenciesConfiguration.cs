@@ -48,6 +48,7 @@ namespace Profile.Infrastructure
         {
             services.AddHostedService<StaffJoinedConsumer>();
             services.AddHostedService<JobCreatedConsumer>();
+            services.AddHostedService<StaffRemovedFromCompany>();
         }
 
         static void AddProducers(IServiceCollection services)

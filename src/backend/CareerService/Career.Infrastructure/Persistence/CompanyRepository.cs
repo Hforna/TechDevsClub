@@ -64,9 +64,9 @@ namespace Career.Infrastructure.Persistence
                 .AsNoTracking()
                 .Where(d => d.IsActive);
 
-            if (string.IsNullOrEmpty(dto.Name) == false)
-                companies = companies.Where(d => d.Name.Contains(dto.Name, StringComparison.CurrentCultureIgnoreCase));
-            if (string.IsNullOrEmpty(dto.Country) == false)
+            if (!string.IsNullOrEmpty(dto.Name))
+                companies = companies.Where(d => d.Name.ToLower().Contains(dto.Name.ToLower()));
+            if (!string.IsNullOrEmpty(dto.Country))
                 companies = companies.Where(d => d.Location.Country.Equals(dto.Country, StringComparison.CurrentCultureIgnoreCase));
             if (dto.Verified is not null)
                 companies = companies.Where(d => d.Verified == dto.Verified);

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Career.Domain.Dtos;
 using X.PagedList;
 
 namespace Career.Domain.Repositories
@@ -18,5 +19,6 @@ namespace Career.Domain.Repositories
         public Task<List<Staff>> GetAllStaffsFromACompany(Guid companyId);
         public Task<List<StaffRole>> GetStaffsRole(List<Guid> staffsId);
         public Task<List<Staff>> GetHiringManagersFromCompany(Guid companyId);
+        public Task<List<UserCompaniesCountDto>> GetAllStaffsNotHaveAnotherCompany(Guid companyId);
     }
 }

@@ -38,11 +38,11 @@ public class CompanyDeleted : BackgroundService
                     {
                         foreach (var company in companiesDeactivated)
                         {
-                            var staffs = await uow.StaffRepository.GetAllStaffsFromACompany(company.Id);
+                            var staffs = await uow.StaffRepository.GetAllStaffsNotHaveAnotherCompany(company.Id);
                             if (staffs.Count > 0)
                             {
                                 var userIds = staffs.Select(d => d.UserId).ToList();
-
+                                
                                 await staffProducer.StaffsRemovedFromCompany(userIds);
                             }
                             await storageService.DeleteCompanyFiles(company.Id);

@@ -83,7 +83,7 @@ namespace Profile.Infrastructure.Services.Rabbitmq.Consumers
                 {
                     _logger.LogError(ex, "Unexpectadly occured while trying to consume message from career service");
 
-                    throw;
+                    await _channel.BasicNackAsync(ea.DeliveryTag, false, true);
                 }
             };
             await _channel.BasicConsumeAsync("job-created", false, consumer);

@@ -40,4 +40,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Services\Rabbitmq\Messages\StaffsRemovedFromCompanyDto.cs" />
+  </ItemGroup>
+
 </Project>

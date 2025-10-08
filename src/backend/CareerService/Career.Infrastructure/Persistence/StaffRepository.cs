@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Career.Domain.Dtos;
+using Newtonsoft.Json;
 using X.PagedList;
 using X.PagedList.Extensions;
 
@@ -31,6 +33,21 @@ namespace Career.Infrastructure.Persistence
                 .AsNoTracking()
                 .Where(d => d.StaffRole.Role == StaffRolesConsts.HiringManagers)
                 .ToListAsync();
+        }
+
+        public async Task<List<UserCompaniesCountDto>> GetAllStaffsNotHaveAnotherCompany(Guid companyId)
+        {
+            var staffsCompany = _context.Staffs.AsNoTracking().Where(d => d.CompanyId == companyId);
+
+            var query = from staff in _context.Staffs
+                join company in _context.Companies on staff.CompanyId equals company.Id
+                where (from staff2 in staffsCompany where staff2.UserId == staff.UserId select staff2).Any()
+                group staff by staff.UserId
+                into staffGroup
+                select new UserCompaniesCountDto(staffGroup.Count(), staffGroup.Key);
+
+
+            return await query.Where(d => d.TotalCompanies == 1).ToListAsync();
         }
 
         public async Task<RequestStaff?> GetRequestStaffById(Guid requestStaff)
