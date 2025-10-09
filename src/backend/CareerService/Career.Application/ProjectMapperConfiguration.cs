@@ -30,6 +30,8 @@ namespace Career.Application
 
             CreateMap<Company, CompanyResponse>()
                 .ForMember(d => d.StaffsNumber, f => f.MapFrom(d => d.Staffs.Count));
+            
+            CreateMap<Staff, StaffResponse>();
 
             CreateMap<SalaryRequest, Salary>();
 
@@ -37,6 +39,12 @@ namespace Career.Application
 
             CreateMap<CreateJobRequest, Job>().ForMember(d => d.JobRequirements, f => f.MapFrom(d => d.JobRequirements));
 
+            CreateMap<CompanyConfigurationRequest, Company>();
+
+            CreateMap<Company, CompanyConfigurationResponse>();
+            
+            CreateMap<CompanyConfiguration, CompanyConfigurationResponse>();
+            
             CreateMap<ApplyToJobRequest, JobApplication>();
 
             CreateMap<JobApplication, JobApplicationResponse>();
