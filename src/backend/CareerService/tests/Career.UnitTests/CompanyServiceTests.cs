@@ -192,11 +192,27 @@ namespace Career.Application.Tests.Services
             _fixture.MockCompanyRepository
                 .Setup(x => x.CompanyById(company.Id))
                 .ReturnsAsync(company);
+            
+            _fixture.MockCompanyDomainService
+                .Setup(d => d.GetCompanyResponseByConfigurations(It.IsAny<CompanyConfiguration>(), It.IsAny<Company>()))
+                .Returns(new CompanyResponseDto()
+                {
+                    Id = company.Id,
+                    Name = company.Name,
+                    CreatedAt = company.CreatedAt,
+                    Description = company.Description,
+                    Location = company.Location,
+                    Logo = company.Logo,
+                    Rate = company.Rate,
+                    Verified = company.Verified,
+                    Website = company.Website,
+                });
 
             var service = _fixture.CreateService();
 
             // Act
             var result = await service.GetCompany(company.Id);
+            
 
             // Assert
             Assert.NotNull(result);
@@ -318,7 +334,7 @@ namespace Career.Application.Tests.Services
 
             _fixture.MockCompanyDomainService
                 .Setup(x => x.GetCompanyResponseByConfigurations(It.IsAny<CompanyConfiguration>(), It.IsAny<Company>()))
-                .Returns((CompanyConfiguration config, Company comp) => comp);
+                .Returns((CompanyConfiguration config, Company comp) => _fixture.Mapper.Map<CompanyResponseDto>(comp));
 
             var service = _fixture.CreateService();
 
