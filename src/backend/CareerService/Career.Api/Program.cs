@@ -15,6 +15,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using System.Text;
 using Career.Api.BackgroundServices;
+using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +69,23 @@ builder.Services.AddSingleton<IUserIdProvider, CustomUserProvider>();
 
 builder.Services.AddSignalR();
 
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(d => d.AddService("Career"))
+    .WithMetrics(d =>
+    {
+        d.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation();
+
+        d.AddOtlpExporter(d => d.Endpoint = new Uri("otel-collector:4317"));
+    })
+    .WithTracing(d =>
+    {
+        d.AddOtlpExporter(d => d.Endpoint = new Uri("otel-collector:4317"));
+        
+        d.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation();
+    });
+
+builder.Logging.AddOpenTelemetry(d => d.AddOtlpExporter(d => d.Endpoint = new Uri("otel-collector:4317")));
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddHttpContextAccessor();
@@ -90,8 +108,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.MapPrometheusScrapingEndpoint();
 
 app.MapHub<NotificationHub>("/hubs/notification");
 
