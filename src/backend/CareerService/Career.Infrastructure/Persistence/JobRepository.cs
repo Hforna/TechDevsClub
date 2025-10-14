@@ -34,5 +34,13 @@ namespace Career.Infrastructure.Persistence
                 .Where(d => d.JobId == jobId && d.Job.IsActive)
                 .ToPagedList(page, perPage);
         }
+
+        public async Task<List<JobApplication>?> GetJobApplicationsByIds(List<Guid> ids)
+        {
+            return await _context.JobApplications
+                .AsNoTracking()
+                .Where(d => ids.Contains(d.Id))
+                .ToListAsync();
+        }
     }
 }

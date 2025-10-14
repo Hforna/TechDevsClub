@@ -43,6 +43,8 @@ namespace Career.Application
 
             CreateMap<Company, CompanyConfigurationResponse>();
             
+            CreateMap<Company, CompanyResponseDto>();
+            
             CreateMap<CompanyConfiguration, CompanyConfigurationResponse>();
             
             CreateMap<ApplyToJobRequest, JobApplication>();
@@ -58,6 +60,8 @@ namespace Career.Application
             CreateMap<Salary,  SalaryResponse>();
 
             CreateMap<Notification, SendNotificationDto>();
+
+            CreateMap<AnalyzeJobsRequest, JobAnalyzingDto>();
 
             CreateMap<CompanyResponseDto, CompanyResponse>();
 

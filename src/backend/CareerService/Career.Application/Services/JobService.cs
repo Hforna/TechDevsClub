@@ -26,6 +26,7 @@ namespace Career.Application.Services
         public Task<JobResponse> CreateJob(CreateJobRequest request);
         public Task<JobApplicationResponse> ApplyToJob(ApplyToJobRequest request, Guid jobId);
         public Task<JobApplicationPaginatedResponse> GetJobApplications(Guid jobId, int perPage, int page);
+        public Task AnalyzeJobApplications(AnalyzeJobsRequest request);
     }
 
     public class JobService : IJobService
@@ -189,6 +190,25 @@ namespace Career.Application.Services
             }).ToList();
 
             return response;
+        }
+
+        public async Task AnalyzeJobApplications(AnalyzeJobsRequest request)
+        {
+            var job = await _uow.JobRepository.GetJobById(request.JobId)
+                      ?? throw new NullEntityException("Job was not found");
+
+            var jobsApplications = await _uow.JobRepository.GetJobApplicationsByIds(request.JobApplicationsIds);
+
+            if (jobsApplications is null || jobsApplications.Count != request.JobApplicationsIds.Count)
+                throw new RequestException("Some job applications weren't found");
+            
+            var user = await _profileService.GetUserInfos(_requestService.GetBearerToken()!);
+            var hasPermission = await _companyDomain.CanUserHandleHiringManagement(job.Company, user.id);
+            
+            if (!hasPermission)
+                throw new UnauthorizedException("User doesn't have permission to analyze these jobs");
+            
+            await _jobProducer.SendAnalyzingJob(_mapper.Map<JobAnalyzingDto>(request));
         }
     }
 }

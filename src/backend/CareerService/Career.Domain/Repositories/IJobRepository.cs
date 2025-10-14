@@ -12,5 +12,6 @@ namespace Career.Domain.Repositories
     {
         public Task<Job?> GetJobById(Guid id);
         public IPagedList<JobApplication> GetJobApplicationsPaginated(Guid jobId, int perPage, int page);
+        public Task<List<JobApplication>?> GetJobApplicationsByIds(List<Guid> ids);
     }
 }

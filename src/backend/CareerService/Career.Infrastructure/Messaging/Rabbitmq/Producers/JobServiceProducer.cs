@@ -43,5 +43,24 @@ namespace Career.Infrastructure.Messaging.Rabbitmq.Producers
             var bodyBytes = Encoding.UTF8.GetBytes(body);
             await _channel.BasicPublishAsync("from-career", "job.created", bodyBytes);
         }
+
+        public async Task SendAnalyzingJob(JobAnalyzingDto dto)
+        {
+            _connection = await new ConnectionFactory()
+            {
+                Port = _connectionDto.Port,
+                HostName = _connectionDto.Host,
+                Password = _connectionDto.Password,
+                UserName = _connectionDto.UserName
+            }.CreateConnectionAsync();
+
+            _channel = await _connection.CreateChannelAsync();
+
+            await _channel.ExchangeDeclareAsync("from-career", "direct", true, false);
+
+            var body = JsonSerializer.Serialize(dto);
+            var bodyBytes = Encoding.UTF8.GetBytes(body);
+            await _channel.BasicPublishAsync("from-career", "job.analyze", bodyBytes);
+        }
     }
 }

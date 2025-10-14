@@ -11,5 +11,6 @@ namespace Career.Domain.Services.Messaging
     public interface IJobServiceProducer
     {
         public Task SendJobCreated(JobCreatedDto dto);
+        public Task SendAnalyzingJob(JobAnalyzingDto dto);
     }
 }
