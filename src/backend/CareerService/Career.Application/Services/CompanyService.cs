@@ -57,6 +57,7 @@ namespace Career.Application.Services
             _logger = logger;
             _profileService = profileService;
             _requestService = requestService;
+            _emailService = emailService;
             _mapper = mapper;
 
             _accessToken = _requestService.GetBearerToken()!;

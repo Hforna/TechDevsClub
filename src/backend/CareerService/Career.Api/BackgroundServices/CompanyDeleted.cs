@@ -61,7 +61,7 @@ public class CompanyDeleted : BackgroundService
                 _logger.LogError(ex, "Occurred an error while trying to delete companies");
             }
 
-            await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+            await Task.Delay(TimeSpan.FromDays(4), stoppingToken);
         }
     }
 }

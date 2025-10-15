@@ -55,7 +55,7 @@ namespace Profile.WebTests
 
             //Act
             var client = _app.CreateClient();
-            var response = await client.PostAsJsonAsync("api/users/create", request);
+            var response = await client.PostAsJsonAsync("api/users/", request);
             var content = await response.Content.ReadAsStringAsync();
 
             //Assert
@@ -69,7 +69,7 @@ namespace Profile.WebTests
             var request = CreateUserRequestFaker.Build();
 
             var client = _app.CreateClient();
-            var response = await client.PostAsJsonAsync("api/users/create", request);
+            var response = await client.PostAsJsonAsync("api/users/", request);
             var content = await response.Content.ReadAsStringAsync();
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);

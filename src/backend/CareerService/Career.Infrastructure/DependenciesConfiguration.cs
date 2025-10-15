@@ -43,6 +43,7 @@ namespace Career.Infrastructure
             services.AddScoped<IStaffServiceProducer, StaffServiceProducer>();
             services.AddScoped<IJobServiceProducer, JobServiceProducer>();
 
+            services.AddHostedService<AnalyzeJobProducer>();
             services.AddHostedService<UsersMatchedConsumer>();
         }
 

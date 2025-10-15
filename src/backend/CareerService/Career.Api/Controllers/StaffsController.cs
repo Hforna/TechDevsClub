@@ -18,7 +18,7 @@ namespace Career.Api.Controllers
             _staffService = staffService;
             _logger = logger;
         }
-
+        
 
         /// <summary>
         /// Owner or staff can request an user to be staff of the selected company.
